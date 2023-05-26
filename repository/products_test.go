@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-func setupTestDB(t *testing.T) *gorm.DB {
+func setupTestDB_Products(t *testing.T) *gorm.DB {
 	dsn := "host=localhost user=postgres password=sql1234 dbname=pinjol port=5432 sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	require.NoError(t, err)
@@ -23,6 +23,7 @@ func setupTestDB(t *testing.T) *gorm.DB {
 	return db
 }
 
+// ================== SAVE =========================
 func TestSaveProducts(t *testing.T) {
 	// Inisialisasi mock DB
 	db, mock, _ := sqlmock.New()
@@ -60,7 +61,7 @@ func TestSaveProducts(t *testing.T) {
 
 // ================== FIND BY ID =========================
 func TestFindByIdProducts(t *testing.T) {
-	db := setupTestDB(t)
+	db := setupTestDB_Products(t)
 	repo := NewProductsRepositoryImpl(db)
 
 	// Test FindById for ID 1
@@ -80,12 +81,12 @@ func TestFindByIdProducts(t *testing.T) {
 	require.Equal(t, expectedProducts, foundProducts)
 }
 
-// ================== FIND BY ID =========================
+// ================== FIND BY NAME =========================
 func TestFindByNameProducts(t *testing.T) {
-	db := setupTestDB(t)
+	db := setupTestDB_Products(t)
 	repo := NewProductsRepositoryImpl(db)
 
-	// Test FindByUsername for Name
+	// Test FindByName for Name
 	foundProducts, err := repo.FindByName("cicilan 6 bulan")
 	require.NoError(t, err)
 
@@ -109,7 +110,7 @@ func TestFindByNameProducts(t *testing.T) {
 
 // ================== FIND ALL =========================
 func TestFindAll(t *testing.T) {
-	db := setupTestDB(t)
+	db := setupTestDB_Products(t)
 	repo := NewProductsRepositoryImpl(db)
 
 	// Create multiple Productss in the database
@@ -193,6 +194,7 @@ func TestUpdateProducts(t *testing.T) {
 	assert.Equal(t, updatedProduct, result)
 }
 
+// ================== DELETE =========================
 func TestDeleteProducts(t *testing.T) {
 	// Inisialisasi mock DB
 	db, mock, _ := sqlmock.New()
