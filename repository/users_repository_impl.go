@@ -36,7 +36,7 @@ func (u *UsersRepositoryImpl) FindAll() ([]model.Users, error) {
 // FindById implements UsersRepository
 func (u *UsersRepositoryImpl) FindById(id int64) (model.Users, error) {
 	var users model.Users
-	result := u.Db.Find(&users, id)
+	result := u.Db.Find(&users, "id = ?", id)
 	if result != nil {
 		return users, errors.New("users is not found")
 
