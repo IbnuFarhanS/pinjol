@@ -19,7 +19,7 @@ func main() {
 
 	loadConfig, err := config.LoadConfig(".")
 	if err != nil {
-		log.Fatal("🚀 Could not load environment variables", err)
+		log.Fatal("Could not load environment variables", err)
 	}
 
 	//Database
@@ -28,22 +28,42 @@ func main() {
 
 	db.Table("users").Find(&model.Users{})
 	db.Table("roles").Find(&model.Roles{})
+	db.Table("accept_statuses").Find(&model.AcceptStatus{})
+	db.Table("products").Find(&model.Products{})
+	db.Table("payments").Find(&model.Payments{})
+	db.Table("payment_methods").Find(&model.PaymentMethod{})
+	db.Table("transactions").Find(&model.Transactions{})
 
 	//Init Repository
 	userRepository := reposity.NewUsersRepositoryImpl(db)
 	roleRepository := reposity.NewRolesRepositoryImpl(db)
+	accstatRepository := reposity.NewAcceptStatusRepositoryImpl(db)
+	paymetRepository := reposity.NewPaymentMethodRepositoryImpl(db)
+	payRepository := reposity.NewPaymentsRepositoryImpl(db)
+	proRepository := reposity.NewProductsRepositoryImpl(db)
+	traRepository := reposity.NewTransactionsRepositoryImpl(db)
 
 	//Init Service
 	authService := service.NewAuthServiceImpl(userRepository, validate)
 	usersService := service.NewUsersServiceImpl(userRepository, validate)
 	roleService := service.NewRolesServiceImpl(roleRepository, validate)
+	accstatService := service.NewAcceptStatusServiceImpl(accstatRepository, validate)
+	paymetService := service.NewPaymentMethodServiceImpl(paymetRepository, validate)
+	payService := service.NewPaymentsServiceImpl(payRepository, validate)
+	proService := service.NewProductsServiceImpl(proRepository, validate)
+	traService := service.NewTransactionsServiceImpl(traRepository, validate)
 
 	//Init controller
 	authController := controller.NewAuthController(authService)
 	usersController := controller.NewUsersController(usersService)
 	rolesController := controller.NewRolesController(roleService)
+	accstatController := controller.NewAcceptStatusController(accstatService)
+	paymetController := controller.NewPaymentMethodsController(paymetService)
+	payController := controller.NewPaymentsController(payService)
+	proController := controller.NewProductsController(proService)
+	traController := controller.NewTransactionsController(traService)
 
-	routes := router.NewRouter(userRepository, authController, usersController, rolesController)
+	routes := router.NewRouter(userRepository, authController, usersController, rolesController, accstatController, paymetController, payController, proController, traController)
 
 	server := &http.Server{
 		Addr:           ":" + loadConfig.ServerPort,

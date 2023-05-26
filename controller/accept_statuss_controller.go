@@ -11,111 +11,111 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type RolesController struct {
-	rolesService service.RolesService
+type AcceptStatusController struct {
+	acceptStatusService service.AcceptStatusService
 }
 
-func NewRolesController(service service.RolesService) *RolesController {
-	return &RolesController{rolesService: service}
+func NewAcceptStatusController(service service.AcceptStatusService) *AcceptStatusController {
+	return &AcceptStatusController{acceptStatusService: service}
 }
 
-func (c *RolesController) Insert(ctx *gin.Context) {
-	createLen := model.Roles{}
+func (c *AcceptStatusController) Insert(ctx *gin.Context) {
+	createLen := model.AcceptStatus{}
 	err := ctx.ShouldBindJSON(&createLen)
 	helper.ErrorPanic(err)
 
-	c.rolesService.Save(createLen)
+	c.acceptStatusService.Save(createLen)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully created Roles!",
+		Message: "Successfully created AcceptStatus!",
 		Data:    nil,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) Update(ctx *gin.Context) {
+func (c *AcceptStatusController) Update(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	helper.ErrorPanic(err)
 
-	updateRol := model.Roles{ID: id}
+	updateRol := model.AcceptStatus{ID: id}
 	err = ctx.ShouldBindJSON(&updateRol)
 	helper.ErrorPanic(err)
 
-	updatedRoles, err := c.rolesService.Update(updateRol)
+	updatedAcceptStatus, err := c.acceptStatusService.Update(updateRol)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully updated Roles!",
-		Data:    updatedRoles,
+		Message: "Successfully updated AcceptStatus!",
+		Data:    updatedAcceptStatus,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
-func (c *RolesController) Delete(ctx *gin.Context) {
+func (c *AcceptStatusController) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	helper.ErrorPanic(err)
 
-	c.rolesService.Delete(id)
+	c.acceptStatusService.Delete(id)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully deleted Roles!",
+		Message: "Successfully deleted AcceptStatus!",
 		Data:    nil,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) FindAll(ctx *gin.Context) {
-	len, err := c.rolesService.FindAll()
+func (c *AcceptStatusController) FindAll(ctx *gin.Context) {
+	len, err := c.acceptStatusService.FindAll()
 	helper.ErrorPanic(err)
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetch all Roles data!",
+		Message: "Successfully fetch all AcceptStatus data!",
 		Data:    len,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) FindByID(ctx *gin.Context) {
+func (c *AcceptStatusController) FindByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	helper.ErrorPanic(err)
 
-	len, err := c.rolesService.FindById(id)
+	len, err := c.acceptStatusService.FindById(id)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetched Roles!",
+		Message: "Successfully fetched AcceptStatus!",
 		Data:    len,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) FindByUsername(ctx *gin.Context) {
-	userParam := ctx.Param("username")
+func (c *AcceptStatusController) FindByName(ctx *gin.Context) {
+	userParam := ctx.Param("name")
 
-	len, err := c.rolesService.FindByUsername(userParam)
+	len, err := c.acceptStatusService.FindByName(userParam)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetched Roles!",
+		Message: "Successfully fetched AcceptStatus!",
 		Data:    len,
 	}
 

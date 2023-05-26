@@ -11,112 +11,112 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type RolesController struct {
-	rolesService service.RolesService
+type PaymentsController struct {
+	paymentsService service.PaymentsService
 }
 
-func NewRolesController(service service.RolesService) *RolesController {
-	return &RolesController{rolesService: service}
+func NewPaymentsController(service service.PaymentsService) *PaymentsController {
+	return &PaymentsController{paymentsService: service}
 }
 
-func (c *RolesController) Insert(ctx *gin.Context) {
-	createLen := model.Roles{}
-	err := ctx.ShouldBindJSON(&createLen)
+func (c *PaymentsController) Insert(ctx *gin.Context) {
+	createp := model.Payments{}
+	err := ctx.ShouldBindJSON(&createp)
 	helper.ErrorPanic(err)
 
-	c.rolesService.Save(createLen)
+	c.paymentsService.Save(createp)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully created Roles!",
+		Message: "Successfully created PaymentMethods!",
 		Data:    nil,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) Update(ctx *gin.Context) {
+func (c *PaymentsController) Update(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	helper.ErrorPanic(err)
 
-	updateRol := model.Roles{ID: id}
-	err = ctx.ShouldBindJSON(&updateRol)
+	updatepay := model.Payments{ID: id}
+	err = ctx.ShouldBindJSON(&updatepay)
 	helper.ErrorPanic(err)
 
-	updatedRoles, err := c.rolesService.Update(updateRol)
+	updatedPayments, err := c.paymentsService.Update(updatepay)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully updated Roles!",
-		Data:    updatedRoles,
+		Message: "Successfully updated PaymentMethods!",
+		Data:    updatedPayments,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
-func (c *RolesController) Delete(ctx *gin.Context) {
+func (c *PaymentsController) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	helper.ErrorPanic(err)
 
-	c.rolesService.Delete(id)
+	c.paymentsService.Delete(id)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully deleted Roles!",
+		Message: "Successfully deleted PaymentMethods!",
 		Data:    nil,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) FindAll(ctx *gin.Context) {
-	len, err := c.rolesService.FindAll()
+func (c *PaymentsController) FindAll(ctx *gin.Context) {
+	pm, err := c.paymentsService.FindAll()
 	helper.ErrorPanic(err)
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetch all Roles data!",
-		Data:    len,
+		Message: "Successfully fetch all PaymentMethods data!",
+		Data:    pm,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) FindByID(ctx *gin.Context) {
+func (c *PaymentsController) FindByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	helper.ErrorPanic(err)
 
-	len, err := c.rolesService.FindById(id)
+	pm, err := c.paymentsService.FindById(id)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetched Roles!",
-		Data:    len,
+		Message: "Successfully fetched PaymentMethods!",
+		Data:    pm,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) FindByUsername(ctx *gin.Context) {
-	userParam := ctx.Param("username")
+func (c *PaymentsController) FindByName(ctx *gin.Context) {
+	userParam := ctx.Param("name")
 
-	len, err := c.rolesService.FindByUsername(userParam)
+	pm, err := c.paymentsService.FindByName(userParam)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetched Roles!",
-		Data:    len,
+		Message: "Successfully fetched PaymentMethods!",
+		Data:    pm,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)

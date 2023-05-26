@@ -11,112 +11,112 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type RolesController struct {
-	rolesService service.RolesService
+type PaymentMethodsController struct {
+	paymentMethodsService service.PaymentMethodService
 }
 
-func NewRolesController(service service.RolesService) *RolesController {
-	return &RolesController{rolesService: service}
+func NewPaymentMethodsController(service service.PaymentMethodService) *PaymentMethodsController {
+	return &PaymentMethodsController{paymentMethodsService: service}
 }
 
-func (c *RolesController) Insert(ctx *gin.Context) {
-	createLen := model.Roles{}
-	err := ctx.ShouldBindJSON(&createLen)
+func (c *PaymentMethodsController) Insert(ctx *gin.Context) {
+	createpm := model.PaymentMethod{}
+	err := ctx.ShouldBindJSON(&createpm)
 	helper.ErrorPanic(err)
 
-	c.rolesService.Save(createLen)
+	c.paymentMethodsService.Save(createpm)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully created Roles!",
+		Message: "Successfully created PaymentMethods!",
 		Data:    nil,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) Update(ctx *gin.Context) {
+func (c *PaymentMethodsController) Update(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	helper.ErrorPanic(err)
 
-	updateRol := model.Roles{ID: id}
+	updateRol := model.PaymentMethod{ID: id}
 	err = ctx.ShouldBindJSON(&updateRol)
 	helper.ErrorPanic(err)
 
-	updatedRoles, err := c.rolesService.Update(updateRol)
+	updatedPaymentMethods, err := c.paymentMethodsService.Update(updateRol)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully updated Roles!",
-		Data:    updatedRoles,
+		Message: "Successfully updated PaymentMethods!",
+		Data:    updatedPaymentMethods,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
-func (c *RolesController) Delete(ctx *gin.Context) {
+func (c *PaymentMethodsController) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	helper.ErrorPanic(err)
 
-	c.rolesService.Delete(id)
+	c.paymentMethodsService.Delete(id)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully deleted Roles!",
+		Message: "Successfully deleted PaymentMethods!",
 		Data:    nil,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) FindAll(ctx *gin.Context) {
-	len, err := c.rolesService.FindAll()
+func (c *PaymentMethodsController) FindAll(ctx *gin.Context) {
+	pm, err := c.paymentMethodsService.FindAll()
 	helper.ErrorPanic(err)
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetch all Roles data!",
-		Data:    len,
+		Message: "Successfully fetch all PaymentMethods data!",
+		Data:    pm,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) FindByID(ctx *gin.Context) {
+func (c *PaymentMethodsController) FindByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	helper.ErrorPanic(err)
 
-	len, err := c.rolesService.FindById(id)
+	pm, err := c.paymentMethodsService.FindById(id)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetched Roles!",
-		Data:    len,
+		Message: "Successfully fetched PaymentMethods!",
+		Data:    pm,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) FindByUsername(ctx *gin.Context) {
-	userParam := ctx.Param("username")
+func (c *PaymentMethodsController) FindByName(ctx *gin.Context) {
+	userParam := ctx.Param("name")
 
-	len, err := c.rolesService.FindByUsername(userParam)
+	pm, err := c.paymentMethodsService.FindByName(userParam)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetched Roles!",
-		Data:    len,
+		Message: "Successfully fetched PaymentMethods!",
+		Data:    pm,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
