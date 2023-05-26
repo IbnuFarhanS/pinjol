@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 )
 
 type PaymentsServiceImpl struct {
@@ -56,9 +56,9 @@ func (s *PaymentsServiceImpl) Update(updatePayments model.Payments) (model.Payme
 	return s.PaymentsRepository.Update(newPay)
 }
 
-func NewPaymentsServiceImpl(paymentsRepository repository.PaymentsRepository, validate *validator.Validate) PaymentsService {
+func NewPaymentsServiceImpl(PaymentsRepository repository.PaymentsRepository, validate *validator.Validate) PaymentsService {
 	return &PaymentsServiceImpl{
-		PaymentsRepository: paymentsRepository,
+		PaymentsRepository: PaymentsRepository,
 		Validate:           validate,
 	}
 }

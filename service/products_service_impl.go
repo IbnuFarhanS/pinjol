@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 )
 
 type ProductsServiceImpl struct {
@@ -63,9 +63,9 @@ func (s *ProductsServiceImpl) Update(updateProducts model.Products) (model.Produ
 	return s.ProductsRepository.Update(newPro)
 }
 
-func NewProductsServiceImpl(productsRepository repository.ProductsRepository, validate *validator.Validate) ProductsService {
+func NewProductsServiceImpl(ProductsRepository repository.ProductsRepository, validate *validator.Validate) ProductsService {
 	return &ProductsServiceImpl{
-		ProductsRepository: productsRepository,
+		ProductsRepository: ProductsRepository,
 		Validate:           validate,
 	}
 }

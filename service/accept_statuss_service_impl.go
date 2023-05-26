@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 )
 
 type AcceptStatusServiceImpl struct {
@@ -54,9 +54,9 @@ func (s *AcceptStatusServiceImpl) Update(updateAcceptStatus model.AcceptStatus) 
 	return s.AcceptStatusRepository.Update(newAs)
 }
 
-func NewAcceptStatusServiceImpl(acceptStatusRepository repository.AcceptStatusRepository, validate *validator.Validate) AcceptStatusService {
+func NewAcceptStatusServiceImpl(AcceptStatusRepository repository.AcceptStatusRepository, validate *validator.Validate) AcceptStatusService {
 	return &AcceptStatusServiceImpl{
-		AcceptStatusRepository: acceptStatusRepository,
+		AcceptStatusRepository: AcceptStatusRepository,
 		Validate:               validate,
 	}
 }
