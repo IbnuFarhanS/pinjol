@@ -210,22 +210,23 @@ func (suite *TestUsers) TestFindByIdUsers() {
 	}
 
 	suite.Equal(createDummyUser[0].ID, users)
+
 }
 
 func TestUserRepositorySuite(t *testing.T) {
 	suite.Run(t, new(TestUsers))
 }
 
-// ================== FIND BY NAME =========================
+// ================== FIND BY USERNAME =========================
 func TestFindByUsernameUsers(t *testing.T) {
 	db := setupTestDB_Users(t)
 	repo := NewUsersRepositoryImpl(db)
 
-	// Test FindByName for Name
+	// Test FindByUsername for Name
 	foundUsers, err := repo.FindByUsername("ibnu")
 	require.NoError(t, err)
 
-	// Expected Products with Name
+	// Expected Users with Name
 	expectedUsers := model.Users{
 		ID:           1,
 		Username:     "ibnu",
@@ -251,7 +252,7 @@ func TestFindAllUsers(t *testing.T) {
 	db := setupTestDB_Users(t)
 	repo := NewUsersRepositoryImpl(db)
 
-	// Create multiple Productss in the database
+	// Create multiple Users in the database
 	dummyUser := []model.Users{
 		{
 			ID:           1,
@@ -277,11 +278,11 @@ func TestFindAllUsers(t *testing.T) {
 			RolesID:      1,
 			Created_At:   time.Date(2023, 5, 27, 17, 15, 20, 540820000, time.FixedZone("WIB", 7*60*60)),
 		},
-		// Add more Productss if needed
+		// Add more Users if needed
 	}
 
 	// Test FindAll
-	foundUserss, err := repo.FindAll()
+	foundUsers, err := repo.FindAll()
 	require.NoError(t, err)
-	require.Equal(t, len(dummyUser), len(foundUserss))
+	require.Equal(t, len(dummyUser), len(foundUsers))
 }

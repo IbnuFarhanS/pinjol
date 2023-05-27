@@ -58,14 +58,3 @@ func (r *PaymentsRepositoryImpl) Update(updatedPayments model.Payments) (model.P
 	helper.ErrorPanic(result.Error)
 	return updatedPayments, nil
 }
-
-// FindByName implements PaymentsRepository
-func (r *PaymentsRepositoryImpl) FindByName(name string) (model.Payments, error) {
-	var bor model.Payments
-	result := r.Db.First(&bor, "name = ?", name)
-
-	if result.Error != nil {
-		return bor, errors.New("invalid name")
-	}
-	return bor, nil
-}
