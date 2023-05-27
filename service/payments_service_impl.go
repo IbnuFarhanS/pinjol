@@ -21,10 +21,6 @@ func (s *PaymentsServiceImpl) FindAll() ([]model.Payments, error) {
 	return s.PaymentsRepository.FindAll()
 }
 
-func (s *PaymentsServiceImpl) FindByName(name string) (model.Payments, error) {
-	return s.PaymentsRepository.FindByName(name)
-}
-
 // FindById implements BorrowerService
 func (s *PaymentsServiceImpl) FindById(id int64) (model.Payments, error) {
 	return s.PaymentsRepository.FindById(id)

@@ -29,8 +29,8 @@ func (s *RolesServiceImpl) FindById(id int64) (model.Roles, error) {
 }
 
 // FindByUsername implements RolesService
-func (s *RolesServiceImpl) FindByUsername(username string) (model.Roles, error) {
-	return s.RolesRepository.FindByUsername(username)
+func (s *RolesServiceImpl) FindByName(name string) (model.Roles, error) {
+	return s.RolesRepository.FindByName(name)
 }
 
 // Save implements RolesService

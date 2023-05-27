@@ -106,10 +106,10 @@ func (c *RolesController) FindByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) FindByUsername(ctx *gin.Context) {
-	userParam := ctx.Param("username")
+func (c *RolesController) FindByName(ctx *gin.Context) {
+	roleParam := ctx.Param("name")
 
-	len, err := c.rolesService.FindByUsername(userParam)
+	len, err := c.rolesService.FindByName(roleParam)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{

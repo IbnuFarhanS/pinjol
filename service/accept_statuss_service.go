@@ -8,5 +8,4 @@ type AcceptStatusService interface {
 	Delete(id int64) (model.AcceptStatus, error)
 	FindById(id int64) (model.AcceptStatus, error)
 	FindAll() ([]model.AcceptStatus, error)
-	FindByName(username string) (model.AcceptStatus, error)
 }

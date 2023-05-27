@@ -1,11 +1,8 @@
 package repository
 
-
-
 import (
 	"errors"
 
-	"github.com/IbnuFarhanS/pinjol/data/request"
 	"github.com/IbnuFarhanS/pinjol/helper"
 	"github.com/IbnuFarhanS/pinjol/model"
 	"gorm.io/gorm"
@@ -41,7 +38,6 @@ func (u *UsersRepositoryImpl) FindById(id int64) (model.Users, error) {
 	result := u.Db.Find(&users, id)
 	if result != nil {
 		return users, errors.New("users is not found")
-
 	}
 	return users, nil
 }
@@ -55,7 +51,10 @@ func (u *UsersRepositoryImpl) Save(newUsers model.Users) (model.Users, error) {
 
 // Update implements UsersRepository
 func (u *UsersRepositoryImpl) Update(updatedUsers model.Users) (model.Users, error) {
-	var updateUsers = request.UpdateUsersRequest{
+	var users model.Users
+	updatedUsers.Created_At = users.Created_At
+	updatedUsers.RolesID = users.RolesID
+	var updateUsers = model.Users{
 		ID:           updatedUsers.ID,
 		Username:     updatedUsers.Username,
 		Password:     updatedUsers.Password,
@@ -64,6 +63,8 @@ func (u *UsersRepositoryImpl) Update(updatedUsers model.Users) (model.Users, err
 		Alamat:       updatedUsers.Alamat,
 		Phone_Number: updatedUsers.Phone_Number,
 		Limit:        updatedUsers.Limit,
+		RolesID:      updatedUsers.RolesID,
+		Created_At:   updatedUsers.Created_At,
 	}
 	result := u.Db.Model(&updatedUsers).Updates(updateUsers)
 	helper.ErrorPanic(result.Error)

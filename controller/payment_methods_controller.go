@@ -107,9 +107,9 @@ func (c *PaymentMethodsController) FindByID(ctx *gin.Context) {
 }
 
 func (c *PaymentMethodsController) FindByName(ctx *gin.Context) {
-	userParam := ctx.Param("name")
+	paymetParam := ctx.Param("name")
 
-	pm, err := c.paymentMethodsService.FindByName(userParam)
+	pm, err := c.paymentMethodsService.FindByName(paymetParam)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{

@@ -8,5 +8,4 @@ type PaymentsService interface {
 	Delete(id int64) (model.Payments, error)
 	FindById(id int64) (model.Payments, error)
 	FindAll() ([]model.Payments, error)
-	FindByName(name string) (model.Payments, error)
 }

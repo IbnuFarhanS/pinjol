@@ -8,5 +8,5 @@ type RolesService interface {
 	Delete(id int64) (model.Roles, error)
 	FindById(id int64) (model.Roles, error)
 	FindAll() ([]model.Roles, error)
-	FindByUsername(username string) (model.Roles, error)
+	FindByName(name string) (model.Roles, error)
 }

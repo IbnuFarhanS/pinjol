@@ -52,16 +52,6 @@ func (r *AcceptStatusRepositoryImpl) Save(newAcceptStatus model.AcceptStatus) (m
 	return newAcceptStatus, nil
 }
 
-func (r *AcceptStatusRepositoryImpl) FindByName(name string) (model.AcceptStatus, error) {
-	var acc model.AcceptStatus
-	result := r.Db.First(&acc, "name = ?", name)
-
-	if result.Error != nil {
-		return acc, errors.New("invalid username or Password")
-	}
-	return acc, nil
-}
-
 // Update implements AcceptStatusRepository
 func (r *AcceptStatusRepositoryImpl) Update(updatedAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
 	result := r.Db.Model(&model.AcceptStatus{}).Where("id = ?", updatedAcceptStatus.ID).Updates(updatedAcceptStatus)

@@ -53,9 +53,6 @@ func (s *AcceptStatusServiceImpl) Update(updateAcceptStatus model.AcceptStatus) 
 
 	return s.AcceptStatusRepository.Update(newAs)
 }
-func (s *AcceptStatusServiceImpl) FindByName(name string) (model.AcceptStatus, error) {
-	return s.AcceptStatusRepository.FindByName(name)
-}
 
 func NewAcceptStatusServiceImpl(acceptStatusRepository repository.AcceptStatusRepository, validate *validator.Validate) AcceptStatusService {
 	return &AcceptStatusServiceImpl{

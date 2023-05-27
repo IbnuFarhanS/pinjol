@@ -19,28 +19,28 @@ func NewProductsRepositoryImpl(Db *gorm.DB) ProductsRepository {
 
 // Delete implements ProductsRepository
 func (r *ProductsRepositoryImpl) Delete(id int64) (model.Products, error) {
-	var bor model.Products
-	result := r.Db.Where("id = ?", id).Delete(&bor)
+	var pro model.Products
+	result := r.Db.Where("id = ?", id).Delete(&pro)
 	helper.ErrorPanic(result.Error)
-	return bor, nil
+	return pro, nil
 }
 
 // FindAll implements ProductsRepository
 func (r *ProductsRepositoryImpl) FindAll() ([]model.Products, error) {
-	var bor []model.Products
-	results := r.Db.Find(&bor)
+	var pro []model.Products
+	results := r.Db.Find(&pro)
 	helper.ErrorPanic(results.Error)
-	return bor, nil
+	return pro, nil
 }
 
 // FindById implements ProductsRepository
 func (r *ProductsRepositoryImpl) FindById(id int64) (model.Products, error) {
-	var bor model.Products
-	result := r.Db.Find(&bor, "id = ?", id)
+	var pro model.Products
+	result := r.Db.Find(&pro, "id = ?", id)
 	if result.Error != nil {
-		return bor, errors.New("products is not found")
+		return pro, errors.New("products is not found")
 	}
-	return bor, nil
+	return pro, nil
 }
 
 // Save implements ProductsRepository
@@ -61,11 +61,11 @@ func (r *ProductsRepositoryImpl) Update(updatedProducts model.Products) (model.P
 
 // FindByName implements ProductsRepository
 func (r *ProductsRepositoryImpl) FindByName(name string) (model.Products, error) {
-	var bor model.Products
-	result := r.Db.First(&bor, "name = ?", name)
+	var pro model.Products
+	result := r.Db.First(&pro, "name = ?", name)
 
 	if result.Error != nil {
-		return bor, errors.New("invalid name")
+		return pro, errors.New("invalid name")
 	}
-	return bor, nil
+	return pro, nil
 }

@@ -41,11 +41,11 @@ func (c *AcceptStatusController) Update(ctx *gin.Context) {
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	helper.ErrorPanic(err)
 
-	updateRol := model.AcceptStatus{ID: id}
-	err = ctx.ShouldBindJSON(&updateRol)
+	updateacc := model.AcceptStatus{ID: id}
+	err = ctx.ShouldBindJSON(&updateacc)
 	helper.ErrorPanic(err)
 
-	updatedAcceptStatus, err := c.acceptStatusService.Update(updateRol)
+	updatedAcceptStatus, err := c.acceptStatusService.Update(updateacc)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{
@@ -76,13 +76,13 @@ func (c *AcceptStatusController) Delete(ctx *gin.Context) {
 }
 
 func (c *AcceptStatusController) FindAll(ctx *gin.Context) {
-	len, err := c.acceptStatusService.FindAll()
+	acc, err := c.acceptStatusService.FindAll()
 	helper.ErrorPanic(err)
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully fetch all AcceptStatus data!",
-		Data:    len,
+		Data:    acc,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
@@ -93,30 +93,14 @@ func (c *AcceptStatusController) FindByID(ctx *gin.Context) {
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	helper.ErrorPanic(err)
 
-	len, err := c.acceptStatusService.FindById(id)
+	acc, err := c.acceptStatusService.FindById(id)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully fetched AcceptStatus!",
-		Data:    len,
-	}
-
-	ctx.JSON(http.StatusOK, webResponse)
-}
-
-func (c *AcceptStatusController) FindByName(ctx *gin.Context) {
-	userParam := ctx.Param("name")
-
-	len, err := c.acceptStatusService.FindByName(userParam)
-	helper.ErrorPanic(err)
-
-	webResponse := response.Response{
-		Code:    200,
-		Status:  "Ok",
-		Message: "Successfully fetched AcceptStatus!",
-		Data:    len,
+		Data:    acc,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)

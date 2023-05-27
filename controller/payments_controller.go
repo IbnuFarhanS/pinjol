@@ -93,30 +93,14 @@ func (c *PaymentsController) FindByID(ctx *gin.Context) {
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	helper.ErrorPanic(err)
 
-	pm, err := c.paymentsService.FindById(id)
+	pay, err := c.paymentsService.FindById(id)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully fetched PaymentMethods!",
-		Data:    pm,
-	}
-
-	ctx.JSON(http.StatusOK, webResponse)
-}
-
-func (c *PaymentsController) FindByName(ctx *gin.Context) {
-	userParam := ctx.Param("name")
-
-	pm, err := c.paymentsService.FindByName(userParam)
-	helper.ErrorPanic(err)
-
-	webResponse := response.Response{
-		Code:    200,
-		Status:  "Ok",
-		Message: "Successfully fetched PaymentMethods!",
-		Data:    pm,
+		Data:    pay,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)

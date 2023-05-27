@@ -107,16 +107,16 @@ func (c *ProductsController) FindByID(ctx *gin.Context) {
 }
 
 func (c *ProductsController) FindByName(ctx *gin.Context) {
-	userParam := ctx.Param("name")
+	proParam := ctx.Param("name")
 
-	pm, err := c.productsService.FindByName(userParam)
+	pro, err := c.productsService.FindByName(proParam)
 	helper.ErrorPanic(err)
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully fetched PaymentMethods!",
-		Data:    pm,
+		Data:    pro,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
