@@ -38,6 +38,15 @@ func (s *UsersServiceImpl) FindByUsername(username string) (model.Users, error) 
 
 // Save implements UsersService
 func (s *UsersServiceImpl) Save(newUsers model.Users) (model.Users, error) {
+	// err := s.Validate.Struct(newUsers)
+	// if err != nil {
+	// 	return model.Users{}, err
+	// }
+
+	// if newUsers.Username == "" {
+	// 	return nil, errors.New("username tidak boleh kosong")
+	// }
+
 	hashedPassword, err := utils.HashPassword(newUsers.Password)
 	helper.ErrorPanic(err)
 
