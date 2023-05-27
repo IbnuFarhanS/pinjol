@@ -58,7 +58,25 @@ func (s *UsersServiceImpl) Save(newUsers model.Users) (model.Users, error) {
 
 // Update implements UsersService
 func (s *UsersServiceImpl) Update(updatedUsers model.Users) (model.Users, error) {
-	panic("unimplemented")
+	hashedPassword, err := utils.HashPassword(updatedUsers.Password)
+	helper.ErrorPanic(err)
+
+	var bor model.Users
+	create_at := bor.Created_At
+
+	newUser := model.Users{
+		ID:           updatedUsers.ID,
+		Username:     updatedUsers.Username,
+		Password:     hashedPassword,
+		Nik:          updatedUsers.Nik,
+		Name:         updatedUsers.Name,
+		Alamat:       updatedUsers.Alamat,
+		Phone_Number: updatedUsers.Phone_Number,
+		Limit:        updatedUsers.Limit,
+		Created_At:   create_at,
+	}
+
+	return s.UsersRepository.Update(newUser)
 }
 
 func NewUsersServiceImpl(UsersRepository repository.UsersRepository, validate *validator.Validate) UsersService {
