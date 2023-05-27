@@ -53,6 +53,9 @@ func (u *UsersRepositoryImpl) Save(newUsers model.Users) (model.Users, error) {
 
 // Update implements UsersRepository
 func (u *UsersRepositoryImpl) Update(updatedUsers model.Users) (model.Users, error) {
+	var rol model.Users
+	created_at := rol.Created_At
+
 	var updateUsers = request.UpdateUsersRequest{
 		ID:           updatedUsers.ID,
 		Username:     updatedUsers.Username,
@@ -62,6 +65,7 @@ func (u *UsersRepositoryImpl) Update(updatedUsers model.Users) (model.Users, err
 		Alamat:       updatedUsers.Alamat,
 		Phone_Number: updatedUsers.Phone_Number,
 		Limit:        updatedUsers.Limit,
+		Created_At:   created_at,
 	}
 	result := u.Db.Model(&updatedUsers).Updates(updateUsers)
 	helper.ErrorPanic(result.Error)

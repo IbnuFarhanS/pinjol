@@ -109,7 +109,7 @@ func TestFindByNameProducts(t *testing.T) {
 }
 
 // ================== FIND ALL =========================
-func TestFindAll(t *testing.T) {
+func TestFindAllProducts(t *testing.T) {
 	db := setupTestDB_Products(t)
 	repo := NewProductsRepositoryImpl(db)
 

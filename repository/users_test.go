@@ -8,6 +8,7 @@ import (
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -162,15 +163,69 @@ func TestDeleteUsers(t *testing.T) {
 }
 
 // ================== FIND BY ID =========================
-func TestFindByIdUsers(t *testing.T) {
+type TestUsers struct {
+	suite.Suite
+}
+
+func (suite *TestUsers) TestFindByIdUsers() {
+	// Inisialisasi mock DB
+	db, mock, _ := sqlmock.New()
+	defer db.Close()
+
+	// Inisialisasi GORM DB menggunakan mock DB
+	gormDB, _ := gorm.Open(postgres.New(postgres.Config{Conn: db}), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
+
+	// Inisialisasi repository dengan GORM DB
+	repo := NewUsersRepositoryImpl(gormDB)
+
+	// Setup dummy data
+	createDummyUser := []model.Users{
+		{
+			ID:           1,
+			Username:     "User",
+			Password:     "User123",
+			Nik:          "1234",
+			Name:         "Ibnu",
+			Alamat:       "Bandung",
+			Phone_Number: "084578458",
+			Limit:        2000000,
+			RolesID:      1,
+			Created_At:   time.Now(),
+		},
+	}
+
+	// Expect query
+	rows := sqlmock.NewRows([]string{"id", "username", "password", "nik", "name", "alamat", "phone_number", "limit", "id_role", "created_at"})
+	for _, d := range createDummyUser {
+		rows.AddRow(d.ID, d.Username, d.Password, d.Nik, d.Name, d.Alamat, d.Phone_Number, d.Limit, d.RolesID, d.Created_At)
+	}
+	mock.ExpectQuery("SELECT id, username, password, nik, name, alamat, phone_number, limit, id_role, created_at FROM users").WillReturnRows(rows)
+
+	// Panggil metode yang diuji
+	users, err := repo.FindById(1)
+	if err != nil {
+		return
+	}
+
+	suite.Equal(createDummyUser[0].ID, users)
+}
+
+func TestUserRepositorySuite(t *testing.T) {
+	suite.Run(t, new(TestUsers))
+}
+
+// ================== FIND BY NAME =========================
+func TestFindByUsernameUsers(t *testing.T) {
 	db := setupTestDB_Users(t)
 	repo := NewUsersRepositoryImpl(db)
 
-	// Test FindById for ID 1
-	foundUsers, err := repo.FindById(1)
+	// Test FindByName for Name
+	foundUsers, err := repo.FindByUsername("ibnu")
 	require.NoError(t, err)
 
-	// Expected Users with ID 1
+	// Expected Products with Name
 	expectedUsers := model.Users{
 		ID:           1,
 		Username:     "ibnu",
@@ -185,76 +240,48 @@ func TestFindByIdUsers(t *testing.T) {
 	}
 
 	require.Equal(t, expectedUsers, foundUsers)
+
+	// Test FindByUsername for non-existing username "Nonexistent"
+	_, err = repo.FindByUsername("Nonexistent")
+	require.Error(t, err)
 }
 
-// // ================== FIND BY NAME =========================
-// func TestFindByNameProducts(t *testing.T) {
-// 	db := setupTestDB_Products(t)
-// 	repo := NewProductsRepositoryImpl(db)
+// ================== FIND ALL =========================
+func TestFindAllUsers(t *testing.T) {
+	db := setupTestDB_Users(t)
+	repo := NewUsersRepositoryImpl(db)
 
-// 	// Test FindByName for Name
-// 	foundUsers, err := repo.FindByName("cicilan 6 bulan")
-// 	require.NoError(t, err)
+	// Create multiple Productss in the database
+	dummyUser := []model.Users{
+		{
+			ID:           1,
+			Username:     "ibnu",
+			Password:     "ibnu",
+			Nik:          "1234",
+			Name:         "ibnu",
+			Alamat:       "bandung",
+			Phone_Number: "084579856598",
+			Limit:        2000000,
+			RolesID:      1,
+			Created_At:   time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+		},
+		{
+			ID:           2,
+			Username:     "ab",
+			Password:     "$2a$10$/GrmpqvDB/exiMDZQ1KtTuOAFeWbK/vZXyCCKcHqZE5o2Ild8fPUm",
+			Nik:          "ab",
+			Name:         "ab",
+			Alamat:       "ab",
+			Phone_Number: "ab",
+			Limit:        2000000,
+			RolesID:      1,
+			Created_At:   time.Date(2023, 5, 27, 17, 15, 20, 540820000, time.FixedZone("WIB", 7*60*60)),
+		},
+		// Add more Productss if needed
+	}
 
-// 	// Expected Products with Name
-// 	expectedUsers := model.Products{
-// 		ID:          1,
-// 		Name:        "cicilan 6 bulan",
-// 		Amount:      1000000,
-// 		Installment: 6,
-// 		Bunga:       0.2,
-// 		Created_At:  time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
-// 	}
-
-// 	require.Equal(t, expectedUsers, foundUsers)
-
-// 	// Test FindByUsername for non-existing username "Nonexistent"
-// 	_, err = repo.FindByName("Nonexistent")
-// 	require.Error(t, err)
-// 	require.EqualError(t, err, "invalid name")
-// }
-
-// // ================== FIND ALL =========================
-// func TestFindAll(t *testing.T) {
-// 	db := setupTestDB_Products(t)
-// 	repo := NewProductsRepositoryImpl(db)
-
-// 	// Create multiple Productss in the database
-// 	Productss := []model.Products{
-// 		{
-// 			ID:          1,
-// 			Name:        "cicilan 6 bulan",
-// 			Amount:      1000000,
-// 			Installment: 6,
-// 			Bunga:       0.2,
-// 			Created_At:  time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
-// 		},
-// 		{
-// 			ID:          2,
-// 			Name:        "cicilan 12 bulan",
-// 			Amount:      2000000,
-// 			Installment: 12,
-// 			Bunga:       0.4,
-// 			Created_At:  time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
-// 		},
-// 		// Add more Productss if needed
-// 	}
-
-// 	// Test FindAll
-// 	foundUserss, err := repo.FindAll()
-// 	require.NoError(t, err)
-// 	require.Equal(t, len(Productss), len(foundUserss))
-
-// 	// Compare each Products in the expected list with the found Productss
-// 	for _, expectedUsers := range Productss {
-// 		found := false
-// 		for _, actualProducts := range foundUserss {
-// 			if expectedUsers.ID == actualProducts.ID {
-// 				require.Equal(t, expectedUsers, actualProducts)
-// 				found = true
-// 				break
-// 			}
-// 		}
-// 		require.True(t, found, "Products not found: ID %d", expectedUsers.ID)
-// 	}
-// }
+	// Test FindAll
+	foundUserss, err := repo.FindAll()
+	require.NoError(t, err)
+	require.Equal(t, len(dummyUser), len(foundUserss))
+}

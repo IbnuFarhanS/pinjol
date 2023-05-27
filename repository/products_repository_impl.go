@@ -54,7 +54,19 @@ func (r *ProductsRepositoryImpl) Save(newProducts model.Products) (model.Product
 
 // Update implements ProductsRepository
 func (r *ProductsRepositoryImpl) Update(updatedProducts model.Products) (model.Products, error) {
-	result := r.Db.Model(&model.Products{}).Where("id = ?", updatedProducts.ID).Updates(updatedProducts)
+	var rol model.Products
+	created_at := rol.Created_At
+
+	var updatedProduct = model.Products{
+		ID:          updatedProducts.ID,
+		Name:        updatedProducts.Name,
+		Amount:      updatedProducts.Amount,
+		Installment: updatedProducts.Installment,
+		Bunga:       updatedProducts.Bunga,
+		Created_At:  created_at,
+	}
+
+	result := r.Db.Model(&updatedProducts).Updates(updatedProduct)
 	helper.ErrorPanic(result.Error)
 	return updatedProducts, nil
 }
