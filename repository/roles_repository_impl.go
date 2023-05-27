@@ -55,12 +55,12 @@ func (r *RolesRepositoryImpl) Update(updatedRoles model.Roles) (model.Roles, err
 	var rol model.Roles
 	created_at := rol.Created_at
 
-	var updateRoles = model.Roles{
+	var updateRole = model.Roles{
 		ID:         updatedRoles.ID,
 		Name:       updatedRoles.Name,
 		Created_at: created_at,
 	}
-	result := r.Db.Model(&updatedRoles).Updates(updateRoles)
+	result := r.Db.Model(&updatedRoles).Updates(updateRole)
 	helper.ErrorPanic(result.Error)
 	return updatedRoles, nil
 }

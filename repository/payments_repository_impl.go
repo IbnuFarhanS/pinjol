@@ -54,7 +54,17 @@ func (r *PaymentsRepositoryImpl) Save(newPayments model.Payments) (model.Payment
 
 // Update implements PaymentsRepository
 func (r *PaymentsRepositoryImpl) Update(updatedPayments model.Payments) (model.Payments, error) {
-	result := r.Db.Model(&model.Payments{}).Where("id = ?", updatedPayments.ID).Updates(updatedPayments)
+	var rol model.Payments
+	created_at := rol.Payment_Date
+
+	var updatePayment = model.Payments{
+		ID:              updatedPayments.ID,
+		TransactionsID:  updatedPayments.TransactionsID,
+		PaymentMethodID: updatedPayments.PaymentMethodID,
+		Payment_Amount:  updatedPayments.Payment_Amount,
+		Payment_Date:    created_at,
+	}
+	result := r.Db.Model(&updatedPayments).Updates(updatePayment)
 	helper.ErrorPanic(result.Error)
 	return updatedPayments, nil
 }

@@ -54,7 +54,16 @@ func (r *AcceptStatusRepositoryImpl) Save(newAcceptStatus model.AcceptStatus) (m
 
 // Update implements AcceptStatusRepository
 func (r *AcceptStatusRepositoryImpl) Update(updatedAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
-	result := r.Db.Model(&model.AcceptStatus{}).Where("id = ?", updatedAcceptStatus.ID).Updates(updatedAcceptStatus)
+	var rol model.AcceptStatus
+	created_at := rol.Created_At
+
+	var updateAccStat = model.AcceptStatus{
+		ID:             updatedAcceptStatus.ID,
+		TransactionsID: updatedAcceptStatus.TransactionsID,
+		Status:         updatedAcceptStatus.Status,
+		Created_At:     created_at,
+	}
+	result := r.Db.Model(&updatedAcceptStatus).Updates(updateAccStat)
 	helper.ErrorPanic(result.Error)
 	return updatedAcceptStatus, nil
 }

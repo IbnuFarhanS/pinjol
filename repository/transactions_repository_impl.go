@@ -54,7 +54,18 @@ func (r *TransactionsRepositoryImpl) Save(newTransactions model.Transactions) (m
 
 // Update implements TransactionsRepository
 func (r *TransactionsRepositoryImpl) Update(updatedTransactions model.Transactions) (model.Transactions, error) {
-	result := r.Db.Model(&model.Transactions{}).Where("id = ?", updatedTransactions.ID).Updates(updatedTransactions)
+	var rol model.Transactions
+	created_at := rol.Created_At
+
+	var updateTra = model.Transactions{
+		ID:         updatedTransactions.ID,
+		UsersID:    updatedTransactions.UsersID,
+		ProductsID: updatedTransactions.ProductsID,
+		Status:     updatedTransactions.Status,
+		Created_At: created_at,
+		Due_Date:   created_at,
+	}
+	result := r.Db.Model(&updatedTransactions).Updates(updateTra)
 	helper.ErrorPanic(result.Error)
 	return updatedTransactions, nil
 }
