@@ -45,6 +45,9 @@ func (s *AcceptStatusServiceImpl) Save(newAcceptStatus model.AcceptStatus) (mode
 
 // Update implements AcceptStatus
 func (s *AcceptStatusServiceImpl) Update(updateAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
+	if updateAcceptStatus.TransactionsID == 0 {
+		return model.AcceptStatus{}, errors.New("id_transaction tidak boleh kosong")
+	}
 
 	var ast model.AcceptStatus
 	create_at := ast.Created_At

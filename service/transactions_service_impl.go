@@ -1,6 +1,8 @@
 package service
 
 import (
+	"time"
+
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
 	"github.com/go-playground/validator/v10"
@@ -27,14 +29,15 @@ func (s *TransactionsServiceImpl) FindById(id int64) (model.Transactions, error)
 }
 
 // Save implements BorrowerService
-func (s *TransactionsServiceImpl) Save(newTransactions model.Transactions) (model.Transactions, error) {
+func (s *TransactionsServiceImpl) Save(newTransactions model.Transactions, userid int64) (model.Transactions, error) {
 
+	created_at := time.Now()
 	newTra := model.Transactions{
-		Products:   newTransactions.Products,
-		Users:      newTransactions.Users,
-		Status:     newTransactions.Status,
-		Created_At: newTransactions.Created_At,
-		Due_Date:   newTransactions.Due_Date,
+		ProductsID: newTransactions.ProductsID,
+		UsersID:    userid,
+		Status:     false,
+		Created_At: created_at,
+		Due_Date:   created_at,
 	}
 	return s.TransactionsRepository.Save(newTra)
 

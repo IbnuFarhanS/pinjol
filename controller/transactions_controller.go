@@ -20,17 +20,23 @@ func NewTransactionsController(service service.TransactionsService) *Transaction
 }
 
 func (c *TransactionsController) Insert(ctx *gin.Context) {
-	createtra := model.Transactions{}
-	err := ctx.ShouldBindJSON(&createtra)
-	helper.ErrorPanic(err)
+	tra := model.Transactions{}
+	err := ctx.ShouldBindJSON(&tra)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+	currentUserID, _ := ctx.Get("currentUserID")
+	userID, _ := currentUserID.(int64)
 
-	c.transactionsService.Save(createtra)
-
+	result, err := c.transactionsService.Save(tra, userID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully created Transactions!",
-		Data:    nil,
+		Data:    result,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)

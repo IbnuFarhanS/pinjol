@@ -1,8 +1,13 @@
 package service
 
-import "github.com/IbnuFarhanS/pinjol/data/request"
+import (
+	"github.com/IbnuFarhanS/pinjol/data/request"
+	"github.com/IbnuFarhanS/pinjol/model"
+)
 
 type AuthService interface {
-	Login(borrower request.LoginRequest) (string, error)
-	Register(borrower request.CreateUsersRequest)
+	Login(users request.LoginRequest) (string, error)
+	Register(newUsers request.CreateUsersRequest)
+	FindAll() ([]model.Users, error)
+	FindByUsername(username string) (model.Users, error)
 }

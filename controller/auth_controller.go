@@ -7,6 +7,7 @@ import (
 	"github.com/IbnuFarhanS/pinjol/data/request"
 	"github.com/IbnuFarhanS/pinjol/data/response"
 	"github.com/IbnuFarhanS/pinjol/helper"
+	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/service"
 	"github.com/gin-gonic/gin"
 )
@@ -55,7 +56,10 @@ func (controller *AuthController) Login(ctx *gin.Context) {
 func (controller *AuthController) Register(ctx *gin.Context) {
 	createUsersRequest := request.CreateUsersRequest{}
 	err := ctx.ShouldBindJSON(&createUsersRequest)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	controller.authService.Register(createUsersRequest)
 
@@ -66,5 +70,34 @@ func (controller *AuthController) Register(ctx *gin.Context) {
 		Data:    nil,
 	}
 
+	ctx.JSON(http.StatusOK, webResponse)
+}
+
+func (controller *AuthController) FindAll(ctx *gin.Context) {
+	currentUser := ctx.GetString("currentUser")
+	users, err := controller.authService.FindAll()
+	if err != nil {
+		webResponse := response.Response{
+			Code:    http.StatusInternalServerError,
+			Status:  "Internal Server Error",
+			Message: err.Error(),
+		}
+		ctx.JSON(http.StatusInternalServerError, webResponse)
+		return
+	}
+
+	filteredUsers := make([]model.Users, 0)
+	for _, user := range users {
+		if user.Username == currentUser {
+			filteredUsers = append(filteredUsers, user)
+		}
+	}
+
+	webResponse := response.Response{
+		Code:    http.StatusOK,
+		Status:  "OK",
+		Message: "Users retrieved successfully",
+		Data:    filteredUsers,
+	}
 	ctx.JSON(http.StatusOK, webResponse)
 }
