@@ -19,28 +19,28 @@ func NewTransactionsRepositoryImpl(Db *gorm.DB) TransactionsRepository {
 
 // Delete implements TransactionsRepository
 func (r *TransactionsRepositoryImpl) Delete(id int64) (model.Transactions, error) {
-	var bor model.Transactions
-	result := r.Db.Where("id = ?", id).Delete(&bor)
+	var tra model.Transactions
+	result := r.Db.Where("id = ?", id).Delete(&tra)
 	helper.ErrorPanic(result.Error)
-	return bor, nil
+	return tra, nil
 }
 
 // FindAll implements TransactionsRepository
 func (r *TransactionsRepositoryImpl) FindAll() ([]model.Transactions, error) {
-	var bor []model.Transactions
-	results := r.Db.Find(&bor)
+	var tra []model.Transactions
+	results := r.Db.Find(&tra)
 	helper.ErrorPanic(results.Error)
-	return bor, nil
+	return tra, nil
 }
 
 // FindById implements TransactionsRepository
 func (r *TransactionsRepositoryImpl) FindById(id int64) (model.Transactions, error) {
-	var bor model.Transactions
-	result := r.Db.Find(&bor, "id = ?", id)
+	var tra model.Transactions
+	result := r.Db.Find(&tra, "id = ?", id)
 	if result.Error != nil {
-		return bor, errors.New("transactions is not found")
+		return tra, errors.New("transactions is not found")
 	}
-	return bor, nil
+	return tra, nil
 }
 
 // Save implements TransactionsRepository

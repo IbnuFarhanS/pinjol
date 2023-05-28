@@ -19,28 +19,28 @@ func NewPaymentMethodRepositoryImpl(Db *gorm.DB) PaymentMethodRepository {
 
 // Delete implements PaymentMethodRepository
 func (r *PaymentMethodRepositoryImpl) Delete(id int64) (model.PaymentMethod, error) {
-	var bor model.PaymentMethod
-	result := r.Db.Where("id = ?", id).Delete(&bor)
+	var pm model.PaymentMethod
+	result := r.Db.Where("id = ?", id).Delete(&pm)
 	helper.ErrorPanic(result.Error)
-	return bor, nil
+	return pm, nil
 }
 
 // FindAll implements PaymentMethodRepository
 func (r *PaymentMethodRepositoryImpl) FindAll() ([]model.PaymentMethod, error) {
-	var bor []model.PaymentMethod
-	results := r.Db.Find(&bor)
+	var pm []model.PaymentMethod
+	results := r.Db.Find(&pm)
 	helper.ErrorPanic(results.Error)
-	return bor, nil
+	return pm, nil
 }
 
 // FindById implements PaymentMethodRepository
 func (r *PaymentMethodRepositoryImpl) FindById(id int64) (model.PaymentMethod, error) {
-	var bor model.PaymentMethod
-	result := r.Db.Find(&bor, "id = ?", id)
+	var pm model.PaymentMethod
+	result := r.Db.Find(&pm, "id = ?", id)
 	if result.Error != nil {
-		return bor, errors.New("paymentMethod is not found")
+		return pm, errors.New("paymentMethod is not found")
 	}
-	return bor, nil
+	return pm, nil
 }
 
 // Save implements PaymentMethodRepository
@@ -69,11 +69,11 @@ func (r *PaymentMethodRepositoryImpl) Update(updatedPaymentMethod model.PaymentM
 
 // FindByName implements PaymentMethodRepository
 func (r *PaymentMethodRepositoryImpl) FindByName(name string) (model.PaymentMethod, error) {
-	var bor model.PaymentMethod
-	result := r.Db.First(&bor, "name = ?", name)
+	var pm model.PaymentMethod
+	result := r.Db.First(&pm, "name = ?", name)
 
 	if result.Error != nil {
-		return bor, errors.New("invalid name")
+		return pm, errors.New("invalid name")
 	}
-	return bor, nil
+	return pm, nil
 }

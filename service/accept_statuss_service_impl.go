@@ -13,22 +13,22 @@ type AcceptStatusServiceImpl struct {
 	Validate               *validator.Validate
 }
 
-// Delete implements BorrowerService
+// Delete implements AcceptStatus
 func (s *AcceptStatusServiceImpl) Delete(id int64) (model.AcceptStatus, error) {
 	return s.AcceptStatusRepository.Delete(id)
 }
 
-// FindAll implements BorrowerService
+// FindAll implements AcceptStatus
 func (s *AcceptStatusServiceImpl) FindAll() ([]model.AcceptStatus, error) {
 	return s.AcceptStatusRepository.FindAll()
 }
 
-// FindById implements BorrowerService
+// FindById implements AcceptStatus
 func (s *AcceptStatusServiceImpl) FindById(id int64) (model.AcceptStatus, error) {
 	return s.AcceptStatusRepository.FindById(id)
 }
 
-// Save implements BorrowerService
+// Save implements AcceptStatus
 func (s *AcceptStatusServiceImpl) Save(newAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
 	if newAcceptStatus.TransactionsID == 0 {
 		return model.AcceptStatus{}, errors.New("id_transaction tidak boleh kosong")
@@ -43,7 +43,7 @@ func (s *AcceptStatusServiceImpl) Save(newAcceptStatus model.AcceptStatus) (mode
 
 }
 
-// Update implements BorrowerService
+// Update implements AcceptStatus
 func (s *AcceptStatusServiceImpl) Update(updateAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
 
 	var ast model.AcceptStatus

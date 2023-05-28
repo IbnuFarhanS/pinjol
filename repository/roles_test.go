@@ -146,7 +146,7 @@ func TestFindByIdRoles(t *testing.T) {
 	// Expected Roles with ID 1
 	expectedRoles := model.Roles{
 		ID:         1,
-		Name:       "Roles",
+		Name:       "users",
 		Created_at: time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
 	}
 

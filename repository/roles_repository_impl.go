@@ -18,29 +18,29 @@ func NewRolesRepositoryImpl(Db *gorm.DB) RolesRepository {
 
 // Delete implements RolesRepository
 func (r *RolesRepositoryImpl) Delete(id int64) (model.Roles, error) {
-	var Roles model.Roles
-	result := r.Db.Where("id = ?", id).Delete(&Roles)
+	var rol model.Roles
+	result := r.Db.Where("id = ?", id).Delete(&rol)
 	helper.ErrorPanic(result.Error)
-	return Roles, nil
+	return rol, nil
 }
 
 // FindAll implements RolesRepository
 func (r *RolesRepositoryImpl) FindAll() ([]model.Roles, error) {
-	var Roles []model.Roles
-	results := r.Db.Find(&Roles)
+	var rol []model.Roles
+	results := r.Db.Find(&rol)
 	helper.ErrorPanic(results.Error)
-	return Roles, nil
+	return rol, nil
 }
 
 // FindById implements RolesRepository
 func (r *RolesRepositoryImpl) FindById(id int64) (model.Roles, error) {
-	var Roles model.Roles
-	result := r.Db.Find(&Roles, id)
+	var rol model.Roles
+	result := r.Db.Find(&rol, id)
 	if result != nil {
-		return Roles, errors.New("roles is not found")
+		return rol, errors.New("roles is not found")
 
 	}
-	return Roles, nil
+	return rol, nil
 }
 
 // Save implements RolesRepository
@@ -67,11 +67,11 @@ func (r *RolesRepositoryImpl) Update(updatedRoles model.Roles) (model.Roles, err
 
 // FindByName implements RolesRepository
 func (r *RolesRepositoryImpl) FindByName(name string) (model.Roles, error) {
-	var Roles model.Roles
-	result := r.Db.First(&Roles, "name = ?", name)
+	var rol model.Roles
+	result := r.Db.First(&rol, "name = ?", name)
 
 	if result.Error != nil {
-		return Roles, errors.New("invalid name")
+		return rol, errors.New("invalid name")
 	}
-	return Roles, nil
+	return rol, nil
 }

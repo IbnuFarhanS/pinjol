@@ -19,28 +19,28 @@ func NewAcceptStatusRepositoryImpl(Db *gorm.DB) AcceptStatusRepository {
 
 // Delete implements AcceptStatusRepository
 func (r *AcceptStatusRepositoryImpl) Delete(id int64) (model.AcceptStatus, error) {
-	var bor model.AcceptStatus
-	result := r.Db.Where("id = ?", id).Delete(&bor)
+	var acc model.AcceptStatus
+	result := r.Db.Where("id = ?", id).Delete(&acc)
 	helper.ErrorPanic(result.Error)
-	return bor, nil
+	return acc, nil
 }
 
 // FindAll implements AcceptStatusRepository
 func (r *AcceptStatusRepositoryImpl) FindAll() ([]model.AcceptStatus, error) {
-	var bor []model.AcceptStatus
-	results := r.Db.Find(&bor)
+	var acc []model.AcceptStatus
+	results := r.Db.Find(&acc)
 	helper.ErrorPanic(results.Error)
-	return bor, nil
+	return acc, nil
 }
 
 // FindById implements AcceptStatusRepository
 func (r *AcceptStatusRepositoryImpl) FindById(id int64) (model.AcceptStatus, error) {
-	var bor model.AcceptStatus
-	result := r.Db.Find(&bor, "id = ?", id)
+	var acc model.AcceptStatus
+	result := r.Db.Find(&acc, "id = ?", id)
 	if result.Error != nil {
-		return bor, errors.New("AcceptStatus is not found")
+		return acc, errors.New("AcceptStatus is not found")
 	}
-	return bor, nil
+	return acc, nil
 }
 
 // Save implements AcceptStatusRepository

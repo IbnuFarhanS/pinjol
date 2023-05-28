@@ -66,6 +66,7 @@ func (u *UsersRepositoryImpl) Update(updatedUsers model.Users) (model.Users, err
 		Phone_Number: updatedUsers.Phone_Number,
 		Limit:        updatedUsers.Limit,
 		Created_At:   created_at,
+		// RolesID:      updatedUsers.RolesID,
 	}
 	result := u.Db.Model(&updatedUsers).Updates(updateUsers)
 	helper.ErrorPanic(result.Error)

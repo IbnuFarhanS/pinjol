@@ -19,28 +19,28 @@ func NewPaymentsRepositoryImpl(Db *gorm.DB) PaymentsRepository {
 
 // Delete implements PaymentsRepository
 func (r *PaymentsRepositoryImpl) Delete(id int64) (model.Payments, error) {
-	var bor model.Payments
-	result := r.Db.Where("id = ?", id).Delete(&bor)
+	var pay model.Payments
+	result := r.Db.Where("id = ?", id).Delete(&pay)
 	helper.ErrorPanic(result.Error)
-	return bor, nil
+	return pay, nil
 }
 
 // FindAll implements PaymentsRepository
 func (r *PaymentsRepositoryImpl) FindAll() ([]model.Payments, error) {
-	var bor []model.Payments
-	results := r.Db.Find(&bor)
+	var pay []model.Payments
+	results := r.Db.Find(&pay)
 	helper.ErrorPanic(results.Error)
-	return bor, nil
+	return pay, nil
 }
 
 // FindById implements PaymentsRepository
 func (r *PaymentsRepositoryImpl) FindById(id int64) (model.Payments, error) {
-	var bor model.Payments
-	result := r.Db.Find(&bor, "id = ?", id)
+	var pay model.Payments
+	result := r.Db.Find(&pay, "id = ?", id)
 	if result.Error != nil {
-		return bor, errors.New("payments is not found")
+		return pay, errors.New("payments is not found")
 	}
-	return bor, nil
+	return pay, nil
 }
 
 // Save implements PaymentsRepository
