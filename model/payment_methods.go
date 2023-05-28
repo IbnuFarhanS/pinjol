@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type PaymentMethod struct {
 	ID         int64     `gorm:"primaryKey;column:id" validate:"required" json:"id"`

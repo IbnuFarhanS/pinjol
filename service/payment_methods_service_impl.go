@@ -1,6 +1,8 @@
 package service
 
 import (
+	"github.com/pkg/errors"
+
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
 	"github.com/go-playground/validator/v10"
@@ -33,6 +35,9 @@ func (s *PaymentMethodServiceImpl) FindByName(name string) (model.PaymentMethod,
 
 // Save implements BorrowerService
 func (s *PaymentMethodServiceImpl) Save(newPaymentMethod model.PaymentMethod) (model.PaymentMethod, error) {
+	if newPaymentMethod.Name == "" {
+		return model.PaymentMethod{}, errors.New("name tidak boleh kosong")
+	}
 
 	newPm := model.PaymentMethod{
 		Name:       newPaymentMethod.Name,
