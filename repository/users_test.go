@@ -97,8 +97,8 @@ func TestUpdateUsers(t *testing.T) {
 		Alamat:       "Bandung",
 		Phone_Number: "084578458",
 		Limit:        2000000,
-		RolesID:      1,
-		Created_At:   time.Now(), // Atur waktu yang sesuai
+		RolesID:      0,
+		Created_At:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 	}
 
 	// Menyiapkan query dan hasil yang diharapkan
@@ -112,7 +112,7 @@ func TestUpdateUsers(t *testing.T) {
 			updateUser.Phone_Number,
 			updateUser.Limit,
 			updateUser.RolesID,
-			updateUser.Created_At.UTC(),
+			updateUser.Created_At,
 			updateUser.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
