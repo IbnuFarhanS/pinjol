@@ -28,7 +28,7 @@ func main() {
 
 	db.Table("users").Find(&model.Users{})
 	db.Table("roles").Find(&model.Roles{})
-	db.Table("accept_status").Find(&model.AcceptStatus{})
+	db.Table("accept_statuses").Find(&model.AcceptStatus{})
 	db.Table("products").Find(&model.Products{})
 	db.Table("payments").Find(&model.Payments{})
 	db.Table("payment_methods").Find(&model.PaymentMethod{})

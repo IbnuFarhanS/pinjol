@@ -35,9 +35,9 @@ func (s *AcceptStatusServiceImpl) Save(newAcceptStatus model.AcceptStatus) (mode
 	}
 
 	newAs := model.AcceptStatus{
-		Transactions: newAcceptStatus.Transactions,
-		Status:       newAcceptStatus.Status,
-		Created_At:   newAcceptStatus.Created_At,
+		TransactionsID: newAcceptStatus.TransactionsID,
+		Status:         newAcceptStatus.Status,
+		Created_At:     newAcceptStatus.Created_At,
 	}
 	return s.AcceptStatusRepository.Save(newAs)
 
@@ -53,10 +53,10 @@ func (s *AcceptStatusServiceImpl) Update(updateAcceptStatus model.AcceptStatus) 
 	create_at := ast.Created_At
 
 	newAs := model.AcceptStatus{
-		ID:           updateAcceptStatus.ID,
-		Transactions: updateAcceptStatus.Transactions,
-		Status:       updateAcceptStatus.Status,
-		Created_At:   create_at,
+		ID:             updateAcceptStatus.ID,
+		TransactionsID: updateAcceptStatus.TransactionsID,
+		Status:         updateAcceptStatus.Status,
+		Created_At:     create_at,
 	}
 
 	return s.AcceptStatusRepository.Update(newAs)

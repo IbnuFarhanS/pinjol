@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/IbnuFarhanS/pinjol/data/response"
-	"github.com/IbnuFarhanS/pinjol/helper"
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/service"
 	"github.com/gin-gonic/gin"
@@ -20,12 +19,14 @@ func NewAcceptStatusController(service service.AcceptStatusService) *AcceptStatu
 }
 
 func (c *AcceptStatusController) Insert(ctx *gin.Context) {
-	var accstat model.AcceptStatus
-	if err := ctx.ShouldBindJSON(&accstat); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	createLen := model.AcceptStatus{}
+	err := ctx.ShouldBindJSON(&createLen)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
-	result, err := c.acceptStatusService.Save(accstat)
+	result, err := c.acceptStatusService.Save(createLen)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -44,14 +45,23 @@ func (c *AcceptStatusController) Insert(ctx *gin.Context) {
 func (c *AcceptStatusController) Update(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	updateRol := model.AcceptStatus{ID: id}
-	err = ctx.ShouldBindJSON(&updateRol)
-	helper.ErrorPanic(err)
+	updateacc := model.AcceptStatus{ID: id}
+	err = ctx.ShouldBindJSON(&updateacc)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	updatedAcceptStatus, err := c.acceptStatusService.Update(updateRol)
-	helper.ErrorPanic(err)
+	updatedAcceptStatus, err := c.acceptStatusService.Update(updateacc)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
@@ -65,29 +75,39 @@ func (c *AcceptStatusController) Update(ctx *gin.Context) {
 func (c *AcceptStatusController) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	c.acceptStatusService.Delete(id)
-	helper.ErrorPanic(err)
+	result, err := c.acceptStatusService.Delete(id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully deleted AcceptStatus!",
-		Data:    nil,
+		Data:    result,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
 func (c *AcceptStatusController) FindAll(ctx *gin.Context) {
-	len, err := c.acceptStatusService.FindAll()
-	helper.ErrorPanic(err)
+	acc, err := c.acceptStatusService.FindAll()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully fetch all AcceptStatus data!",
-		Data:    len,
+		Data:    acc,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
@@ -96,16 +116,22 @@ func (c *AcceptStatusController) FindAll(ctx *gin.Context) {
 func (c *AcceptStatusController) FindByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	len, err := c.acceptStatusService.FindById(id)
-	helper.ErrorPanic(err)
+	acc, err := c.acceptStatusService.FindById(id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully fetched AcceptStatus!",
-		Data:    len,
+		Data:    acc,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
