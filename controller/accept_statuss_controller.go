@@ -20,17 +20,22 @@ func NewAcceptStatusController(service service.AcceptStatusService) *AcceptStatu
 }
 
 func (c *AcceptStatusController) Insert(ctx *gin.Context) {
-	createLen := model.AcceptStatus{}
-	err := ctx.ShouldBindJSON(&createLen)
-	helper.ErrorPanic(err)
+	var accstat model.AcceptStatus
+	if err := ctx.ShouldBindJSON(&accstat); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
 
-	c.acceptStatusService.Save(createLen)
+	result, err := c.acceptStatusService.Save(accstat)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully created AcceptStatus!",
-		Data:    nil,
+		Data:    result,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)

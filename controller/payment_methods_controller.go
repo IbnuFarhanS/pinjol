@@ -20,12 +20,12 @@ func NewPaymentMethodsController(service service.PaymentMethodService) *PaymentM
 }
 
 func (c *PaymentMethodsController) Insert(ctx *gin.Context) {
-	var bor model.PaymentMethod
-	if err := ctx.ShouldBindJSON(&bor); err != nil {
+	var paymeth model.PaymentMethod
+	if err := ctx.ShouldBindJSON(&paymeth); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
-	result, err := c.paymentMethodsService.Save(bor)
+	result, err := c.paymentMethodsService.Save(paymeth)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -34,7 +34,7 @@ func (c *PaymentMethodsController) Insert(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully created Users!",
+		Message: "Successfully created PaymentMethods!",
 		Data:    result,
 	}
 

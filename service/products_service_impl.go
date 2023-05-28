@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
 	"github.com/go-playground/validator/v10"
@@ -33,13 +35,22 @@ func (s *ProductsServiceImpl) FindByName(name string) (model.Products, error) {
 
 // Save implements BorrowerService
 func (s *ProductsServiceImpl) Save(newProducts model.Products) (model.Products, error) {
+	if newProducts.Name == "" {
+		return model.Products{}, errors.New("name tidak boleh kosong")
+	}
+	if newProducts.Installment == 0 {
+		return model.Products{}, errors.New("installment tidak boleh kosong")
+	}
+	if newProducts.Bunga == 0 {
+		return model.Products{}, errors.New("bunga tidak boleh kosong")
+	}
 
 	newPro := model.Products{
 		Name:        newProducts.Name,
-		Amount:      newProducts.Amount,
 		Installment: newProducts.Installment,
 		Bunga:       newProducts.Bunga,
 		Created_At:  newProducts.Created_At,
+		// Amount:      newProducts.Amount,
 	}
 	return s.ProductsRepository.Save(newPro)
 
@@ -54,10 +65,10 @@ func (s *ProductsServiceImpl) Update(updateProducts model.Products) (model.Produ
 	newPro := model.Products{
 		ID:          updateProducts.ID,
 		Name:        updateProducts.Name,
-		Amount:      updateProducts.Amount,
 		Installment: updateProducts.Installment,
 		Bunga:       updateProducts.Bunga,
 		Created_At:  create_at,
+		// Amount:      updateProducts.Amount,
 	}
 
 	return s.ProductsRepository.Update(newPro)

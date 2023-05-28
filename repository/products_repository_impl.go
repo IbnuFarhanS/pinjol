@@ -60,10 +60,10 @@ func (r *ProductsRepositoryImpl) Update(updatedProducts model.Products) (model.P
 	var updatedProduct = model.Products{
 		ID:          updatedProducts.ID,
 		Name:        updatedProducts.Name,
-		Amount:      updatedProducts.Amount,
 		Installment: updatedProducts.Installment,
 		Bunga:       updatedProducts.Bunga,
 		Created_At:  created_at,
+		// Amount:      updatedProducts.Amount,
 	}
 
 	result := r.Db.Model(&updatedProducts).Updates(updatedProduct)

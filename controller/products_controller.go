@@ -20,17 +20,22 @@ func NewProductsController(service service.ProductsService) *ProductsController 
 }
 
 func (c *ProductsController) Insert(ctx *gin.Context) {
-	createpro := model.Products{}
-	err := ctx.ShouldBindJSON(&createpro)
-	helper.ErrorPanic(err)
+	var product model.Products
+	if err := ctx.ShouldBindJSON(&product); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
 
-	c.productsService.Save(createpro)
+	result, err := c.productsService.Save(product)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully created PaymentMethods!",
-		Data:    nil,
+		Message: "Successfully created Products!",
+		Data:    result,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)

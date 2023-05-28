@@ -28,6 +28,9 @@ func (s *AcceptStatusServiceImpl) FindById(id int64) (model.AcceptStatus, error)
 
 // Save implements BorrowerService
 func (s *AcceptStatusServiceImpl) Save(newAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
+	// if newAcceptStatus.TransactionsID == 0 {
+	// 	return model.AcceptStatus{}, errors.New("id_transaction tidak boleh kosong")
+	// }
 
 	newAs := model.AcceptStatus{
 		Transactions: newAcceptStatus.Transactions,
