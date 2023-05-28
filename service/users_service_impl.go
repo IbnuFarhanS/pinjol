@@ -5,13 +5,14 @@ import (
 
 	"github.com/IbnuFarhanS/pinjol/helper"
 	"github.com/IbnuFarhanS/pinjol/model"
+	"github.com/IbnuFarhanS/pinjol/repository"
 	reposity "github.com/IbnuFarhanS/pinjol/repository"
 	"github.com/IbnuFarhanS/pinjol/utils"
 	"github.com/go-playground/validator/v10"
 )
 
 type UsersServiceImpl struct {
-	UsersRepository reposity.UsersRepository
+	UsersRepository repository.UsersRepository
 	Validate        *validator.Validate
 }
 

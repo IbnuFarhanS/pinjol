@@ -10,17 +10,17 @@ import (
 )
 
 func NewRouter(userRepository repository.UsersRepository, authController *controller.AuthController, usersController *controller.UsersController, rolesController *controller.RolesController, accstatController *controller.AcceptStatusController, paymetController *controller.PaymentMethodsController, payController *controller.PaymentsController, proController *controller.ProductsController, traController *controller.TransactionsController) *gin.Engine {
-	service := gin.Default()
+	r := gin.Default()
 
-	service.GET("", func(context *gin.Context) {
+	r.GET("", func(context *gin.Context) {
 		context.JSON(http.StatusOK, "welcome home")
 	})
 
-	service.NoRoute(func(c *gin.Context) {
+	r.NoRoute(func(c *gin.Context) {
 		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
 	})
 
-	router := service.Group("/api")
+	router := r.Group("/api")
 	authenticationRouter := router.Group("/auth")
 	authenticationRouter.POST("/register", authController.Register)
 	authenticationRouter.POST("/login", authController.Login)
@@ -73,12 +73,13 @@ func NewRouter(userRepository repository.UsersRepository, authController *contro
 	// proRouter.DELETE("/:id", proController.Delete)
 	// proRouter.POST("/", proController.Insert)
 
-	// traRouter := router.Group("/transactions")
+	traRouter := router.Group("/transactions")
+	traRouter.POST("/", middleware.DeserializeUser(userRepository), traController.Insert)
 	// traRouter.GET("/", traController.FindAll)
 	// traRouter.GET("/:id", traController.FindByID)
 	// traRouter.PUT("/:id", traController.Update)
 	// traRouter.DELETE("/:id", traController.Delete)
 	// traRouter.POST("/", traController.Insert)
 
-	return service
+	return r
 }

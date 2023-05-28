@@ -17,7 +17,6 @@ func DeserializeUser(userRepository repository.UsersRepository) gin.HandlerFunc 
 	return func(ctx *gin.Context) {
 		var token string
 		authorizationHeader := ctx.Request.Header.Get("Authorization")
-		fmt.Println(authorizationHeader) // Cetak nilai Authorization header
 
 		fields := strings.Fields(authorizationHeader)
 
@@ -44,7 +43,7 @@ func DeserializeUser(userRepository repository.UsersRepository) gin.HandlerFunc 
 		}
 
 		ctx.Set("currentUser", result.Username)
+		ctx.Set("currentUserID", id)
 		ctx.Next()
-
 	}
 }

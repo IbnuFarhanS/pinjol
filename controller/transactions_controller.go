@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/IbnuFarhanS/pinjol/data/response"
-	"github.com/IbnuFarhanS/pinjol/helper"
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/service"
 	"github.com/gin-gonic/gin"
@@ -22,15 +21,21 @@ func NewTransactionsController(service service.TransactionsService) *Transaction
 func (c *TransactionsController) Insert(ctx *gin.Context) {
 	createtra := model.Transactions{}
 	err := ctx.ShouldBindJSON(&createtra)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+	currentUserID, _ := ctx.Get("currentUserID")
+	userID, _ := currentUserID.(int64)
 
-	c.transactionsService.Save(createtra)
-
+	result, err := c.transactionsService.Save(createtra, userID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully created Transactions!",
-		Data:    nil,
+		Data:    result,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
@@ -39,14 +44,21 @@ func (c *TransactionsController) Insert(ctx *gin.Context) {
 func (c *TransactionsController) Update(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
 	updatetra := model.Transactions{ID: id}
 	err = ctx.ShouldBindJSON(&updatetra)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
 	updatedTransactions, err := c.transactionsService.Update(updatetra)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
@@ -60,10 +72,15 @@ func (c *TransactionsController) Update(ctx *gin.Context) {
 func (c *TransactionsController) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
 	c.transactionsService.Delete(id)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
@@ -77,7 +94,11 @@ func (c *TransactionsController) Delete(ctx *gin.Context) {
 
 func (c *TransactionsController) FindAll(ctx *gin.Context) {
 	len, err := c.transactionsService.FindAll()
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
@@ -91,10 +112,15 @@ func (c *TransactionsController) FindAll(ctx *gin.Context) {
 func (c *TransactionsController) FindByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
 	tra, err := c.transactionsService.FindById(id)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,

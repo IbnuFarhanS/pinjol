@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/IbnuFarhanS/pinjol/data/response"
-	"github.com/IbnuFarhanS/pinjol/helper"
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/service"
 	"github.com/gin-gonic/gin"
@@ -22,15 +21,20 @@ func NewUsersController(service service.UsersService) *UsersController {
 func (c *UsersController) Insert(ctx *gin.Context) {
 	createLen := model.Users{}
 	err := ctx.ShouldBindJSON(&createLen)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
-	c.usersService.Save(createLen)
+	result, err := c.usersService.Save(createLen)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully created Users!",
-		Data:    nil,
+		Data:    result,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
@@ -39,14 +43,21 @@ func (c *UsersController) Insert(ctx *gin.Context) {
 func (c *UsersController) Update(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
 	updateRol := model.Users{ID: id}
 	err = ctx.ShouldBindJSON(&updateRol)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
 	updatedUsers, err := c.usersService.Update(updateRol)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
@@ -60,10 +71,15 @@ func (c *UsersController) Update(ctx *gin.Context) {
 func (c *UsersController) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
 	c.usersService.Delete(id)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
@@ -77,7 +93,10 @@ func (c *UsersController) Delete(ctx *gin.Context) {
 
 func (c *UsersController) FindAll(ctx *gin.Context) {
 	len, err := c.usersService.FindAll()
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
@@ -91,10 +110,15 @@ func (c *UsersController) FindAll(ctx *gin.Context) {
 func (c *UsersController) FindByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
 	len, err := c.usersService.FindById(id)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
@@ -110,7 +134,10 @@ func (c *UsersController) FindByUsername(ctx *gin.Context) {
 	userParam := ctx.Param("username")
 
 	len, err := c.usersService.FindByUsername(userParam)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
@@ -121,4 +148,3 @@ func (c *UsersController) FindByUsername(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
-

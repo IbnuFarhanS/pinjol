@@ -56,7 +56,10 @@ func (controller *AuthController) Login(ctx *gin.Context) {
 func (controller *AuthController) Register(ctx *gin.Context) {
 	createUsersRequest := request.CreateUsersRequest{}
 	err := ctx.ShouldBindJSON(&createUsersRequest)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	controller.authService.Register(createUsersRequest)
 

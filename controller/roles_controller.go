@@ -22,15 +22,22 @@ func NewRolesController(service service.RolesService) *RolesController {
 func (c *RolesController) Insert(ctx *gin.Context) {
 	createLen := model.Roles{}
 	err := ctx.ShouldBindJSON(&createLen)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	c.rolesService.Save(createLen)
+	result, err := c.rolesService.Save(createLen)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully created Roles!",
-		Data:    nil,
+		Data:    result,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
@@ -46,7 +53,10 @@ func (c *RolesController) Update(ctx *gin.Context) {
 	helper.ErrorPanic(err)
 
 	updatedRoles, err := c.rolesService.Update(updateRol)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
@@ -62,14 +72,17 @@ func (c *RolesController) Delete(ctx *gin.Context) {
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	helper.ErrorPanic(err)
 
-	c.rolesService.Delete(id)
-	helper.ErrorPanic(err)
+	result, err := c.rolesService.Delete(id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully deleted Roles!",
-		Data:    nil,
+		Data:    result,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
@@ -77,7 +90,10 @@ func (c *RolesController) Delete(ctx *gin.Context) {
 
 func (c *RolesController) FindAll(ctx *gin.Context) {
 	len, err := c.rolesService.FindAll()
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
@@ -91,10 +107,15 @@ func (c *RolesController) FindAll(ctx *gin.Context) {
 func (c *RolesController) FindByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 
 	len, err := c.rolesService.FindById(id)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
@@ -110,7 +131,10 @@ func (c *RolesController) FindByName(ctx *gin.Context) {
 	roleParam := ctx.Param("name")
 
 	len, err := c.rolesService.FindByName(roleParam)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
