@@ -30,10 +30,10 @@ func (s *PaymentsServiceImpl) FindById(id int64) (model.Payments, error) {
 func (s *PaymentsServiceImpl) Save(newPayments model.Payments) (model.Payments, error) {
 
 	newPay := model.Payments{
-		Transactions:   newPayments.Transactions,
-		Payment_Method: newPayments.Payment_Method,
-		Payment_Amount: newPayments.Payment_Amount,
-		Payment_Date:   newPayments.Payment_Date,
+		TransactionsID:  newPayments.TransactionsID,
+		PaymentMethodID: newPayments.PaymentMethodID,
+		Payment_Amount:  newPayments.Payment_Amount,
+		Payment_Date:    newPayments.Payment_Date,
 	}
 	return s.PaymentsRepository.Save(newPay)
 
@@ -46,11 +46,11 @@ func (s *PaymentsServiceImpl) Update(updatePayments model.Payments) (model.Payme
 	payment_date := pay.Payment_Date
 
 	newPay := model.Payments{
-		ID:             updatePayments.ID,
-		Transactions:   updatePayments.Transactions,
-		Payment_Method: updatePayments.Payment_Method,
-		Payment_Amount: updatePayments.Payment_Amount,
-		Payment_Date:   payment_date,
+		ID:              updatePayments.ID,
+		TransactionsID:  updatePayments.TransactionsID,
+		PaymentMethodID: updatePayments.PaymentMethodID,
+		Payment_Amount:  updatePayments.Payment_Amount,
+		Payment_Date:    payment_date,
 	}
 
 	return s.PaymentsRepository.Update(newPay)

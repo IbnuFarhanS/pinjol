@@ -51,8 +51,8 @@ func (s *TransactionsServiceImpl) Update(updateTransactions model.Transactions) 
 
 	newTra := model.Transactions{
 		ID:         updateTransactions.ID,
-		Products:   updateTransactions.Products,
-		Users:      updateTransactions.Users,
+		ProductsID: updateTransactions.ProductsID,
+		UsersID:    updateTransactions.UsersID,
 		Status:     updateTransactions.Status,
 		Due_Date:   updateTransactions.Due_Date,
 		Created_At: create_at,
