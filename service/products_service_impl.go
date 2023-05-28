@@ -35,12 +35,15 @@ func (s *ProductsServiceImpl) FindByName(name string) (model.Products, error) {
 
 // Save implements BorrowerService
 func (s *ProductsServiceImpl) Save(newProducts model.Products) (model.Products, error) {
+	// Validate name
 	if newProducts.Name == "" {
 		return model.Products{}, errors.New("name tidak boleh kosong")
 	}
+	// Validate installment
 	if newProducts.Installment == 0 {
 		return model.Products{}, errors.New("installment tidak boleh kosong")
 	}
+	// Validate bunga
 	if newProducts.Bunga == 0 {
 		return model.Products{}, errors.New("bunga tidak boleh kosong")
 	}
@@ -58,6 +61,18 @@ func (s *ProductsServiceImpl) Save(newProducts model.Products) (model.Products, 
 
 // Update implements BorrowerService
 func (s *ProductsServiceImpl) Update(updateProducts model.Products) (model.Products, error) {
+	// Validate name
+	if updateProducts.Name == "" {
+		return model.Products{}, errors.New("name tidak boleh kosong")
+	}
+	// Validate installment
+	if updateProducts.Installment == 0 {
+		return model.Products{}, errors.New("installment tidak boleh kosong")
+	}
+	// Validate bunga
+	if updateProducts.Bunga == 0 {
+		return model.Products{}, errors.New("bunga tidak boleh kosong")
+	}
 
 	var pro model.Products
 	create_at := pro.Created_At

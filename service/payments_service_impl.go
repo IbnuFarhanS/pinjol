@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
 	"github.com/go-playground/validator/v10"
@@ -28,6 +30,18 @@ func (s *PaymentsServiceImpl) FindById(id int64) (model.Payments, error) {
 
 // Save implements BorrowerService
 func (s *PaymentsServiceImpl) Save(newPayments model.Payments) (model.Payments, error) {
+	// Validate id_transaction
+	if newPayments.TransactionsID == 0 {
+		return model.Payments{}, errors.New("id transaction is required")
+	}
+	// Validate id_payment_method
+	if newPayments.PaymentMethodID == 0 {
+		return model.Payments{}, errors.New("id payment method is required")
+	}
+	// Validate payment amount
+	if newPayments.Payment_Amount == 0 {
+		return model.Payments{}, errors.New("payment amount is required")
+	}
 
 	newPay := model.Payments{
 		TransactionsID:  newPayments.TransactionsID,
@@ -41,6 +55,18 @@ func (s *PaymentsServiceImpl) Save(newPayments model.Payments) (model.Payments, 
 
 // Update implements BorrowerService
 func (s *PaymentsServiceImpl) Update(updatePayments model.Payments) (model.Payments, error) {
+	// Validate id_transaction
+	if updatePayments.TransactionsID == 0 {
+		return model.Payments{}, errors.New("id transaction is required")
+	}
+	// Validate id_payment_method
+	if updatePayments.PaymentMethodID == 0 {
+		return model.Payments{}, errors.New("id payment method is required")
+	}
+	// Validate payment amount
+	if updatePayments.Payment_Amount == 0 {
+		return model.Payments{}, errors.New("payment amount is required")
+	}
 
 	var pay model.Payments
 	payment_date := pay.Payment_Date

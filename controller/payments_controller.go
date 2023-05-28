@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/IbnuFarhanS/pinjol/data/response"
-	"github.com/IbnuFarhanS/pinjol/helper"
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/service"
 	"github.com/gin-gonic/gin"
@@ -22,15 +21,22 @@ func NewPaymentsController(service service.PaymentsService) *PaymentsController 
 func (c *PaymentsController) Insert(ctx *gin.Context) {
 	createp := model.Payments{}
 	err := ctx.ShouldBindJSON(&createp)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	c.paymentsService.Save(createp)
+	result, err := c.paymentsService.Save(createp)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully created PaymentMethods!",
-		Data:    nil,
+		Data:    result,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
@@ -39,14 +45,22 @@ func (c *PaymentsController) Insert(ctx *gin.Context) {
 func (c *PaymentsController) Update(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
-	helper.ErrorPanic(err)
-
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	updatepay := model.Payments{ID: id}
 	err = ctx.ShouldBindJSON(&updatepay)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	updatedPayments, err := c.paymentsService.Update(updatepay)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
@@ -60,16 +74,22 @@ func (c *PaymentsController) Update(ctx *gin.Context) {
 func (c *PaymentsController) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	c.paymentsService.Delete(id)
-	helper.ErrorPanic(err)
+	result, err := c.paymentsService.Delete(id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully deleted PaymentMethods!",
-		Data:    nil,
+		Data:    result,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
@@ -77,7 +97,11 @@ func (c *PaymentsController) Delete(ctx *gin.Context) {
 
 func (c *PaymentsController) FindAll(ctx *gin.Context) {
 	pm, err := c.paymentsService.FindAll()
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
@@ -91,16 +115,22 @@ func (c *PaymentsController) FindAll(ctx *gin.Context) {
 func (c *PaymentsController) FindByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	pm, err := c.paymentsService.FindById(id)
-	helper.ErrorPanic(err)
+	pay, err := c.paymentsService.FindById(id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully fetched PaymentMethods!",
-		Data:    pm,
+		Data:    pay,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"time"
 
 	"github.com/IbnuFarhanS/pinjol/model"
@@ -35,6 +36,11 @@ func (s *RolesServiceImpl) FindByName(name string) (model.Roles, error) {
 
 // Save implements RolesService
 func (s *RolesServiceImpl) Save(newRoles model.Roles) (model.Roles, error) {
+	// Validate name
+	if newRoles.Name == "" {
+		return model.Roles{}, errors.New("name is required")
+	}
+
 	created_at := time.Now()
 	newBor := model.Roles{
 		Name:       newRoles.Name,
@@ -45,7 +51,21 @@ func (s *RolesServiceImpl) Save(newRoles model.Roles) (model.Roles, error) {
 
 // Update implements RolesService
 func (s *RolesServiceImpl) Update(updatedRoles model.Roles) (model.Roles, error) {
-	panic("unimplemented")
+	// Validate name
+	if updatedRoles.Name == "" {
+		return model.Roles{}, errors.New("name is required")
+	}
+
+	var pay model.Roles
+	create_at := pay.Created_at
+
+	newRol := model.Roles{
+		ID:         updatedRoles.ID,
+		Name:       updatedRoles.Name,
+		Created_at: create_at,
+	}
+
+	return s.RolesRepository.Update(newRol)
 }
 
 func NewRolesServiceImpl(RolesRepository repository.RolesRepository, validate *validator.Validate) RolesService {

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"time"
 
 	"github.com/IbnuFarhanS/pinjol/model"
@@ -30,6 +31,14 @@ func (s *TransactionsServiceImpl) FindById(id int64) (model.Transactions, error)
 
 // Save implements BorrowerService
 func (s *TransactionsServiceImpl) Save(newTransactions model.Transactions, userid int64) (model.Transactions, error) {
+	// Validate id_product
+	if newTransactions.ProductsID == 0 {
+		return model.Transactions{}, errors.New("id product is required")
+	}
+	// Validate id_user
+	if newTransactions.UsersID == 0 {
+		return model.Transactions{}, errors.New("id user is required")
+	}
 
 	created_at := time.Now()
 	newTra := model.Transactions{
@@ -45,6 +54,14 @@ func (s *TransactionsServiceImpl) Save(newTransactions model.Transactions, useri
 
 // Update implements BorrowerService
 func (s *TransactionsServiceImpl) Update(updateTransactions model.Transactions) (model.Transactions, error) {
+	// Validate id_product
+	if updateTransactions.ProductsID == 0 {
+		return model.Transactions{}, errors.New("id product is required")
+	}
+	// Validate id_user
+	if updateTransactions.UsersID == 0 {
+		return model.Transactions{}, errors.New("id user is required")
+	}
 
 	var tra model.Transactions
 	create_at := tra.Created_At

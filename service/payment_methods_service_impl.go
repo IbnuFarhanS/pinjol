@@ -35,6 +35,7 @@ func (s *PaymentMethodServiceImpl) FindByName(name string) (model.PaymentMethod,
 
 // Save implements BorrowerService
 func (s *PaymentMethodServiceImpl) Save(newPaymentMethod model.PaymentMethod) (model.PaymentMethod, error) {
+	// Validate name
 	if newPaymentMethod.Name == "" {
 		return model.PaymentMethod{}, errors.New("name is required")
 	}
@@ -49,6 +50,10 @@ func (s *PaymentMethodServiceImpl) Save(newPaymentMethod model.PaymentMethod) (m
 
 // Update implements BorrowerService
 func (s *PaymentMethodServiceImpl) Update(updatePaymentMethod model.PaymentMethod) (model.PaymentMethod, error) {
+	// Validate name
+	if updatePaymentMethod.Name == "" {
+		return model.PaymentMethod{}, errors.New("name is required")
+	}
 
 	var pm model.PaymentMethod
 	create_at := pm.Created_At

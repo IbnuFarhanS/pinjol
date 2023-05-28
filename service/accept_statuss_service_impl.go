@@ -30,6 +30,7 @@ func (s *AcceptStatusServiceImpl) FindById(id int64) (model.AcceptStatus, error)
 
 // Save implements AcceptStatus
 func (s *AcceptStatusServiceImpl) Save(newAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
+	// Validate id_transaction
 	if newAcceptStatus.TransactionsID == 0 {
 		return model.AcceptStatus{}, errors.New("id_transaction is required")
 	}
@@ -45,6 +46,7 @@ func (s *AcceptStatusServiceImpl) Save(newAcceptStatus model.AcceptStatus) (mode
 
 // Update implements AcceptStatus
 func (s *AcceptStatusServiceImpl) Update(updateAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
+	// Validate id_transaction
 	if updateAcceptStatus.TransactionsID == 0 {
 		return model.AcceptStatus{}, errors.New("id_transaction tidak boleh kosong")
 	}
