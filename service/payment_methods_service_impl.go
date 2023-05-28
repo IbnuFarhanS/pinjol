@@ -36,7 +36,7 @@ func (s *PaymentMethodServiceImpl) FindByName(name string) (model.PaymentMethod,
 // Save implements BorrowerService
 func (s *PaymentMethodServiceImpl) Save(newPaymentMethod model.PaymentMethod) (model.PaymentMethod, error) {
 	if newPaymentMethod.Name == "" {
-		return model.PaymentMethod{}, errors.New("name tidak boleh kosong")
+		return model.PaymentMethod{}, errors.New("name is required")
 	}
 
 	newPm := model.PaymentMethod{

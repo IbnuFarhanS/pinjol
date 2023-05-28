@@ -13,7 +13,6 @@ import (
 
 type UsersServiceImpl struct {
 	UsersRepository repository.UsersRepository
-	RolesRepository repository.RolesRepository
 	Validate        *validator.Validate
 }
 
@@ -39,18 +38,42 @@ func (s *UsersServiceImpl) FindByUsername(username string) (model.Users, error) 
 
 // Save implements UsersService
 func (s *UsersServiceImpl) Save(newUsers model.Users) (model.Users, error) {
+	// Validate username
 	if newUsers.Username == "" {
-		return model.Users{}, errors.New("username tidak boleh kosong")
+		return model.Users{}, errors.New("username is required")
 	}
 	// Check if username already exists
-	// existingUser, err := s.UsersRepository.FindByUsername(newUsers.Username)
-	// if err != nil {
-	// 	return model.Users{}, err
-	// }
-	// if existingUser.ID != 0 {
-	// 	return model.Users{}, errors.New("username is already in use")
-	// }
-
+	existingUser, err := s.UsersRepository.FindByUsername(newUsers.Username)
+	if err != nil {
+		return model.Users{}, err
+	}
+	if existingUser.ID != 0 {
+		return model.Users{}, errors.New("username is already in use")
+	}
+	// Validate nik
+	if newUsers.Nik == "" {
+		return model.Users{}, errors.New("nik is required")
+	}
+	// Validate name
+	if newUsers.Name == "" {
+		return model.Users{}, errors.New("name is required")
+	}
+	// Validate alamat
+	if newUsers.Alamat == "" {
+		return model.Users{}, errors.New("alamat is required")
+	}
+	// Validate phone_number
+	if newUsers.Phone_Number == "" {
+		return model.Users{}, errors.New("phone number is required")
+	}
+	// Validate limit
+	if newUsers.Limit == 0 {
+		return model.Users{}, errors.New("limit is required")
+	}
+	// Validate roles
+	if newUsers.RolesID == 0 {
+		return model.Users{}, errors.New("roles is required")
+	}
 	hashedPassword, err := utils.HashPassword(newUsers.Password)
 	helper.ErrorPanic(err)
 
