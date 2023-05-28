@@ -8,25 +8,25 @@ import (
 
 	"github.com/IbnuFarhanS/pinjol/config"
 	"github.com/IbnuFarhanS/pinjol/helper"
-	reposity "github.com/IbnuFarhanS/pinjol/repository"
+	"github.com/IbnuFarhanS/pinjol/repository"
 	"github.com/IbnuFarhanS/pinjol/utils"
 	"github.com/gin-gonic/gin"
 )
 
-func DeserializeUser(userRepository reposity.UsersRepository) gin.HandlerFunc {
+func DeserializeUser(userRepository repository.UsersRepository) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var token string
 		authorizationHeader := ctx.Request.Header.Get("Authorization")
+		fmt.Println(authorizationHeader) // Cetak nilai Authorization header
+
 		fields := strings.Fields(authorizationHeader)
 
-		if len(fields) != 0 && fields[0] == "Bearer" {
-			token = fields[1]
-		}
-
-		if token == "" {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": "You are not logged in"})
+		if len(fields) != 2 || fields[0] != "Bearer" {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": "Unauthorization"})
 			return
 		}
+
+		token = fields[1]
 
 		config, _ := config.LoadConfig(".")
 		sub, err := utils.ValidateToken(token, config.TokenSecret)

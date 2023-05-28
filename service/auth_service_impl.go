@@ -68,3 +68,11 @@ func (a *AuthServiceImpl) Register(newUsers request.CreateUsersRequest) {
 	}
 	a.UsersRepository.Save(newUser)
 }
+
+func (s *AuthServiceImpl) FindAll() ([]model.Users, error) {
+	return s.UsersRepository.FindAll()
+}
+
+func (s *AuthServiceImpl) FindByUsername(username string) (model.Users, error) {
+	return s.UsersRepository.FindByUsername(username)
+}

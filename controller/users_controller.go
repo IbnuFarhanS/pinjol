@@ -121,3 +121,4 @@ func (c *UsersController) FindByUsername(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
+
