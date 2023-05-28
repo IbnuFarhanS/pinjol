@@ -22,12 +22,12 @@ func NewPaymentMethodsController(service service.PaymentMethodService) *PaymentM
 func (c *PaymentMethodsController) Insert(ctx *gin.Context) {
 	var paymeth model.PaymentMethod
 	if err := ctx.ShouldBindJSON(&paymeth); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
 	result, err := c.paymentMethodsService.Save(paymeth)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
