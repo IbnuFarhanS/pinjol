@@ -115,7 +115,7 @@ func TestProductsService(t *testing.T) {
 	productService := service.NewProductServiceImpl(repo)
 
 	t.Run("Delete", func(t *testing.T) {
-		productID := int64(1)
+		productID := uint(1)
 		product, err := productService.Delete(uint(productID))
 		assert.NoError(t, err)
 		assert.Equal(t, productID, product.ID)
@@ -128,7 +128,7 @@ func TestProductsService(t *testing.T) {
 	})
 
 	t.Run("FindById", func(t *testing.T) {
-		productID := int64(1)
+		productID := uint(1)
 		product, err := productService.FindById(uint(productID))
 		assert.NoError(t, err)
 		assert.Equal(t, productID, product.ID)

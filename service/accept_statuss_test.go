@@ -1,143 +1,220 @@
-package service
+package service_test
 
-// import (
-// 	"testing"
+import (
+	"errors"
+	"testing"
+	"time"
 
-// 	"github.com/IbnuFarhanS/pinjol/model"
-// )
+	"github.com/IbnuFarhanS/pinjol/model"
+	"github.com/IbnuFarhanS/pinjol/service"
+	"github.com/stretchr/testify/assert"
+)
 
-// type mockAcceptStatusRepository struct{}
+type mockAcceptStatusRepository struct{}
 
-// func (m *mockAcceptStatusRepository) Save(acceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
-// 	// Simulate successful save
-// 	return acceptStatus, nil
-// }
+func (m *mockAcceptStatusRepository) Delete(id uint) (model.AcceptStatus, error) {
+	// Simulate deleting an accept status
+	if id == 1 {
+		acceptStatus := model.AcceptStatus{
+			ID:        1,
+			Status:    true,
+			CreatedAt: time.Now(),
+		}
+		return acceptStatus, nil
+	}
+	return model.AcceptStatus{}, errors.New("accept status not found")
+}
 
-// func (m *mockAcceptStatusRepository) Delete(id uint) (model.AcceptStatus, error) {
-// 	// Simulate successful delete
-// 	return model.AcceptStatus{}, nil
-// }
+func (m *mockAcceptStatusRepository) FindAll() ([]model.AcceptStatus, error) {
+	// Simulate finding all accept statuses
+	acceptStatuses := []model.AcceptStatus{
+		{
+			ID:        1,
+			Status:    true,
+			CreatedAt: time.Now(),
+		},
+		{
+			ID:        2,
+			Status:    false,
+			CreatedAt: time.Now(),
+		},
+	}
+	return acceptStatuses, nil
+}
 
-// func (m *mockAcceptStatusRepository) FindAll() ([]model.AcceptStatus, error) {
-// 	// Simulate finding all accept statuses
-// 	acceptStatuses := []model.AcceptStatus{
-// 		{ID: 1, TransactionID: 1, Status: true},
-// 		{ID: 2, TransactionID: 2, Status: false},
-// 	}
-// 	return acceptStatuses, nil
-// }
+func (m *mockAcceptStatusRepository) FindById(id uint) (model.AcceptStatus, error) {
+	// Simulate finding an accept status by ID
+	if id == 1 {
+		acceptStatus := model.AcceptStatus{
+			ID:        1,
+			Status:    true,
+			CreatedAt: time.Now(),
+		}
+		return acceptStatus, nil
+	}
+	return model.AcceptStatus{}, errors.New("accept status not found")
+}
 
-// func (m *mockAcceptStatusRepository) FindById(id uint) (model.AcceptStatus, error) {
-// 	// Simulate finding an accept status by ID
-// 	acceptStatus := model.AcceptStatus{
-// 		ID:            uint(id),
-// 		TransactionID: 1,
-// 		Status:        true,
-// 	}
-// 	return acceptStatus, nil
-// }
+func (m *mockAcceptStatusRepository) Save(newAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
+	// Simulate saving a new accept status
+	acceptStatus := model.AcceptStatus{
+		Status:    newAcceptStatus.Status,
+		CreatedAt: newAcceptStatus.CreatedAt,
+	}
+	return acceptStatus, nil
+}
 
-// func (m *mockAcceptStatusRepository) Update(acceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
-// 	// Simulate successful update
-// 	return acceptStatus, nil
-// }
+func (m *mockAcceptStatusRepository) Update(updatedAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
+	// Simulate updating an accept status
+	acceptStatus := model.AcceptStatus{
+		ID:        updatedAcceptStatus.ID,
+		Status:    updatedAcceptStatus.Status,
+		CreatedAt: updatedAcceptStatus.CreatedAt,
+	}
+	return acceptStatus, nil
+}
 
-// func TestSaveAcceptStatus(t *testing.T) {
-// 	service := NewAcceptStatusServiceImpl(&mockAcceptStatusRepository{})
+type mockTransactionRepository struct{}
 
-// 	// Test case 1: Valid accept status
-// 	acceptStatus := model.AcceptStatus{
-// 		TransactionID: 1,
-// 		Status:        true,
-// 	}
-// 	_, err := service.Save(acceptStatus)
-// 	if err != nil {
-// 		t.Errorf("Expected no error, but got: %v", err)
-// 	}
+func (m *mockTransactionRepository) UpdateStatus(id uint, status bool) error {
+	// Simulate updating transaction status
+	return nil
+}
 
-// 	// Test case 2: Invalid accept status (transactionsID is 0)
-// 	invalidAcceptStatus := model.AcceptStatus{}
-// 	_, err = service.Save(invalidAcceptStatus)
-// 	if err == nil {
-// 		t.Error("Expected an error, but got none")
-// 	} else {
-// 		expectedErrorMsg := "id_transaction is required"
-// 		if err.Error() != expectedErrorMsg {
-// 			t.Errorf("Expected error message: '%s', but got: '%s'", expectedErrorMsg, err.Error())
-// 		}
-// 	}
-// }
+func (m *mockTransactionRepository) Delete(id uint) (model.Transaction, error) {
+	// Simulate deleting a transaction
+	return model.Transaction{}, nil
+}
 
-// func TestDeleteAcceptStatus(t *testing.T) {
-// 	service := NewAcceptStatusServiceImpl(&mockAcceptStatusRepository{})
+func (m *mockTransactionRepository) FindAll() ([]model.Transaction, error) {
+	// Simulate finding all transactions
+	transactions := []model.Transaction{
+		{
+			ID:        1,
+			Status:    true,
+			CreatedAt: time.Now(),
+		},
+		{
+			ID:        2,
+			Status:    false,
+			CreatedAt: time.Now(),
+		},
+	}
+	return transactions, nil
+}
 
-// 	// Test case: Delete an accept status by ID
-// 	id := int64(1)
-// 	_, err := service.Delete(uint(id))
-// 	if err != nil {
-// 		t.Errorf("Expected no error, but got: %v", err)
-// 	}
-// }
+func (m *mockTransactionRepository) FindById(id uint) (model.Transaction, error) {
+	// Simulate finding a transaction by ID
+	if id == 1 {
+		transaction := model.Transaction{
+			ID:        1,
+			Status:    true,
+			CreatedAt: time.Now(),
+		}
+		return transaction, nil
+	}
+	return model.Transaction{}, errors.New("transaction not found")
+}
 
-// func TestFindAllAcceptStatuses(t *testing.T) {
-// 	service := NewAcceptStatusServiceImpl(&mockAcceptStatusRepository{})
+func (m *mockTransactionRepository) FindByUserID(userID uint) ([]model.Transaction, error) {
+	// Simulate finding transactions by user ID
+	transactions := []model.Transaction{
+		{
+			ID:        1,
+			Status:    true,
+			CreatedAt: time.Now(),
+		},
+		{
+			ID:        2,
+			Status:    false,
+			CreatedAt: time.Now(),
+		},
+	}
+	return transactions, nil
+}
 
-// 	// Test case: Find all accept statuses
-// 	acceptStatuses, err := service.FindAll()
-// 	if err != nil {
-// 		t.Errorf("Expected no error, but got: %v", err)
-// 	}
+func (m *mockTransactionRepository) Save(newTransaction model.Transaction) (model.Transaction, error) {
+	// Simulate saving a new transaction
+	transaction := model.Transaction{
+		Status:    newTransaction.Status,
+		CreatedAt: newTransaction.CreatedAt,
+	}
+	return transaction, nil
+}
 
-// 	// Check the number of returned accept statuses
-// 	expectedCount := 2
-// 	if len(acceptStatuses) != expectedCount {
-// 		t.Errorf("Expected %d accept statuses, but got: %d", expectedCount, len(acceptStatuses))
-// 	}
-// }
+func (m *mockTransactionRepository) Update(updatedTransaction model.Transaction) (model.Transaction, error) {
+	// Simulate updating a transaction
+	transaction := model.Transaction{
+		ID:        updatedTransaction.ID,
+		Status:    updatedTransaction.Status,
+		CreatedAt: updatedTransaction.CreatedAt,
+	}
+	return transaction, nil
+}
 
-// func TestFindAcceptStatusByID(t *testing.T) {
-// 	service := NewAcceptStatusServiceImpl(&mockAcceptStatusRepository{})
+func TestAcceptStatusService(t *testing.T) {
+	acceptStatusRepo := &mockAcceptStatusRepository{}
+	transactionRepo := &mockTransactionRepository{}
+	acceptStatusService := service.NewAcceptStatusServiceImpl(acceptStatusRepo, transactionRepo)
 
-// 	// Test case: Find an accept status by ID
-// 	id := int64(1)
-// 	acceptStatus, err := service.FindById(uint(id))
-// 	if err != nil {
-// 		t.Errorf("Expected no error, but got: %v", err)
-// 	}
+	t.Run("Delete_ValidAcceptStatus", func(t *testing.T) {
+		id := uint(1)
 
-// 	// Check the ID of the returned accept status
-// 	if acceptStatus.ID != uint(id) {
-// 		t.Errorf("Expected accept status with ID %d, but got: %d", id, acceptStatus.ID)
-// 	}
-// }
+		acceptStatus, err := acceptStatusService.Delete(id)
+		assert.NoError(t, err)
+		assert.Equal(t, id, acceptStatus.ID)
+	})
 
-// func TestUpdateAcceptStatus(t *testing.T) {
-// 	service := NewAcceptStatusServiceImpl(&mockAcceptStatusRepository{})
+	t.Run("Delete_InvalidAcceptStatus", func(t *testing.T) {
+		id := uint(2)
 
-// 	// Test case 1: Valid accept status
-// 	acceptStatus := model.AcceptStatus{
-// 		ID:            1,
-// 		TransactionID: 1,
-// 		Status:        true,
-// 	}
-// 	_, err := service.Update(acceptStatus)
-// 	if err != nil {
-// 		t.Errorf("Expected no error, but got: %v", err)
-// 	}
+		_, err := acceptStatusService.Delete(id)
+		assert.Error(t, err)
+		assert.EqualError(t, err, "accept status not found")
+	})
 
-// 	// Test case 2: Invalid accept status (transactionsID is 0)
-// 	invalidAcceptStatus := model.AcceptStatus{
-// 		ID:            1,
-// 		TransactionID: 0,
-// 		Status:        false,
-// 	}
-// 	_, err = service.Update(invalidAcceptStatus)
-// 	if err == nil {
-// 		t.Error("Expected an error, but got none")
-// 	} else {
-// 		expectedErrorMsg := "id_transaction tidak boleh kosong"
-// 		if err.Error() != expectedErrorMsg {
-// 			t.Errorf("Expected error message: '%s', but got: '%s'", expectedErrorMsg, err.Error())
-// 		}
-// 	}
-// }
+	t.Run("FindAll", func(t *testing.T) {
+		acceptStatuses, err := acceptStatusService.FindAll()
+		assert.NoError(t, err)
+		assert.Len(t, acceptStatuses, 2)
+	})
+
+	t.Run("FindById_ValidAcceptStatus", func(t *testing.T) {
+		id := uint(1)
+
+		acceptStatus, err := acceptStatusService.FindById(id)
+		assert.NoError(t, err)
+		assert.Equal(t, id, acceptStatus.ID)
+	})
+
+	t.Run("FindById_InvalidAcceptStatus", func(t *testing.T) {
+		id := uint(2)
+
+		_, err := acceptStatusService.FindById(id)
+		assert.Error(t, err)
+		assert.EqualError(t, err, "accept status not found")
+	})
+
+	t.Run("Save", func(t *testing.T) {
+		newAcceptStatus := model.AcceptStatus{
+			Status:    true,
+			CreatedAt: time.Now(),
+		}
+
+		acceptStatus, err := acceptStatusService.Save(newAcceptStatus)
+		assert.NoError(t, err)
+		assert.Equal(t, newAcceptStatus.Status, acceptStatus.Status)
+	})
+
+	t.Run("Update", func(t *testing.T) {
+		updateAcceptStatus := model.AcceptStatus{
+			ID:        1,
+			Status:    false,
+			CreatedAt: time.Now(),
+		}
+
+		acceptStatus, err := acceptStatusService.Update(updateAcceptStatus)
+		assert.NoError(t, err)
+		assert.Equal(t, updateAcceptStatus.Status, acceptStatus.Status)
+	})
+}

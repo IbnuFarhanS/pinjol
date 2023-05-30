@@ -1,166 +1,170 @@
-package service
+package service_test
 
 import (
+	"errors"
 	"testing"
+	"time"
 
 	"github.com/IbnuFarhanS/pinjol/model"
+	"github.com/IbnuFarhanS/pinjol/service"
+	"github.com/stretchr/testify/assert"
 )
 
-type mockRolesRepository struct{}
+type mockRoleRepository struct{}
 
-func (m *mockRolesRepository) Save(roles model.Role) (model.Role, error) {
-	// Simulate successful save
-	return roles, nil
+func (m *mockRoleRepository) Delete(id uint) (model.Role, error) {
+	// Simulate deleting a role
+	if id == 1 {
+		role := model.Role{
+			ID:        1,
+			Name:      "Admin",
+			CreatedAt: time.Now(),
+		}
+		return role, nil
+	}
+	return model.Role{}, errors.New("role not found")
 }
 
-func (m *mockRolesRepository) Delete(id uint) (model.Role, error) {
-	// Simulate successful delete
-	return model.Role{}, nil
-}
-
-func (m *mockRolesRepository) FindAll() ([]model.Role, error) {
+func (m *mockRoleRepository) FindAll() ([]model.Role, error) {
 	// Simulate finding all roles
 	roles := []model.Role{
-		{ID: 1, Name: "User"},
-		{ID: 2, Name: "Admin"},
+		{
+			ID:        1,
+			Name:      "Admin",
+			CreatedAt: time.Now(),
+		},
+		{
+			ID:        2,
+			Name:      "User",
+			CreatedAt: time.Now(),
+		},
 	}
 	return roles, nil
 }
 
-func (m *mockRolesRepository) FindById(id uint) (model.Role, error) {
-	// Simulate finding a roles by ID
-	roles := model.Role{
-		ID:   id,
-		Name: "User",
-	}
-	return roles, nil
-}
-
-func (m *mockRolesRepository) FindByName(name string) (model.Role, error) {
-	// Simulate finding a roles by name
-	roles := model.Role{
-		ID:   1,
-		Name: name,
-	}
-	return roles, nil
-}
-
-func (m *mockRolesRepository) Update(roles model.Role) (model.Role, error) {
-	// Simulate successful update
-	return roles, nil
-}
-
-func TestSaveRoles(t *testing.T) {
-
-	service := NewRoleServiceImpl(&mockRolesRepository{})
-
-	// Test case 1: Valid roles
-	roles := model.Role{
-		Name: "User",
-	}
-	_, err := service.Save(roles)
-	if err != nil {
-		t.Errorf("Expected no error, but got: %v", err)
-	}
-
-	// Test case 2: Invalid roles (name is empty)
-	invalidRoles := model.Role{}
-	_, err = service.Save(invalidRoles)
-	if err == nil {
-		t.Error("Expected an error, but got none")
-	} else {
-		expectedErrorMsg := "name is required"
-		if err.Error() != expectedErrorMsg {
-			t.Errorf("Expected error message: '%s', but got: '%s'", expectedErrorMsg, err.Error())
+func (m *mockRoleRepository) FindById(id uint) (model.Role, error) {
+	// Simulate finding a role by ID
+	if id == 1 {
+		role := model.Role{
+			ID:        1,
+			Name:      "Admin",
+			CreatedAt: time.Now(),
 		}
+		return role, nil
 	}
+	return model.Role{}, errors.New("role not found")
 }
 
-func TestDeleteRoles(t *testing.T) {
-	service := NewRoleServiceImpl(&mockRolesRepository{})
-
-	// Test case: Delete a roles by ID
-	id := int64(1)
-	_, err := service.Delete(uint(id))
-	if err != nil {
-		t.Errorf("Expected no error, but got: %v", err)
-	}
-}
-
-func TestFindAllRoles(t *testing.T) {
-	service := NewRoleServiceImpl(&mockRolesRepository{})
-
-	// Test case: Find all roles
-	roles, err := service.FindAll()
-	if err != nil {
-		t.Errorf("Expected no error, but got: %v", err)
-	}
-
-	// Check the number of returned roles
-	expectedCount := 2
-	if len(roles) != expectedCount {
-		t.Errorf("Expected %d payment methods, but got: %d", expectedCount, len(roles))
-	}
-}
-
-func TestFindRolesByID(t *testing.T) {
-	service := NewRoleServiceImpl(&mockRolesRepository{})
-
-	// Test case: Find a roles by ID
-	id := int64(1)
-	roles, err := service.FindById(uint(id))
-	if err != nil {
-		t.Errorf("Expected no error, but got: %v", err)
-	}
-
-	// Check the ID of the returned roles
-	if roles.ID != uint(id) {
-		t.Errorf("Expected roles with ID %d, but got: %d", id, roles.ID)
-	}
-}
-
-func TestFindRolesByName(t *testing.T) {
-	service := NewRoleServiceImpl(&mockRolesRepository{})
-
-	// Test case: Find a roles by name
-	name := "User"
-	roles, err := service.FindByName(name)
-	if err != nil {
-		t.Errorf("Expected no error, but got: %v", err)
-	}
-
-	// Check the name of the returned roles
-	if roles.Name != name {
-		t.Errorf("Expected roles with name '%s', but got: '%s'", name, roles.Name)
-	}
-}
-
-func TestUpdateRoles(t *testing.T) {
-
-	service := NewRoleServiceImpl(&mockRolesRepository{})
-
-	// Test case 1: Valid roles
-	roles := model.Role{
-		ID:   1,
-		Name: "New User",
-	}
-	_, err := service.Update(roles)
-	if err != nil {
-		t.Errorf("Expected no error, but got: %v", err)
-	}
-
-	// Test case 2: Invalid roles (name is empty)
-	invalidRoles := model.Role{
-		ID:   1,
-		Name: "",
-	}
-	_, err = service.Update(invalidRoles)
-	if err == nil {
-		t.Error("Expected an error, but got none")
-	} else {
-		expectedErrorMsg := "name is required"
-		if err.Error() != expectedErrorMsg {
-			t.Errorf("Expected error message: '%s', but got: '%s'", expectedErrorMsg, err.Error())
+func (m *mockRoleRepository) FindByName(name string) (model.Role, error) {
+	// Simulate finding a role by name
+	if name == "Admin" {
+		role := model.Role{
+			ID:        1,
+			Name:      "Admin",
+			CreatedAt: time.Now(),
 		}
+		return role, nil
 	}
+	return model.Role{}, errors.New("role not found")
+}
+
+func (m *mockRoleRepository) Save(newRole model.Role) (model.Role, error) {
+	// Simulate saving a new role
+	role := model.Role{
+		Name:      newRole.Name,
+		CreatedAt: newRole.CreatedAt,
+	}
+	return role, nil
+}
+
+func (m *mockRoleRepository) Update(updatedRole model.Role) (model.Role, error) {
+	// Simulate updating a role
+	role := model.Role{
+		ID:        updatedRole.ID,
+		Name:      updatedRole.Name,
+		CreatedAt: updatedRole.CreatedAt,
+	}
+	return role, nil
+}
+
+func TestRoleService(t *testing.T) {
+	repo := &mockRoleRepository{}
+	roleService := service.NewRoleServiceImpl(repo)
+
+	t.Run("Delete_ValidRole", func(t *testing.T) {
+		id := uint(1)
+
+		role, err := roleService.Delete(id)
+		assert.NoError(t, err)
+		assert.Equal(t, id, role.ID)
+	})
+
+	t.Run("Delete_InvalidRole", func(t *testing.T) {
+		id := uint(2)
+
+		_, err := roleService.Delete(id)
+		assert.Error(t, err)
+		assert.EqualError(t, err, "role not found")
+	})
+
+	t.Run("FindAll", func(t *testing.T) {
+		roles, err := roleService.FindAll()
+		assert.NoError(t, err)
+		assert.Len(t, roles, 2)
+	})
+
+	t.Run("FindById_ValidRole", func(t *testing.T) {
+		id := uint(1)
+
+		role, err := roleService.FindById(id)
+		assert.NoError(t, err)
+		assert.Equal(t, id, role.ID)
+	})
+
+	t.Run("FindById_InvalidRole", func(t *testing.T) {
+		id := uint(2)
+
+		_, err := roleService.FindById(id)
+		assert.Error(t, err)
+		assert.EqualError(t, err, "role not found")
+	})
+
+	t.Run("FindByName_ValidRole", func(t *testing.T) {
+		name := "Admin"
+
+		role, err := roleService.FindByName(name)
+		assert.NoError(t, err)
+		assert.Equal(t, name, role.Name)
+	})
+
+	t.Run("FindByName_InvalidRole", func(t *testing.T) {
+		name := "Superadmin"
+
+		_, err := roleService.FindByName(name)
+		assert.Error(t, err)
+		assert.EqualError(t, err, "role not found")
+	})
+
+	t.Run("Save", func(t *testing.T) {
+		newRole := model.Role{
+			Name:      "New Role",
+			CreatedAt: time.Now(),
+		}
+
+		role, err := roleService.Save(newRole)
+		assert.NoError(t, err)
+		assert.Equal(t, newRole.Name, role.Name)
+	})
+
+	t.Run("Update", func(t *testing.T) {
+		updatedRole := model.Role{
+			ID:        1,
+			Name:      "Updated Role",
+			CreatedAt: time.Now(),
+		}
+
+		role, err := roleService.Update(updatedRole)
+		assert.NoError(t, err)
+		assert.Equal(t, updatedRole.Name, role.Name)
+	})
 }
