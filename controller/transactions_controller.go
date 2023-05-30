@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -165,9 +166,12 @@ func (controller *TransactionsController) FindAllTransactions(ctx *gin.Context) 
 	}
 
 	filteredTra := make([]model.Transactions, 0)
-	for _, transaction := range transactions {
-		if transaction.UsersID == currentUser {
-			filteredTra = append(filteredTra, transaction)
+	for i := range transactions {
+		if transactions[i].UsersID == currentUser {
+			fmt.Println("WADADWADWADAWD", transactions[i].Products.Bunga)
+			transactions[i].TotalTax = (transactions[i].Amount * transactions[i].Products.Bunga) / 100
+			transactions[i].Total = transactions[i].TotalTax + transactions[i].Amount
+			filteredTra = append(filteredTra, transactions[i])
 		}
 	}
 

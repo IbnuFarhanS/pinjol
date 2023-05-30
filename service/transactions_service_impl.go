@@ -28,24 +28,6 @@ func (s *TransactionsServiceImpl) FindAll() ([]model.Transactions, error) {
 		return nil, err
 	}
 
-	for i := range transactions {
-		transactions[i].TotalTax = (transactions[i].Amount * transactions[i].Products.Bunga) / 100
-		transactions[i].Total = transactions[i].TotalTax + transactions[i].Amount
-	}
-
-	// for i := range transactions {
-	// 	product, err := s.ProductsService.FindById(transactions[i].ProductsID)
-	// 	if err != nil {
-	// 		// Handle error
-	// 		fmt.Println("Error:", err)
-	// 		continue
-	// 	}
-	// 	// fmt.Println("iniadalahidproduct", transactions[i].ProductsID)
-	// 	transactions[i].Products = product
-	// 	transactions[i].TotalTax = (transactions[i].Amount * transactions[i].Products.Bunga) / 100
-	// 	transactions[i].Total = transactions[i].TotalTax + transactions[i].Amount
-	// }
-
 	return transactions, nil
 }
 
