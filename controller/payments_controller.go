@@ -11,11 +11,15 @@ import (
 )
 
 type PaymentsController struct {
-	paymentsService service.PaymentsService
+	paymentsService     service.PaymentsService
+	transactionsService service.TransactionsService
 }
 
-func NewPaymentsController(service service.PaymentsService) *PaymentsController {
-	return &PaymentsController{paymentsService: service}
+func NewPaymentsController(paymentsService service.PaymentsService, transactionsService service.TransactionsService) *PaymentsController {
+	return &PaymentsController{
+		paymentsService:     paymentsService,
+		transactionsService: transactionsService,
+	}
 }
 
 func (c *PaymentsController) Insert(ctx *gin.Context) {
@@ -25,6 +29,13 @@ func (c *PaymentsController) Insert(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	// traid := createp.TransactionsID
+	// transaction, err := c.transactionsService.FindById(traid)
+	// if err != nil {
+	// 	ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	// 	return
+	// }
 
 	result, err := c.paymentsService.Save(createp)
 	if err != nil {

@@ -24,7 +24,7 @@ func (s *ProductsServiceImpl) FindAll() ([]model.Products, error) {
 
 // FindById implements BorrowerService
 func (s *ProductsServiceImpl) FindById(id int64) (model.Products, error) {
-	fmt.Println("WADAWWWWWWWWWWWWWWWWWWWWWWWWWW")
+	fmt.Println("INI ADALAH PRODUCT SERVICE")
 	return s.ProductsRepository.FindById(id)
 }
 

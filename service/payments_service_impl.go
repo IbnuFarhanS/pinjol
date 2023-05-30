@@ -2,7 +2,7 @@ package service
 
 import (
 	"errors"
-	"fmt"
+	"time"
 
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
@@ -10,9 +10,10 @@ import (
 )
 
 type PaymentsServiceImpl struct {
-	PaymentsRepository     repository.PaymentsRepository
-	UsersRepository        repository.UsersRepository
-	TransactionsRepository repository.TransactionsRepository
+	PaymentsRepository       repository.PaymentsRepository
+	UsersRepository          repository.UsersRepository
+	TransactionsRepository   repository.TransactionsRepository
+	PaymentMethodsRepository repository.PaymentMethodRepository
 }
 
 // Delete implements BorrowerService
@@ -26,20 +27,6 @@ func (s *PaymentsServiceImpl) FindAll() ([]model.Payments, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	for i := range payments {
-		transaction, err := s.TransactionsRepository.FindById(payments[i].TransactionsID)
-		if err != nil {
-			// Tangani kesalahan
-			fmt.Println("Error:", err)
-			continue
-		}
-
-		payments[i].Transactions = transaction
-
-		payments[i].NextInstallment = transaction.Total - payments[i].Payment_Amount
-	}
-
 	return payments, nil
 }
 
@@ -50,31 +37,51 @@ func (s *PaymentsServiceImpl) FindById(id int64) (model.Payments, error) {
 
 // Save implements BorrowerService
 func (s *PaymentsServiceImpl) Save(newPayments model.Payments) (model.Payments, error) {
-	transaction, err := s.TransactionsRepository.FindById(newPayments.Transactions.ID)
+
+	tra, err := s.TransactionsRepository.FindById(newPayments.TransactionsID)
 	if err != nil {
 		return model.Payments{}, err
 	}
 
-	// Periksa apakah pembayaran sudah melebihi jumlah yang harus dibayarkan pada transaksi
-	if newPayments.Payment_Amount > transaction.Amount {
-		return model.Payments{}, errors.New("payment amount exceeds transaction amount")
+	if newPayments.Payment_Amount > tra.Total {
+		return model.Payments{}, errors.New("payment amount exceeds transaction total")
 	}
 
 	// Perbarui limit pada pengguna terkait
-	user, err := s.UsersRepository.FindById(transaction.UsersID)
+	user, err := s.UsersRepository.FindById(tra.UsersID)
 	if err != nil {
 		return model.Payments{}, err
 	}
 
-	user.Limit += newPayments.Payment_Amount
+	pm, err := s.PaymentMethodsRepository.FindById(newPayments.PaymentMethodID)
+	if err != nil {
+		return model.Payments{}, err
+	}
+
+	// Simpan pembayaran
+	newPayments.Payment_Date = time.Now()
+	newPayments.NextInstallment = tra.Total - newPayments.Payment_Amount
+
+	newpay := model.Payments{
+		TransactionsID:  newPayments.TransactionsID,
+		PaymentMethodID: pm.ID,
+		Payment_Amount:  newPayments.Payment_Amount,
+		Payment_Date:    newPayments.Payment_Date,
+		NextInstallment: newPayments.NextInstallment,
+	}
+	payment, err := s.PaymentsRepository.Save(newpay)
+	if err != nil {
+		return model.Payments{}, err
+	}
+
+	user.Limit += (newPayments.Payment_Amount - tra.TotalTax)
 
 	_, err = s.UsersRepository.Update(user)
 	if err != nil {
 		return model.Payments{}, err
 	}
 
-	// Simpan pembayaran
-	return s.PaymentsRepository.Save(newPayments)
+	return payment, nil
 
 }
 

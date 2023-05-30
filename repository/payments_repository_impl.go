@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/IbnuFarhanS/pinjol/helper"
@@ -45,11 +46,25 @@ func (r *PaymentsRepositoryImpl) FindById(id int64) (model.Payments, error) {
 
 // Save implements PaymentsRepository
 func (r *PaymentsRepositoryImpl) Save(newPayments model.Payments) (model.Payments, error) {
-	currentTime := time.Now()
-	newPayments.Payment_Date = currentTime
-	result := r.Db.Create(&newPayments)
-	helper.ErrorPanic(result.Error)
-	return newPayments, nil
+
+	tx := r.Db.Begin()
+	var tra model.Transactions
+	if err := tx.Table("transactions").
+		Where("id = ?", newPayments.TransactionsID).
+		First(&tra).Error; err != nil {
+		tx.Rollback()
+		return model.Payments{}, fmt.Errorf("transactions with id %d not found", newPayments.TransactionsID)
+	}
+
+	newPayments.Payment_Date = time.Now()
+	newPayments.NextInstallment = tra.Total - newPayments.Payment_Amount
+
+	if err := tx.Table("payments").Create(&newPayments).Error; err != nil {
+		tx.Rollback()
+		return model.Payments{}, errors.New("failed to save transactions")
+	}
+	return newPayments, tx.Commit().Error
+
 }
 
 // Update implements PaymentsRepository

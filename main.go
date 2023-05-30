@@ -60,7 +60,7 @@ func main() {
 	rolesController := controller.NewRolesController(roleService)
 	accstatController := controller.NewAcceptStatusController(accstatService)
 	paymetController := controller.NewPaymentMethodsController(paymetService)
-	payController := controller.NewPaymentsController(payService)
+	payController := controller.NewPaymentsController(payService, traService)
 	proController := controller.NewProductsController(proService)
 	traController := controller.NewTransactionsController(traService)
 	uploadController := controller.NewUploadFileKTPController(uploadService)

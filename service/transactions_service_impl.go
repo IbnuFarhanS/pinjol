@@ -12,8 +12,6 @@ import (
 type TransactionsServiceImpl struct {
 	TransactionsRepository repository.TransactionsRepository
 	UsersRepository        repository.UsersRepository
-	ProductsRepository     repository.ProductsRepository
-	ProductsService        ProductsService
 }
 
 // Delete implements BorrowerService
@@ -27,25 +25,6 @@ func (s *TransactionsServiceImpl) FindAll() ([]model.Transactions, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	for i := range transactions {
-		transactions[i].TotalTax = (transactions[i].Amount * transactions[i].Products.Bunga) / 100
-		transactions[i].Total = transactions[i].TotalTax + transactions[i].Amount
-	}
-
-	// for i := range transactions {
-	// 	product, err := s.ProductsService.FindById(transactions[i].ProductsID)
-	// 	if err != nil {
-	// 		// Handle error
-	// 		fmt.Println("Error:", err)
-	// 		continue
-	// 	}
-	// 	// fmt.Println("iniadalahidproduct", transactions[i].ProductsID)
-	// 	transactions[i].Products = product
-	// 	transactions[i].TotalTax = (transactions[i].Amount * transactions[i].Products.Bunga) / 100
-	// 	transactions[i].Total = transactions[i].TotalTax + transactions[i].Amount
-	// }
-
 	return transactions, nil
 }
 
@@ -62,15 +41,12 @@ func (s *TransactionsServiceImpl) Save(newTransactions model.Transactions, useri
 		return model.Transactions{}, err
 	}
 
-	// Periksa batas pengguna
 	if newTransactions.Amount > user.Limit {
 		return model.Transactions{}, errors.New("Amount exceeds user's limit")
 	}
 
-	// Kurangi batas pengguna dengan jumlah pinjaman
 	user.Limit -= newTransactions.Amount
 
-	// Simpan perubahan ke basis data
 	_, err = s.UsersRepository.Update(user)
 	if err != nil {
 		return model.Transactions{}, err
@@ -79,9 +55,9 @@ func (s *TransactionsServiceImpl) Save(newTransactions model.Transactions, useri
 	created_at := time.Now()
 	due_date := created_at.AddDate(0, 1, 0)
 	newTra := model.Transactions{
-		// Products:   newTransactions.Products,
 		ProductsID: newTransactions.ProductsID,
 		UsersID:    userid,
+		Users:      user,
 		Status:     false,
 		Amount:     newTransactions.Amount,
 		Created_At: created_at,
