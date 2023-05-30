@@ -1,14 +1,14 @@
 mode: set
-github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:16.72,18.2 1 0
-github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:21.82,26.2 4 0
-github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:29.78,34.2 4 0
-github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:37.84,40.25 3 0
+github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:16.72,18.2 1 1
+github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:21.82,26.2 4 1
+github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:29.78,34.2 4 1
+github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:37.84,40.25 3 1
 github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:40.25,42.3 1 0
-github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:43.2,43.17 1 0
-github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:47.107,51.25 4 0
+github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:43.2,43.17 1 1
+github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:47.107,51.25 4 1
 github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:51.25,53.3 1 0
-github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:54.2,54.29 1 0
-github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:58.113,62.2 3 0
+github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:54.2,54.29 1 1
+github.com/IbnuFarhanS/pinjol/repository/accept_statuss_repository_impl.go:58.113,62.2 3 1
 github.com/IbnuFarhanS/pinjol/repository/payment_methods_repository_impl.go:16.74,18.2 1 1
 github.com/IbnuFarhanS/pinjol/repository/payment_methods_repository_impl.go:21.84,26.2 4 1
 github.com/IbnuFarhanS/pinjol/repository/payment_methods_repository_impl.go:29.80,34.2 4 1

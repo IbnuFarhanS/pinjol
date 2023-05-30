@@ -34,17 +34,17 @@ func TestFindAllAccStat(t *testing.T) {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewPaymentMethodRepositoryImpl(gormDB)
+	repo := NewAcceptStatusRepositoryImpl(gormDB)
 
 	// Test case: Berhasil menemukan semua metode pembayaran
-	mock.ExpectQuery(`SELECT \* FROM "accept_status"`).
+	mock.ExpectQuery(`SELECT \* FROM "accept_statuses"`).
 		WillReturnRows(sqlmock.NewRows([]string{"id", "id_transaction", "status"}).
 			AddRow(1, 1, false).
 			AddRow(2, 1, true))
 
-	paymentMethods, err := repo.FindAll()
+	accStats, err := repo.FindAll()
 	assert.NoError(t, err)
-	assert.Len(t, paymentMethods, 0)
+	assert.Len(t, accStats, 2)
 }
 
 func TestFindByIdAsccStat(t *testing.T) {

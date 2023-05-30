@@ -51,11 +51,16 @@ func TestSaveUsers(t *testing.T) {
 	}
 
 	// Menyiapkan query dan hasil yang diharapkan
+	mock.ExpectQuery(`SELECT \* FROM "users" WHERE "username" = \? OR "nik" = \? OR "phone_number" = \?`).
+		WithArgs(newUsers.Username, newUsers.NIK, newUsers.PhoneNumber).
+		WillReturnRows(sqlmock.NewRows([]string{"id"}))
+
 	mock.ExpectBegin()
 	mock.ExpectExec(`INSERT INTO "users" (.+) VALUES (.+)`).
 		WithArgs(
 			newUsers.Username,
 			newUsers.Password,
+			newUsers.NIK,
 			newUsers.Name,
 			newUsers.Address,
 			newUsers.PhoneNumber,
