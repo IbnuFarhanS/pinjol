@@ -86,7 +86,7 @@ func (controller *AuthController) FindAll(ctx *gin.Context) {
 		return
 	}
 
-	filteredUsers := make([]model.Users, 0)
+	filteredUsers := make([]model.User, 0)
 	for _, user := range users {
 		if user.Username == currentUser {
 			filteredUsers = append(filteredUsers, user)

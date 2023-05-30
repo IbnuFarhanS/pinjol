@@ -18,7 +18,7 @@ func NewAcceptStatusRepositoryImpl(Db *gorm.DB) AcceptStatusRepository {
 }
 
 // Delete implements AcceptStatusRepository
-func (r *AcceptStatusRepositoryImpl) Delete(id int64) (model.AcceptStatus, error) {
+func (r *AcceptStatusRepositoryImpl) Delete(id uint) (model.AcceptStatus, error) {
 	var acc model.AcceptStatus
 	result := r.Db.Where("id = ?", id).Delete(&acc)
 	helper.ErrorPanic(result.Error)
@@ -34,7 +34,7 @@ func (r *AcceptStatusRepositoryImpl) FindAll() ([]model.AcceptStatus, error) {
 }
 
 // FindById implements AcceptStatusRepository
-func (r *AcceptStatusRepositoryImpl) FindById(id int64) (model.AcceptStatus, error) {
+func (r *AcceptStatusRepositoryImpl) FindById(id uint) (model.AcceptStatus, error) {
 	var acc model.AcceptStatus
 	result := r.Db.Find(&acc, "id = ?", id)
 	if result.Error != nil {
@@ -46,7 +46,7 @@ func (r *AcceptStatusRepositoryImpl) FindById(id int64) (model.AcceptStatus, err
 // Save implements AcceptStatusRepository
 func (r *AcceptStatusRepositoryImpl) Save(newAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
 	currentTime := time.Now()
-	newAcceptStatus.Created_At = currentTime
+	newAcceptStatus.CreatedAt = currentTime
 	result := r.Db.Create(&newAcceptStatus)
 	helper.ErrorPanic(result.Error)
 	return newAcceptStatus, nil

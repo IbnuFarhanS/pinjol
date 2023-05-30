@@ -2,10 +2,10 @@ package service
 
 import "github.com/IbnuFarhanS/pinjol/model"
 
-type PaymentsService interface {
-	Save(newPayments model.Payments) (model.Payments, error)
-	Update(updatePayments model.Payments) (model.Payments, error)
-	Delete(id int64) (model.Payments, error)
-	FindById(id int64) (model.Payments, error)
-	FindAll() ([]model.Payments, error)
+type PaymentService interface {
+	Save(newPayment model.Payment) (model.Payment, error)
+	Update(updatePayment model.Payment) (model.Payment, error)
+	Delete(id uint) (model.Payment, error)
+	FindById(id uint) (model.Payment, error)
+	FindAll() ([]model.Payment, error)
 }

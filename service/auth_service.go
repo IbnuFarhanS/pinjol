@@ -6,9 +6,9 @@ import (
 )
 
 type AuthService interface {
-	Login(users request.LoginRequest) (string, error)
-	Register(newUsers request.CreateUsersRequest)
-	FindAll() ([]model.Users, error)
-	FindByUsername(username string) (model.Users, error)
-	FindByUserID(id int64) (model.Users, error)
+	Login(User request.LoginRequest) (string, error)
+	Register(newUser request.CreateUsersRequest)
+	FindAll() ([]model.User, error)
+	FindByUsername(username string) (model.User, error)
+	FindByUserID(id uint) (model.User, error)
 }

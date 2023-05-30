@@ -3,7 +3,6 @@ package service
 import (
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
-	"github.com/go-playground/validator/v10"
 )
 
 type PaymentMethodServiceImpl struct {
@@ -11,7 +10,7 @@ type PaymentMethodServiceImpl struct {
 }
 
 // Delete implements BorrowerService
-func (s *PaymentMethodServiceImpl) Delete(id int64) (model.PaymentMethod, error) {
+func (s *PaymentMethodServiceImpl) Delete(id uint) (model.PaymentMethod, error) {
 	return s.PaymentMethodRepository.Delete(id)
 }
 
@@ -21,7 +20,7 @@ func (s *PaymentMethodServiceImpl) FindAll() ([]model.PaymentMethod, error) {
 }
 
 // FindById implements BorrowerService
-func (s *PaymentMethodServiceImpl) FindById(id int64) (model.PaymentMethod, error) {
+func (s *PaymentMethodServiceImpl) FindById(id uint) (model.PaymentMethod, error) {
 	return s.PaymentMethodRepository.FindById(id)
 }
 
@@ -35,7 +34,7 @@ func (s *PaymentMethodServiceImpl) Save(newPaymentMethod model.PaymentMethod) (m
 
 	newPm := model.PaymentMethod{
 		Name:       newPaymentMethod.Name,
-		Created_At: newPaymentMethod.Created_At,
+		CreatedAt: newPaymentMethod.CreatedAt,
 	}
 	return s.PaymentMethodRepository.Save(newPm)
 
@@ -45,18 +44,18 @@ func (s *PaymentMethodServiceImpl) Save(newPaymentMethod model.PaymentMethod) (m
 func (s *PaymentMethodServiceImpl) Update(updatePaymentMethod model.PaymentMethod) (model.PaymentMethod, error) {
 
 	var pm model.PaymentMethod
-	create_at := pm.Created_At
+	create_at := pm.CreatedAt
 
 	newPm := model.PaymentMethod{
 		ID:         updatePaymentMethod.ID,
 		Name:       updatePaymentMethod.Name,
-		Created_At: create_at,
+		CreatedAt: create_at,
 	}
 
 	return s.PaymentMethodRepository.Update(newPm)
 }
 
-func NewPaymentMethodServiceImpl(paymentMethodRepository repository.PaymentMethodRepository, validate *validator.Validate) PaymentMethodService {
+func NewPaymentMethodServiceImpl(paymentMethodRepository repository.PaymentMethodRepository) PaymentMethodService {
 	return &PaymentMethodServiceImpl{
 		PaymentMethodRepository: paymentMethodRepository,
 	}

@@ -50,7 +50,7 @@ func (c *PaymentMethodsController) Update(ctx *gin.Context) {
 		return
 	}
 
-	updateRol := model.PaymentMethod{ID: id}
+	updateRol := model.PaymentMethod{ID: uint(id)}
 	err = ctx.ShouldBindJSON(&updateRol)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -80,7 +80,7 @@ func (c *PaymentMethodsController) Delete(ctx *gin.Context) {
 		return
 	}
 
-	c.paymentMethodsService.Delete(id)
+	c.paymentMethodsService.Delete(uint(id))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -120,7 +120,7 @@ func (c *PaymentMethodsController) FindByID(ctx *gin.Context) {
 		return
 	}
 
-	pm, err := c.paymentMethodsService.FindById(id)
+	pm, err := c.paymentMethodsService.FindById(uint(id))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

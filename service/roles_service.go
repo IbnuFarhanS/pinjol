@@ -2,11 +2,11 @@ package service
 
 import "github.com/IbnuFarhanS/pinjol/model"
 
-type RolesService interface {
-	Save(newRoles model.Roles) (model.Roles, error)
-	Update(updatedRoles model.Roles) (model.Roles, error)
-	Delete(id int64) (model.Roles, error)
-	FindById(id int64) (model.Roles, error)
-	FindAll() ([]model.Roles, error)
-	FindByName(name string) (model.Roles, error)
+type RoleService interface {
+	Save(newRole model.Role) (model.Role, error)
+	Update(updatedRole model.Role) (model.Role, error)
+	Delete(id uint) (model.Role, error)
+	FindById(id uint) (model.Role, error)
+	FindAll() ([]model.Role, error)
+	FindByName(name string) (model.Role, error)
 }

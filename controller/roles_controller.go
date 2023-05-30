@@ -11,23 +11,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type RolesController struct {
-	rolesService service.RolesService
+type RoleController struct {
+	RoleService service.RoleService
 }
 
-func NewRolesController(service service.RolesService) *RolesController {
-	return &RolesController{rolesService: service}
+func NewRoleController(service service.RoleService) *RoleController {
+	return &RoleController{RoleService: service}
 }
 
-func (c *RolesController) Insert(ctx *gin.Context) {
-	createLen := model.Roles{}
+func (c *RoleController) Insert(ctx *gin.Context) {
+	createLen := model.Role{}
 	err := ctx.ShouldBindJSON(&createLen)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	result, err := c.rolesService.Save(createLen)
+	result, err := c.RoleService.Save(createLen)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -36,23 +36,23 @@ func (c *RolesController) Insert(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully created Roles!",
+		Message: "Successfully created Role!",
 		Data:    result,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) Update(ctx *gin.Context) {
+func (c *RoleController) Update(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	helper.ErrorPanic(err)
 
-	updateRol := model.Roles{ID: id}
+	updateRol := model.Role{ID: uint(id)}
 	err = ctx.ShouldBindJSON(&updateRol)
 	helper.ErrorPanic(err)
 
-	updatedRoles, err := c.rolesService.Update(updateRol)
+	updatedRole, err := c.RoleService.Update(updateRol)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -61,18 +61,18 @@ func (c *RolesController) Update(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully updated Roles!",
-		Data:    updatedRoles,
+		Message: "Successfully updated Role!",
+		Data:    updatedRole,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
-func (c *RolesController) Delete(ctx *gin.Context) {
+func (c *RoleController) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	helper.ErrorPanic(err)
 
-	result, err := c.rolesService.Delete(id)
+	result, err := c.RoleService.Delete(uint(id))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -81,15 +81,15 @@ func (c *RolesController) Delete(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully deleted Roles!",
+		Message: "Successfully deleted Role!",
 		Data:    result,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) FindAll(ctx *gin.Context) {
-	len, err := c.rolesService.FindAll()
+func (c *RoleController) FindAll(ctx *gin.Context) {
+	len, err := c.RoleService.FindAll()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -97,21 +97,21 @@ func (c *RolesController) FindAll(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetch all Roles data!",
+		Message: "Successfully fetch all Role data!",
 		Data:    len,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) FindByID(ctx *gin.Context) {
+func (c *RoleController) FindByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	len, err := c.rolesService.FindById(id)
+	len, err := c.RoleService.FindById(uint(id))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -120,17 +120,17 @@ func (c *RolesController) FindByID(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetched Roles!",
+		Message: "Successfully fetched Role!",
 		Data:    len,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *RolesController) FindByName(ctx *gin.Context) {
+func (c *RoleController) FindByName(ctx *gin.Context) {
 	roleParam := ctx.Param("name")
 
-	len, err := c.rolesService.FindByName(roleParam)
+	len, err := c.RoleService.FindByName(roleParam)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -139,7 +139,7 @@ func (c *RolesController) FindByName(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetched Roles!",
+		Message: "Successfully fetched Role!",
 		Data:    len,
 	}
 

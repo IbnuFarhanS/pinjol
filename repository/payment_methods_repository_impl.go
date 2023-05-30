@@ -18,7 +18,7 @@ func NewPaymentMethodRepositoryImpl(Db *gorm.DB) PaymentMethodRepository {
 }
 
 // Delete implements PaymentMethodRepository
-func (r *PaymentMethodRepositoryImpl) Delete(id int64) (model.PaymentMethod, error) {
+func (r *PaymentMethodRepositoryImpl) Delete(id uint) (model.PaymentMethod, error) {
 	var pm model.PaymentMethod
 	result := r.Db.Where("id = ?", id).Delete(&pm)
 	helper.ErrorPanic(result.Error)
@@ -34,7 +34,7 @@ func (r *PaymentMethodRepositoryImpl) FindAll() ([]model.PaymentMethod, error) {
 }
 
 // FindById implements PaymentMethodRepository
-func (r *PaymentMethodRepositoryImpl) FindById(id int64) (model.PaymentMethod, error) {
+func (r *PaymentMethodRepositoryImpl) FindById(id uint) (model.PaymentMethod, error) {
 	var pm model.PaymentMethod
 	result := r.Db.Find(&pm, "id = ?", id)
 	if result.Error != nil {
@@ -46,7 +46,7 @@ func (r *PaymentMethodRepositoryImpl) FindById(id int64) (model.PaymentMethod, e
 // Save implements PaymentMethodRepository
 func (r *PaymentMethodRepositoryImpl) Save(newPaymentMethod model.PaymentMethod) (model.PaymentMethod, error) {
 	currentTime := time.Now()
-	newPaymentMethod.Created_At = currentTime
+	newPaymentMethod.CreatedAt = currentTime
 	result := r.Db.Create(&newPaymentMethod)
 	helper.ErrorPanic(result.Error)
 	return newPaymentMethod, nil

@@ -10,22 +10,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UsersController struct {
-	usersService service.UsersService
+type UserController struct {
+	UserService service.UserService
 }
 
-func NewUsersController(service service.UsersService) *UsersController {
-	return &UsersController{usersService: service}
+func NewUserController(service service.UserService) *UserController {
+	return &UserController{UserService: service}
 }
 
-func (c *UsersController) Insert(ctx *gin.Context) {
-	createLen := model.Users{}
-	err := ctx.ShouldBindJSON(&createLen)
+func (c *UserController) Insert(ctx *gin.Context) {
+	createuser := model.User{}
+	err := ctx.ShouldBindJSON(&createuser)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	result, err := c.usersService.Save(createLen)
+	result, err := c.UserService.Save(createuser)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
@@ -33,27 +33,27 @@ func (c *UsersController) Insert(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully created Users!",
+		Message: "Successfully created User!",
 		Data:    result,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *UsersController) Update(ctx *gin.Context) {
+func (c *UserController) Update(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	updateRol := model.Users{ID: id}
+	updateRol := model.User{ID: uint(id)}
 	err = ctx.ShouldBindJSON(&updateRol)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	updatedUsers, err := c.usersService.Update(updateRol)
+	updatedUser, err := c.UserService.Update(updateRol)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -62,20 +62,20 @@ func (c *UsersController) Update(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully updated Users!",
-		Data:    updatedUsers,
+		Message: "Successfully updated User!",
+		Data:    updatedUser,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
-func (c *UsersController) Delete(ctx *gin.Context) {
+func (c *UserController) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	c.usersService.Delete(id)
+	del,err := c.UserService.Delete(uint(id))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -84,15 +84,15 @@ func (c *UsersController) Delete(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully deleted Users!",
-		Data:    nil,
+		Message: "Successfully deleted User!",
+		Data:    del,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *UsersController) FindAll(ctx *gin.Context) {
-	len, err := c.usersService.FindAll()
+func (c *UserController) FindAll(ctx *gin.Context) {
+	user, err := c.UserService.FindAll()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -100,21 +100,21 @@ func (c *UsersController) FindAll(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetch all Users data!",
-		Data:    len,
+		Message: "Successfully fetch all User data!",
+		Data:    user,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *UsersController) FindByID(ctx *gin.Context) {
+func (c *UserController) FindByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	len, err := c.usersService.FindById(id)
+	user, err := c.UserService.FindById(uint(id))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -123,17 +123,17 @@ func (c *UsersController) FindByID(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetched Users!",
-		Data:    len,
+		Message: "Successfully fetched User!",
+		Data:    user,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *UsersController) FindByUsername(ctx *gin.Context) {
+func (c *UserController) FindByUsername(ctx *gin.Context) {
 	userParam := ctx.Param("username")
 
-	len, err := c.usersService.FindByUsername(userParam)
+	user, err := c.UserService.FindByUsername(userParam)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -142,8 +142,8 @@ func (c *UsersController) FindByUsername(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetched Users!",
-		Data:    len,
+		Message: "Successfully fetched User!",
+		Data:    user,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)

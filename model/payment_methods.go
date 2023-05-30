@@ -3,7 +3,7 @@ package model
 import "time"
 
 type PaymentMethod struct {
-	ID         int64     `gorm:"primaryKey;column:id" json:"id"`
-	Name       string    `gorm:"column:name" json:"name"`
-	Created_At time.Time `gorm:"column:created_at" json:"created_at"`
+	ID        uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	Name      string    `gorm:"not null" json:"name"`
+	CreatedAt time.Time `gorm:"not null;default:now()" json:"created_at"`
 }

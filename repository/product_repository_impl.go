@@ -9,59 +9,59 @@ import (
 	"gorm.io/gorm"
 )
 
-type ProductsRepositoryImpl struct {
+type ProductRepositoryImpl struct {
 	Db *gorm.DB
 }
 
-func NewProductsRepositoryImpl(Db *gorm.DB) ProductsRepository {
-	return &ProductsRepositoryImpl{Db: Db}
+func NewProductRepositoryImpl(Db *gorm.DB) ProductRepository {
+	return &ProductRepositoryImpl{Db: Db}
 }
 
-// Delete implements ProductsRepository
-func (r *ProductsRepositoryImpl) Delete(id int64) (model.Products, error) {
-	var pro model.Products
+// Delete implements ProductRepository
+func (r *ProductRepositoryImpl) Delete(id uint) (model.Product, error) {
+	var pro model.Product
 	result := r.Db.Where("id = ?", id).Delete(&pro)
 	helper.ErrorPanic(result.Error)
 	return pro, nil
 }
 
-// FindAll implements ProductsRepository
-func (r *ProductsRepositoryImpl) FindAll() ([]model.Products, error) {
-	var pro []model.Products
+// FindAll implements ProductRepository
+func (r *ProductRepositoryImpl) FindAll() ([]model.Product, error) {
+	var pro []model.Product
 	results := r.Db.Find(&pro)
 	helper.ErrorPanic(results.Error)
 	return pro, nil
 }
 
-// FindById implements ProductsRepository
-func (r *ProductsRepositoryImpl) FindById(id int64) (model.Products, error) {
-	var pro model.Products
+// FindById implements ProductRepository
+func (r *ProductRepositoryImpl) FindById(id uint) (model.Product, error) {
+	var pro model.Product
 	result := r.Db.First(&pro, "id = ?", id)
 	if result.Error != nil {
-		return pro, errors.New("products is not found")
+		return pro, errors.New("Product is not found")
 	}
 	return pro, nil
 }
 
-// Save implements ProductsRepository
-func (r *ProductsRepositoryImpl) Save(newProducts model.Products) (model.Products, error) {
+// Save implements ProductRepository
+func (r *ProductRepositoryImpl) Save(newProduct model.Product) (model.Product, error) {
 	currentTime := time.Now()
-	newProducts.Created_At = currentTime
-	result := r.Db.Create(&newProducts)
+	newProduct.CreatedAt = currentTime
+	result := r.Db.Create(&newProduct)
 	helper.ErrorPanic(result.Error)
-	return newProducts, nil
+	return newProduct, nil
 }
 
-// Update implements ProductsRepository
-func (r *ProductsRepositoryImpl) Update(updatedProducts model.Products) (model.Products, error) {
-	result := r.Db.Model(&model.Products{}).Where("id = ?", updatedProducts.ID).Updates(updatedProducts)
+// Update implements ProductRepository
+func (r *ProductRepositoryImpl) Update(updatedProduct model.Product) (model.Product, error) {
+	result := r.Db.Model(&model.Product{}).Where("id = ?", updatedProduct.ID).Updates(updatedProduct)
 	helper.ErrorPanic(result.Error)
-	return updatedProducts, nil
+	return updatedProduct, nil
 }
 
-// FindByName implements ProductsRepository
-func (r *ProductsRepositoryImpl) FindByName(name string) (model.Products, error) {
-	var pro model.Products
+// FindByName implements ProductRepository
+func (r *ProductRepositoryImpl) FindByName(name string) (model.Product, error) {
+	var pro model.Product
 	result := r.Db.First(&pro, "name = ?", name)
 
 	if result.Error != nil {

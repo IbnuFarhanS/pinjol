@@ -14,7 +14,6 @@ CREATE TABLE "users" (
 CREATE TABLE "products" (
   "id" BIGSERIAL PRIMARY KEY,
   "name" VARCHAR(255) NOT NULL,
-  "amount" decimal(10,2) NOT NULL,
   "installment" INT NOT NULL,
   "bunga" decimal(10,2) NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT 'NOW()'
@@ -29,14 +28,14 @@ CREATE TABLE "roles" (
 CREATE TABLE "transactions" (
   "id" BIGSERIAL PRIMARY KEY,
   "id_user" INT,
-  "id_requirement" INT,
   "id_product" INT,
+  "amount" decimal(10,2) NOT NULL,
   "status" bool,
   "created_at" timestamptz NOT NULL DEFAULT 'NOW()',
   "due_date" timestamptz NOT NULL DEFAULT 'NOW()'
 );
 
-CREATE TABLE "accept_statuss" (
+CREATE TABLE "accept_status" (
   "id" BIGSERIAL PRIMARY KEY,
   "id_transaction" INT,
   "status" bool NOT NULL,
@@ -67,7 +66,7 @@ ALTER TABLE "payments" ADD FOREIGN KEY ("id_transaction") REFERENCES "transactio
 
 ALTER TABLE "payments" ADD FOREIGN KEY ("id_payment_method") REFERENCES "payment_methods" ("id");
 
-ALTER TABLE "accept_statuss" ADD FOREIGN KEY ("id_transaction") REFERENCES "transactions" ("id");
+ALTER TABLE "accept_status" ADD FOREIGN KEY ("id_transaction") REFERENCES "transactions" ("id");
 
 select * from accept_statuses;
 select * from payment_methods;

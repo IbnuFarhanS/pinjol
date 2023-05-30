@@ -1,9 +1,10 @@
 package service
 
 import (
+	"time"
+
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
-	"github.com/go-playground/validator/v10"
 )
 
 type AcceptStatusServiceImpl struct {
@@ -11,7 +12,7 @@ type AcceptStatusServiceImpl struct {
 }
 
 // Delete implements BorrowerService
-func (s *AcceptStatusServiceImpl) Delete(id int64) (model.AcceptStatus, error) {
+func (s *AcceptStatusServiceImpl) Delete(id uint) (model.AcceptStatus, error) {
 	return s.AcceptStatusRepository.Delete(id)
 }
 
@@ -21,7 +22,7 @@ func (s *AcceptStatusServiceImpl) FindAll() ([]model.AcceptStatus, error) {
 }
 
 // FindById implements BorrowerService
-func (s *AcceptStatusServiceImpl) FindById(id int64) (model.AcceptStatus, error) {
+func (s *AcceptStatusServiceImpl) FindById(id uint) (model.AcceptStatus, error) {
 	return s.AcceptStatusRepository.FindById(id)
 }
 
@@ -29,9 +30,9 @@ func (s *AcceptStatusServiceImpl) FindById(id int64) (model.AcceptStatus, error)
 func (s *AcceptStatusServiceImpl) Save(newAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
 
 	newAs := model.AcceptStatus{
-		Transactions: newAcceptStatus.Transactions,
-		Status:       newAcceptStatus.Status,
-		Created_At:   newAcceptStatus.Created_At,
+		Transaction: model.Transaction{},
+		Status:      newAcceptStatus.Status,
+		CreatedAt:   time.Time{},
 	}
 	return s.AcceptStatusRepository.Save(newAs)
 
@@ -41,19 +42,20 @@ func (s *AcceptStatusServiceImpl) Save(newAcceptStatus model.AcceptStatus) (mode
 func (s *AcceptStatusServiceImpl) Update(updateAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
 
 	var ast model.AcceptStatus
-	create_at := ast.Created_At
+	create_at := ast.CreatedAt
 
 	newAs := model.AcceptStatus{
-		ID:           updateAcceptStatus.ID,
-		Transactions: updateAcceptStatus.Transactions,
-		Status:       updateAcceptStatus.Status,
-		Created_At:   create_at,
+		ID:            updateAcceptStatus.ID,
+		TransactionID: 0,
+		Transaction:   model.Transaction{},
+		Status:        updateAcceptStatus.Status,
+		CreatedAt:     create_at,
 	}
 
 	return s.AcceptStatusRepository.Update(newAs)
 }
 
-func NewAcceptStatusServiceImpl(acceptStatusRepository repository.AcceptStatusRepository, validate *validator.Validate) AcceptStatusService {
+func NewAcceptStatusServiceImpl(acceptStatusRepository repository.AcceptStatusRepository) AcceptStatusService {
 	return &AcceptStatusServiceImpl{
 		AcceptStatusRepository: acceptStatusRepository,
 	}

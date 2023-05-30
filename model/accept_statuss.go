@@ -3,9 +3,9 @@ package model
 import "time"
 
 type AcceptStatus struct {
-	ID             int64        `gorm:"primaryKey;column:id" json:"id"`
-	TransactionsID int64        `gorm:"column:id_transaction" json:"id_transaction"`
-	Transactions   Transactions `gorm:"foreignKey:TransactionsID" json:"-"`
-	Status         bool         `gorm:"column:status" json:"status"`
-	Created_At     time.Time    `gorm:"column:created_at" json:"created_at"`
+	ID            uint        `gorm:"primaryKey;autoIncrement" json:"id"`
+	TransactionID uint        `gorm:"column:id_transaction" json:"id_transaction"`
+	Transaction   Transaction `gorm:"foreignKey:TransactionID" json:"transaction"`
+	Status        bool        `gorm:"not null" json:"status"`
+	CreatedAt     time.Time   `gorm:"not null;default:now()" json:"created_at"`
 }

@@ -50,7 +50,7 @@ func (c *AcceptStatusController) Update(ctx *gin.Context) {
 		return
 	}
 
-	updateacc := model.AcceptStatus{ID: id}
+	updateacc := model.AcceptStatus{ID: uint(id)}
 	err = ctx.ShouldBindJSON(&updateacc)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -80,7 +80,7 @@ func (c *AcceptStatusController) Delete(ctx *gin.Context) {
 		return
 	}
 
-	result, err := c.acceptStatusService.Delete(id)
+	result, err := c.acceptStatusService.Delete(uint(id))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -121,7 +121,7 @@ func (c *AcceptStatusController) FindByID(ctx *gin.Context) {
 		return
 	}
 
-	acc, err := c.acceptStatusService.FindById(id)
+	acc, err := c.acceptStatusService.FindById(uint(id))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

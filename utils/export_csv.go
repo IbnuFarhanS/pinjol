@@ -8,7 +8,7 @@ import (
 	"github.com/IbnuFarhanS/pinjol/model"
 )
 
-func ExportTransactionsToCSV(transactions []model.Transactions, filePath string) error {
+func ExportTransactionsToCSV(transactions []model.Transaction, filePath string) error {
 	// Membuka file CSV untuk penulisan
 	file, err := os.Create(filePath)
 	if err != nil {
@@ -30,13 +30,13 @@ func ExportTransactionsToCSV(transactions []model.Transactions, filePath string)
 	// Menulis data transaksi ke penulis CSV
 	for _, transaction := range transactions {
 		row := []string{
-			strconv.FormatInt(transaction.ID, 10),
-			strconv.FormatInt(transaction.ProductsID, 10),
-			strconv.FormatInt(transaction.UsersID, 10),
+			strconv.FormatUint(uint64(transaction.ID), 10),
+			strconv.FormatInt(int64(transaction.ProductID), 10),
+			strconv.FormatInt(int64(transaction.UserID), 10),
 			strconv.FormatBool(transaction.Status),
 			strconv.FormatFloat(transaction.Amount, 'f', -1, 64),
-			transaction.Created_At.String(),
-			transaction.Due_Date.String(),
+			transaction.CreatedAt.String(),
+			transaction.DueDate.String(),
 		}
 		err = writer.Write(row)
 		if err != nil {

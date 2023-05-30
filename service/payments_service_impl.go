@@ -6,97 +6,98 @@ import (
 
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
-	"github.com/go-playground/validator/v10"
 )
 
-type PaymentsServiceImpl struct {
-	PaymentsRepository     repository.PaymentsRepository
-	UsersRepository        repository.UsersRepository
-	TransactionsRepository repository.TransactionsRepository
+type PaymentServiceImpl struct {
+	PaymentRepository     repository.PaymentRepository
+	UserRepository        repository.UserRepository
+	TransactionRepository repository.TransactionRepository
 }
 
 // Delete implements BorrowerService
-func (s *PaymentsServiceImpl) Delete(id int64) (model.Payments, error) {
-	return s.PaymentsRepository.Delete(id)
+func (s *PaymentServiceImpl) Delete(id uint) (model.Payment, error) {
+	return s.PaymentRepository.Delete(id)
 }
 
 // FindAll implements BorrowerService
-func (s *PaymentsServiceImpl) FindAll() ([]model.Payments, error) {
-	payments, err := s.PaymentsRepository.FindAll()
+func (s *PaymentServiceImpl) FindAll() ([]model.Payment, error) {
+	Payment, err := s.PaymentRepository.FindAll()
 	if err != nil {
 		return nil, err
 	}
 
-	for i := range payments {
-		transaction, err := s.TransactionsRepository.FindById(payments[i].TransactionsID)
+	for i := range Payment {
+		transaction, err := s.TransactionRepository.FindById(Payment[i].TransactionID)
 		if err != nil {
 			// Tangani kesalahan
 			fmt.Println("Error:", err)
 			continue
 		}
 
-		payments[i].Transactions = transaction
+		Payment[i].Transaction = transaction
 
-		payments[i].NextInstallment = transaction.Total - payments[i].Payment_Amount
+		Payment[i].NextInstallment = transaction.Total - Payment[i].PaymentAmount
 	}
 
-	return payments, nil
+	return Payment, nil
 }
 
 // FindById implements BorrowerService
-func (s *PaymentsServiceImpl) FindById(id int64) (model.Payments, error) {
-	return s.PaymentsRepository.FindById(id)
+func (s *PaymentServiceImpl) FindById(id uint) (model.Payment, error) {
+	return s.PaymentRepository.FindById(id)
 }
 
 // Save implements BorrowerService
-func (s *PaymentsServiceImpl) Save(newPayments model.Payments) (model.Payments, error) {
-	transaction, err := s.TransactionsRepository.FindById(newPayments.Transactions.ID)
+func (s *PaymentServiceImpl) Save(newPayment model.Payment) (model.Payment, error) {
+	transaction, err := s.TransactionRepository.FindById(newPayment.Transaction.ID)
 	if err != nil {
-		return model.Payments{}, err
+		return model.Payment{}, err
 	}
 
 	// Periksa apakah pembayaran sudah melebihi jumlah yang harus dibayarkan pada transaksi
-	if newPayments.Payment_Amount > transaction.Amount {
-		return model.Payments{}, errors.New("payment amount exceeds transaction amount")
+	if newPayment.PaymentAmount > transaction.Amount {
+		return model.Payment{}, errors.New("payment amount exceeds transaction amount")
 	}
 
 	// Perbarui limit pada pengguna terkait
-	user, err := s.UsersRepository.FindById(transaction.UsersID)
+	user, err := s.UserRepository.FindById(transaction.UserID)
 	if err != nil {
-		return model.Payments{}, err
+		return model.Payment{}, err
 	}
 
-	user.Limit += newPayments.Payment_Amount
+	user.Limit += newPayment.PaymentAmount
 
-	_, err = s.UsersRepository.Update(user)
+	_, err = s.UserRepository.Update(user)
 	if err != nil {
-		return model.Payments{}, err
+		return model.Payment{}, err
 	}
 
 	// Simpan pembayaran
-	return s.PaymentsRepository.Save(newPayments)
+	return s.PaymentRepository.Save(newPayment)
 
 }
 
 // Update implements BorrowerService
-func (s *PaymentsServiceImpl) Update(updatePayments model.Payments) (model.Payments, error) {
+func (s *PaymentServiceImpl) Update(updatePayment model.Payment) (model.Payment, error) {
 
-	var pay model.Payments
-	payment_date := pay.Payment_Date
+	var pay model.Payment
+	payment_date := pay.PaymentDate
 
-	newPay := model.Payments{
-		ID:             updatePayments.ID,
-		Transactions:   updatePayments.Transactions,
-		Payment_Method: updatePayments.Payment_Method,
-		Payment_Amount: updatePayments.Payment_Amount,
-		Payment_Date:   payment_date,
+	newPay := model.Payment{
+		ID:              updatePayment.ID,
+		TransactionID:   updatePayment.TransactionID,
+		Transaction:     updatePayment.Transaction,
+		PaymentAmount:   updatePayment.PaymentAmount,
+		PaymentDate:     payment_date,
+		PaymentMethodID: updatePayment.PaymentMethodID,
+		PaymentMethod:   model.PaymentMethod{},
 	}
 
-	return s.PaymentsRepository.Update(newPay)
+	return s.PaymentRepository.Update(newPay)
 }
 
-func NewPaymentsServiceImpl(paymentsRepository repository.PaymentsRepository, validate *validator.Validate) PaymentsService {
-	return &PaymentsServiceImpl{
-		PaymentsRepository: paymentsRepository,
+func NewPaymentServiceImpl(PaymentRepository repository.PaymentRepository) PaymentService {
+	return &PaymentServiceImpl{
+		PaymentRepository: PaymentRepository,
 	}
 }

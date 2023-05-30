@@ -7,78 +7,77 @@ import (
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
 	"github.com/IbnuFarhanS/pinjol/utils"
-	"github.com/go-playground/validator/v10"
 )
 
-type UsersServiceImpl struct {
-	UsersRepository repository.UsersRepository
+type UserServiceImpl struct {
+	UserRepository repository.UserRepository
 }
 
-// Delete implements UsersService
-func (s *UsersServiceImpl) Delete(id int64) (model.Users, error) {
-	return s.UsersRepository.Delete(id)
+// Delete implements UserService
+func (s *UserServiceImpl) Delete(id uint) (model.User, error) {
+	return s.UserRepository.Delete(id)
 }
 
-// FindAll implements UsersService
-func (s *UsersServiceImpl) FindAll() ([]model.Users, error) {
-	return s.UsersRepository.FindAll()
+// FindAll implements UserService
+func (s *UserServiceImpl) FindAll() ([]model.User, error) {
+	return s.UserRepository.FindAll()
 }
 
-// FindById implements UsersService
-func (s *UsersServiceImpl) FindById(id int64) (model.Users, error) {
-	return s.UsersRepository.FindById(id)
+// FindById implements UserService
+func (s *UserServiceImpl) FindById(id uint) (model.User, error) {
+	return s.UserRepository.FindById(id)
 }
 
-// FindByUsername implements UsersService
-func (s *UsersServiceImpl) FindByUsername(username string) (model.Users, error) {
-	return s.UsersRepository.FindByUsername(username)
+// FindByUsername implements UserService
+func (s *UserServiceImpl) FindByUsername(username string) (model.User, error) {
+	return s.UserRepository.FindByUsername(username)
 }
 
-// Save implements UsersService
-func (s *UsersServiceImpl) Save(newUsers model.Users) (model.Users, error) {
-	hashedPassword, err := utils.HashPassword(newUsers.Password)
+// Save implements UserService
+func (s *UserServiceImpl) Save(newUser model.User) (model.User, error) {
+	hashedPassword, err := utils.HashPassword(newUser.Password)
 	helper.ErrorPanic(err)
 
-	newUser := model.Users{
-		Username:     newUsers.Username,
-		Password:     hashedPassword,
-		Nik:          newUsers.Nik,
-		Name:         newUsers.Name,
-		Alamat:       newUsers.Alamat,
-		Phone_Number: newUsers.Phone_Number,
-		Limit:        2000000,
-		Roles:        model.Roles{ID: 1},
-		Created_At:   time.Now(),
+	newUsers := model.User{
+		Username:    newUser.Username,
+		Password:    hashedPassword,
+		NIK:         newUser.NIK,
+		Name:        newUser.Name,
+		Address:     newUser.Address,
+		PhoneNumber: newUser.PhoneNumber,
+		Limit:       2000000,
+		Role:        model.Role{ID: 1},
+		CreatedAt:   time.Now(),
 	}
-	s.UsersRepository.Save(newUser)
+	s.UserRepository.Save(newUsers)
 	return newUser, nil
 }
 
-// Update implements UsersService
-func (s *UsersServiceImpl) Update(updatedUsers model.Users) (model.Users, error) {
-	hashedPassword, err := utils.HashPassword(updatedUsers.Password)
+// Update implements UserService
+func (s *UserServiceImpl) Update(updatedUser model.User) (model.User, error) {
+	hashedPassword, err := utils.HashPassword(updatedUser.Password)
 	helper.ErrorPanic(err)
 
-	var bor model.Users
-	create_at := bor.Created_At
+	var bor model.User
+	create_at := bor.CreatedAt
 
-	newUser := model.Users{
-		ID:           updatedUsers.ID,
-		Username:     updatedUsers.Username,
-		Password:     hashedPassword,
-		Nik:          updatedUsers.Nik,
-		Name:         updatedUsers.Name,
-		Alamat:       updatedUsers.Alamat,
-		Phone_Number: updatedUsers.Phone_Number,
-		Limit:        updatedUsers.Limit,
-		Created_At:   create_at,
+	newUser := model.User{
+		ID:          updatedUser.ID,
+		Username:    updatedUser.Username,
+		Password:    hashedPassword,
+		NIK:         updatedUser.NIK,
+		Name:        updatedUser.Name,
+		Address:     updatedUser.Address,
+		PhoneNumber: updatedUser.PhoneNumber,
+		Limit:       updatedUser.Limit,
+		CreatedAt:   create_at,
 	}
 
-	return s.UsersRepository.Update(newUser)
+	return s.UserRepository.Update(newUser)
 }
 
-func NewUsersServiceImpl(UsersRepository repository.UsersRepository, validate *validator.Validate) UsersService {
-	return &UsersServiceImpl{
-		UsersRepository: UsersRepository,
+func NewUserServiceImpl(UserRepository repository.UserRepository) UserService {
+	return &UserServiceImpl{
+		UserRepository: UserRepository,
 	}
 }

@@ -9,52 +9,52 @@ import (
 	"gorm.io/gorm"
 )
 
-type PaymentsRepositoryImpl struct {
+type PaymentRepositoryImpl struct {
 	Db *gorm.DB
 }
 
-func NewPaymentsRepositoryImpl(Db *gorm.DB) PaymentsRepository {
-	return &PaymentsRepositoryImpl{Db: Db}
+func NewPaymentRepositoryImpl(Db *gorm.DB) PaymentRepository {
+	return &PaymentRepositoryImpl{Db: Db}
 }
 
-// Delete implements PaymentsRepository
-func (r *PaymentsRepositoryImpl) Delete(id int64) (model.Payments, error) {
-	var pay model.Payments
+// Delete implements PaymentRepository
+func (r *PaymentRepositoryImpl) Delete(id uint) (model.Payment, error) {
+	var pay model.Payment
 	result := r.Db.Where("id = ?", id).Delete(&pay)
 	helper.ErrorPanic(result.Error)
 	return pay, nil
 }
 
-// FindAll implements PaymentsRepository
-func (r *PaymentsRepositoryImpl) FindAll() ([]model.Payments, error) {
-	var pay []model.Payments
+// FindAll implements PaymentRepository
+func (r *PaymentRepositoryImpl) FindAll() ([]model.Payment, error) {
+	var pay []model.Payment
 	results := r.Db.Find(&pay)
 	helper.ErrorPanic(results.Error)
 	return pay, nil
 }
 
-// FindById implements PaymentsRepository
-func (r *PaymentsRepositoryImpl) FindById(id int64) (model.Payments, error) {
-	var pay model.Payments
+// FindById implements PaymentRepository
+func (r *PaymentRepositoryImpl) FindById(id uint) (model.Payment, error) {
+	var pay model.Payment
 	result := r.Db.First(&pay, "id = ?", id)
 	if result.Error != nil {
-		return pay, errors.New("payments is not found")
+		return pay, errors.New("Payment is not found")
 	}
 	return pay, nil
 }
 
-// Save implements PaymentsRepository
-func (r *PaymentsRepositoryImpl) Save(newPayments model.Payments) (model.Payments, error) {
+// Save implements PaymentRepository
+func (r *PaymentRepositoryImpl) Save(newPayment model.Payment) (model.Payment, error) {
 	currentTime := time.Now()
-	newPayments.Payment_Date = currentTime
-	result := r.Db.Create(&newPayments)
+	newPayment.PaymentDate = currentTime
+	result := r.Db.Create(&newPayment)
 	helper.ErrorPanic(result.Error)
-	return newPayments, nil
+	return newPayment, nil
 }
 
-// Update implements PaymentsRepository
-func (r *PaymentsRepositoryImpl) Update(updatedPayments model.Payments) (model.Payments, error) {
-	result := r.Db.Model(&model.Payments{}).Where("id = ?", updatedPayments.ID).Updates(updatedPayments)
+// Update implements PaymentRepository
+func (r *PaymentRepositoryImpl) Update(updatedPayment model.Payment) (model.Payment, error) {
+	result := r.Db.Model(&model.Payment{}).Where("id = ?", updatedPayment.ID).Updates(updatedPayment)
 	helper.ErrorPanic(result.Error)
-	return updatedPayments, nil
+	return updatedPayment, nil
 }

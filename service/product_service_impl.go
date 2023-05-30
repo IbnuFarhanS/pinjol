@@ -1,70 +1,66 @@
 package service
 
 import (
-	"fmt"
-
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
-	"github.com/go-playground/validator/v10"
 )
 
-type ProductsServiceImpl struct {
-	ProductsRepository repository.ProductsRepository
+type ProductServiceImpl struct {
+	ProductRepository repository.ProductRepository
 }
 
 // Delete implements BorrowerService
-func (s *ProductsServiceImpl) Delete(id int64) (model.Products, error) {
-	return s.ProductsRepository.Delete(id)
+func (s *ProductServiceImpl) Delete(id uint) (model.Product, error) {
+	return s.ProductRepository.Delete(id)
 }
 
 // FindAll implements BorrowerService
-func (s *ProductsServiceImpl) FindAll() ([]model.Products, error) {
-	return s.ProductsRepository.FindAll()
+func (s *ProductServiceImpl) FindAll() ([]model.Product, error) {
+	return s.ProductRepository.FindAll()
 }
 
 // FindById implements BorrowerService
-func (s *ProductsServiceImpl) FindById(id int64) (model.Products, error) {
-	fmt.Println("WADAWWWWWWWWWWWWWWWWWWWWWWWWWW")
-	return s.ProductsRepository.FindById(id)
+func (s *ProductServiceImpl) FindById(id uint) (model.Product, error) {
+	return s.ProductRepository.FindById(id)
 }
 
 // FindByUsername implements BorrowerService
-func (s *ProductsServiceImpl) FindByName(name string) (model.Products, error) {
-	return s.ProductsRepository.FindByName(name)
+func (s *ProductServiceImpl) FindByName(name string) (model.Product, error) {
+	return s.ProductRepository.FindByName(name)
 }
 
 // Save implements BorrowerService
-func (s *ProductsServiceImpl) Save(newProducts model.Products) (model.Products, error) {
+func (s *ProductServiceImpl) Save(newProduct model.Product) (model.Product, error) {
 
-	newPro := model.Products{
-		Name:        newProducts.Name,
-		Installment: newProducts.Installment,
-		Bunga:       newProducts.Bunga,
-		Created_At:  newProducts.Created_At,
+	newPro := model.Product{
+		Name:        newProduct.Name,
+		Installment: newProduct.Installment,
+		Interest:    newProduct.Interest,
+		CreatedAt:   newProduct.CreatedAt,
 	}
-	return s.ProductsRepository.Save(newPro)
+	return s.ProductRepository.Save(newPro)
 
 }
 
 // Update implements BorrowerService
-func (s *ProductsServiceImpl) Update(updateProducts model.Products) (model.Products, error) {
+func (s *ProductServiceImpl) Update(updateProduct model.Product) (model.Product, error) {
 
-	var pro model.Products
-	create_at := pro.Created_At
+	var pro model.Product
+	create_at := pro.CreatedAt
 
-	newPro := model.Products{
-		ID:          updateProducts.ID,
-		Name:        updateProducts.Name,
-		Installment: updateProducts.Installment,
-		Bunga:       updateProducts.Bunga,
-		Created_At:  create_at,
+	newPro := model.Product{
+		ID:          updateProduct.ID,
+		Name:        updateProduct.Name,
+		Installment: updateProduct.Installment,
+		Interest:       updateProduct.Interest,
+		CreatedAt:  create_at,
 	}
 
-	return s.ProductsRepository.Update(newPro)
+	return s.ProductRepository.Update(newPro)
 }
 
-func NewProductsServiceImpl(productsRepository repository.ProductsRepository, validate *validator.Validate) ProductsService {
-	return &ProductsServiceImpl{
-		ProductsRepository: productsRepository,
+func NewProductServiceImpl(ProductRepository repository.ProductRepository) ProductService {
+	return &ProductServiceImpl{
+		ProductRepository: ProductRepository,
 	}
 }

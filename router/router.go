@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouter(userRepository repository.UsersRepository, authController *controller.AuthController, usersController *controller.UsersController, rolesController *controller.RolesController, accstatController *controller.AcceptStatusController, paymetController *controller.PaymentMethodsController, payController *controller.PaymentsController, proController *controller.ProductsController, traController *controller.TransactionsController, uploadKTP *controller.UploadFileKTPController) *gin.Engine {
+func NewRouter(userRepository repository.UserRepository, authController *controller.AuthController, usersController *controller.UserController, rolesController *controller.RoleController, accstatController *controller.AcceptStatusController, paymetController *controller.PaymentMethodsController, payController *controller.PaymentController, proController *controller.ProductController, traController *controller.TransactionController, uploadKTP *controller.UploadFileKTPController) *gin.Engine {
 	r := gin.Default()
 
 	r.GET("", func(context *gin.Context) {
@@ -37,13 +37,13 @@ func NewRouter(userRepository repository.UsersRepository, authController *contro
 	// usersRouter.GET("/username/:username", usersController.FindByUsername)
 	// usersRouter.POST("/", usersController.Insert)
 
-	// rolesRouter := router.Group("/roles")
-	// rolesRouter.GET("/", rolesController.FindAll)
+	rolesRouter := router.Group("/roles")
+	rolesRouter.GET("/", rolesController.FindAll)
 	// rolesRouter.GET("/:id", rolesController.FindByID)
 	// rolesRouter.GET("/name/:name", rolesController.FindByName)
 	// rolesRouter.PUT("/:id", rolesController.Update)
 	// rolesRouter.DELETE("/:id", rolesController.Delete)
-	// rolesRouter.POST("/", rolesController.Insert)
+	rolesRouter.POST("/", rolesController.Insert)
 
 	// accstatRouter := router.Group("/acceptstatus")
 	// accstatRouter.GET("/", accstatController.FindAll)
@@ -60,13 +60,13 @@ func NewRouter(userRepository repository.UsersRepository, authController *contro
 	// payRouter.DELETE("/:id", payController.Delete)
 	// payRouter.POST("/", payController.Insert)
 
-	// paymetRouter := router.Group("/paymentmethods")
-	// paymetRouter.GET("/", paymetController.FindAll)
+	paymetRouter := router.Group("/paymentmethods")
+	paymetRouter.GET("/", paymetController.FindAll)
 	// paymetRouter.GET("/:id", paymetController.FindByID)
 	// paymetRouter.GET("/name/:name", paymetController.FindByName)
 	// paymetRouter.PUT("/:id", paymetController.Update)
 	// paymetRouter.DELETE("/:id", paymetController.Delete)
-	// paymetRouter.POST("/", paymetController.Insert)
+	paymetRouter.POST("/", paymetController.Insert)
 
 	proRouter := router.Group("/products")
 	// proRouter.POST("/", middleware.DeserializeUser(userRepository), proController.Insert)
@@ -75,11 +75,11 @@ func NewRouter(userRepository repository.UsersRepository, authController *contro
 	// proRouter.GET("/name/:name", proController.FindByName)
 	// proRouter.PUT("/:id", proController.Update)
 	// proRouter.DELETE("/:id", proController.Delete)
-	// proRouter.POST("/", proController.Insert)
+	proRouter.POST("/", proController.Insert)
 
 	traRouter := router.Group("/transactions")
 	traRouter.POST("/", middleware.DeserializeUser(userRepository), traController.Insert)
-	traRouter.GET("/", middleware.DeserializeUser(userRepository), traController.FindAllTransactions)
+	traRouter.GET("/", middleware.DeserializeUser(userRepository), traController.FindAllTransaction)
 	traRouter.POST("/export", middleware.DeserializeUser(userRepository), traController.ExportToCSV)
 	// traRouter.GET("/", traController.FindAll)
 	// traRouter.GET("/:id", traController.FindByID)

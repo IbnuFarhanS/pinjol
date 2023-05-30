@@ -10,23 +10,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ProductsController struct {
-	productsService service.ProductsService
+type ProductController struct {
+	ProductService service.ProductService
 }
 
-func NewProductsController(service service.ProductsService) *ProductsController {
-	return &ProductsController{productsService: service}
+func NewProductController(service service.ProductService) *ProductController {
+	return &ProductController{ProductService: service}
 }
 
-func (c *ProductsController) Insert(ctx *gin.Context) {
-	createpro := model.Products{}
+func (c *ProductController) Insert(ctx *gin.Context) {
+	createpro := model.Product{}
 	err := ctx.ShouldBindJSON(&createpro)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	result, err := c.productsService.Save(createpro)
+	result, err := c.ProductService.Save(createpro)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -43,7 +43,7 @@ func (c *ProductsController) Insert(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *ProductsController) Update(ctx *gin.Context) {
+func (c *ProductController) Update(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
@@ -51,14 +51,14 @@ func (c *ProductsController) Update(ctx *gin.Context) {
 		return
 	}
 
-	updatepro := model.Products{ID: id}
+	updatepro := model.Product{ID: uint(id)}
 	err = ctx.ShouldBindJSON(&updatepro)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	updatedProducts, err := c.productsService.Update(updatepro)
+	updatedProduct, err := c.ProductService.Update(updatepro)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -68,12 +68,12 @@ func (c *ProductsController) Update(ctx *gin.Context) {
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully updated PaymentMethods!",
-		Data:    updatedProducts,
+		Data:    updatedProduct,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
-func (c *ProductsController) Delete(ctx *gin.Context) {
+func (c *ProductController) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
@@ -81,7 +81,7 @@ func (c *ProductsController) Delete(ctx *gin.Context) {
 		return
 	}
 
-	result, err := c.productsService.Delete(id)
+	result, err := c.ProductService.Delete(uint(id))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -97,8 +97,8 @@ func (c *ProductsController) Delete(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *ProductsController) FindAll(ctx *gin.Context) {
-	pro, err := c.productsService.FindAll()
+func (c *ProductController) FindAll(ctx *gin.Context) {
+	pro, err := c.ProductService.FindAll()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -114,7 +114,7 @@ func (c *ProductsController) FindAll(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *ProductsController) FindByID(ctx *gin.Context) {
+func (c *ProductController) FindByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
@@ -122,7 +122,7 @@ func (c *ProductsController) FindByID(ctx *gin.Context) {
 		return
 	}
 
-	pro, err := c.productsService.FindById(id)
+	pro, err := c.ProductService.FindById(uint(id))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -138,10 +138,10 @@ func (c *ProductsController) FindByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *ProductsController) FindByName(ctx *gin.Context) {
+func (c *ProductController) FindByName(ctx *gin.Context) {
 	proParam := ctx.Param("name")
 
-	pro, err := c.productsService.FindByName(proParam)
+	pro, err := c.ProductService.FindByName(proParam)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
