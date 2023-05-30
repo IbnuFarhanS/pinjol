@@ -8,7 +8,6 @@ import (
 
 type AcceptStatusServiceImpl struct {
 	AcceptStatusRepository repository.AcceptStatusRepository
-	Validate               *validator.Validate
 }
 
 // Delete implements BorrowerService
@@ -57,6 +56,5 @@ func (s *AcceptStatusServiceImpl) Update(updateAcceptStatus model.AcceptStatus) 
 func NewAcceptStatusServiceImpl(acceptStatusRepository repository.AcceptStatusRepository, validate *validator.Validate) AcceptStatusService {
 	return &AcceptStatusServiceImpl{
 		AcceptStatusRepository: acceptStatusRepository,
-		Validate:               validate,
 	}
 }

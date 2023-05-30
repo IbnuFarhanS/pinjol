@@ -6,14 +6,12 @@ import (
 	"github.com/IbnuFarhanS/pinjol/helper"
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
-	reposity "github.com/IbnuFarhanS/pinjol/repository"
 	"github.com/IbnuFarhanS/pinjol/utils"
 	"github.com/go-playground/validator/v10"
 )
 
 type UsersServiceImpl struct {
 	UsersRepository repository.UsersRepository
-	Validate        *validator.Validate
 }
 
 // Delete implements UsersService
@@ -79,9 +77,8 @@ func (s *UsersServiceImpl) Update(updatedUsers model.Users) (model.Users, error)
 	return s.UsersRepository.Update(newUser)
 }
 
-func NewUsersServiceImpl(UsersRepository reposity.UsersRepository, validate *validator.Validate) UsersService {
+func NewUsersServiceImpl(UsersRepository repository.UsersRepository, validate *validator.Validate) UsersService {
 	return &UsersServiceImpl{
 		UsersRepository: UsersRepository,
-		Validate:        validate,
 	}
 }

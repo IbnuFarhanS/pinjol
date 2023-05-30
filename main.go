@@ -9,7 +9,7 @@ import (
 	"github.com/IbnuFarhanS/pinjol/controller"
 	"github.com/IbnuFarhanS/pinjol/helper"
 	"github.com/IbnuFarhanS/pinjol/model"
-	reposity "github.com/IbnuFarhanS/pinjol/repository"
+	"github.com/IbnuFarhanS/pinjol/repository"
 	"github.com/IbnuFarhanS/pinjol/router"
 	"github.com/IbnuFarhanS/pinjol/service"
 	"github.com/go-playground/validator/v10"
@@ -35,13 +35,13 @@ func main() {
 	db.Table("transactions").Find(&model.Transactions{})
 
 	//Init Repository
-	userRepository := reposity.NewUsersRepositoryImpl(db)
-	roleRepository := reposity.NewRolesRepositoryImpl(db)
-	accstatRepository := reposity.NewAcceptStatusRepositoryImpl(db)
-	paymetRepository := reposity.NewPaymentMethodRepositoryImpl(db)
-	payRepository := reposity.NewPaymentsRepositoryImpl(db)
-	proRepository := reposity.NewProductsRepositoryImpl(db)
-	traRepository := reposity.NewTransactionsRepositoryImpl(db)
+	userRepository := repository.NewUsersRepositoryImpl(db)
+	roleRepository := repository.NewRolesRepositoryImpl(db)
+	accstatRepository := repository.NewAcceptStatusRepositoryImpl(db)
+	paymetRepository := repository.NewPaymentMethodRepositoryImpl(db)
+	payRepository := repository.NewPaymentsRepositoryImpl(db)
+	proRepository := repository.NewProductsRepositoryImpl(db)
+	traRepository := repository.NewTransactionsRepositoryImpl(db)
 
 	//Init Service
 	authService := service.NewAuthServiceImpl(userRepository, validate)
@@ -51,7 +51,8 @@ func main() {
 	paymetService := service.NewPaymentMethodServiceImpl(paymetRepository, validate)
 	payService := service.NewPaymentsServiceImpl(payRepository, validate)
 	proService := service.NewProductsServiceImpl(proRepository, validate)
-	traService := service.NewTransactionsServiceImpl(traRepository, validate)
+	traService := service.NewTransactionsServiceImpl(traRepository, validate, userRepository)
+	uploadService := service.NewUploadFileKTPService()
 
 	//Init controller
 	authController := controller.NewAuthController(authService)
@@ -62,8 +63,9 @@ func main() {
 	payController := controller.NewPaymentsController(payService)
 	proController := controller.NewProductsController(proService)
 	traController := controller.NewTransactionsController(traService)
+	uploadController := controller.NewUploadFileKTPController(uploadService)
 
-	routes := router.NewRouter(userRepository, authController, usersController, rolesController, accstatController, paymetController, payController, proController, traController)
+	routes := router.NewRouter(userRepository, authController, usersController, rolesController, accstatController, paymetController, payController, proController, traController, uploadController)
 
 	server := &http.Server{
 		Addr:           ":" + loadConfig.ServerPort,

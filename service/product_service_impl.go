@@ -8,7 +8,6 @@ import (
 
 type ProductsServiceImpl struct {
 	ProductsRepository repository.ProductsRepository
-	Validate           *validator.Validate
 }
 
 // Delete implements BorrowerService
@@ -36,7 +35,6 @@ func (s *ProductsServiceImpl) Save(newProducts model.Products) (model.Products, 
 
 	newPro := model.Products{
 		Name:        newProducts.Name,
-		Amount:      newProducts.Amount,
 		Installment: newProducts.Installment,
 		Bunga:       newProducts.Bunga,
 		Created_At:  newProducts.Created_At,
@@ -54,7 +52,6 @@ func (s *ProductsServiceImpl) Update(updateProducts model.Products) (model.Produ
 	newPro := model.Products{
 		ID:          updateProducts.ID,
 		Name:        updateProducts.Name,
-		Amount:      updateProducts.Amount,
 		Installment: updateProducts.Installment,
 		Bunga:       updateProducts.Bunga,
 		Created_At:  create_at,
@@ -66,6 +63,5 @@ func (s *ProductsServiceImpl) Update(updateProducts model.Products) (model.Produ
 func NewProductsServiceImpl(productsRepository repository.ProductsRepository, validate *validator.Validate) ProductsService {
 	return &ProductsServiceImpl{
 		ProductsRepository: productsRepository,
-		Validate:           validate,
 	}
 }

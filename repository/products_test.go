@@ -40,7 +40,6 @@ func TestSaveProducts(t *testing.T) {
 	// Menyiapkan data produk baru
 	newProduct := model.Products{
 		Name:        "Product",
-		Amount:      1000000,
 		Installment: 6,
 		Bunga:       0.2,
 	}
@@ -48,7 +47,7 @@ func TestSaveProducts(t *testing.T) {
 	// Menyiapkan query dan hasil yang diharapkan
 	mock.ExpectBegin()
 	mock.ExpectExec(`INSERT INTO "products" (.+) VALUES (.+)`).
-		WithArgs(newProduct.Name, newProduct.Amount, newProduct.Installment, newProduct.Bunga, newProduct.Created_At, newProduct.ID).
+		WithArgs(newProduct.Name, newProduct.Installment, newProduct.Bunga, newProduct.Created_At, newProduct.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
@@ -72,7 +71,6 @@ func TestFindByIdProducts(t *testing.T) {
 	expectedProducts := model.Products{
 		ID:          1,
 		Name:        "cicilan 6 bulan",
-		Amount:      1000000,
 		Installment: 6,
 		Bunga:       0.2,
 		Created_At:  time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
@@ -94,7 +92,6 @@ func TestFindByNameProducts(t *testing.T) {
 	expectedProducts := model.Products{
 		ID:          1,
 		Name:        "cicilan 6 bulan",
-		Amount:      1000000,
 		Installment: 6,
 		Bunga:       0.2,
 		Created_At:  time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
@@ -118,7 +115,6 @@ func TestFindAll(t *testing.T) {
 		{
 			ID:          1,
 			Name:        "cicilan 6 bulan",
-			Amount:      1000000,
 			Installment: 6,
 			Bunga:       0.2,
 			Created_At:  time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
@@ -126,7 +122,6 @@ func TestFindAll(t *testing.T) {
 		{
 			ID:          2,
 			Name:        "cicilan 12 bulan",
-			Amount:      2000000,
 			Installment: 12,
 			Bunga:       0.4,
 			Created_At:  time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
@@ -171,7 +166,6 @@ func TestUpdateProducts(t *testing.T) {
 	updatedProduct := model.Products{
 		ID:          1,
 		Name:        "Updated Product",
-		Amount:      2000000,
 		Installment: 12,
 		Bunga:       0.3,
 		Created_At:  time.Now(), // Atur waktu yang sesuai
@@ -180,7 +174,7 @@ func TestUpdateProducts(t *testing.T) {
 	// Menyiapkan query dan hasil yang diharapkan
 	mock.ExpectBegin()
 	mock.ExpectExec(`UPDATE "products" SET (.+) WHERE "products"."id" = (.+)`).
-		WithArgs(updatedProduct.Name, updatedProduct.Amount, updatedProduct.Installment, updatedProduct.Bunga, updatedProduct.Created_At.UTC(), updatedProduct.ID).
+		WithArgs(updatedProduct.Name, updatedProduct.Installment, updatedProduct.Bunga, updatedProduct.Created_At.UTC(), updatedProduct.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 

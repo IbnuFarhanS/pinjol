@@ -68,3 +68,16 @@ ALTER TABLE "payments" ADD FOREIGN KEY ("id_transaction") REFERENCES "transactio
 ALTER TABLE "payments" ADD FOREIGN KEY ("id_payment_method") REFERENCES "payment_methods" ("id");
 
 ALTER TABLE "accept_statuss" ADD FOREIGN KEY ("id_transaction") REFERENCES "transactions" ("id");
+
+select * from accept_statuses;
+select * from payment_methods;
+select * from payments;
+select * from products;
+select * from roles;
+select * from transactions;
+select * from users;
+
+truncate table payment_methods cascade;
+
+
+ALTER SEQUENCE accept_statuses_id_seq RESTART WITH 1;

@@ -8,7 +8,6 @@ import (
 
 type PaymentMethodServiceImpl struct {
 	PaymentMethodRepository repository.PaymentMethodRepository
-	Validate                *validator.Validate
 }
 
 // Delete implements BorrowerService
@@ -60,6 +59,5 @@ func (s *PaymentMethodServiceImpl) Update(updatePaymentMethod model.PaymentMetho
 func NewPaymentMethodServiceImpl(paymentMethodRepository repository.PaymentMethodRepository, validate *validator.Validate) PaymentMethodService {
 	return &PaymentMethodServiceImpl{
 		PaymentMethodRepository: paymentMethodRepository,
-		Validate:                validate,
 	}
 }

@@ -4,13 +4,12 @@ import (
 	"time"
 
 	"github.com/IbnuFarhanS/pinjol/model"
-	reposity "github.com/IbnuFarhanS/pinjol/repository"
+	"github.com/IbnuFarhanS/pinjol/repository"
 	"github.com/go-playground/validator/v10"
 )
 
 type RolesServiceImpl struct {
-	RolesRepository reposity.RolesRepository
-	Validate        *validator.Validate
+	RolesRepository repository.RolesRepository
 }
 
 // Delete implements RolesService
@@ -48,9 +47,8 @@ func (s *RolesServiceImpl) Update(updatedRoles model.Roles) (model.Roles, error)
 	panic("unimplemented")
 }
 
-func NewRolesServiceImpl(RolesRepository reposity.RolesRepository, validate *validator.Validate) RolesService {
+func NewRolesServiceImpl(RolesRepository repository.RolesRepository, validate *validator.Validate) RolesService {
 	return &RolesServiceImpl{
 		RolesRepository: RolesRepository,
-		Validate:        validate,
 	}
 }

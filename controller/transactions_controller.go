@@ -7,6 +7,7 @@ import (
 	"github.com/IbnuFarhanS/pinjol/data/response"
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/service"
+	"github.com/IbnuFarhanS/pinjol/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -129,5 +130,53 @@ func (c *TransactionsController) FindByID(ctx *gin.Context) {
 		Data:    tra,
 	}
 
+	ctx.JSON(http.StatusOK, webResponse)
+}
+
+func (c *TransactionsController) ExportToCSV(ctx *gin.Context) {
+	transactions, err := c.transactionsService.FindAll()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	filePath := "export/transactions.csv" // Ganti dengan jalur file CSV yang diinginkan
+
+	err = utils.ExportTransactionsToCSV(transactions, filePath)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Transactions exported to CSV successfully"})
+}
+
+func (controller *TransactionsController) FindAllTransactions(ctx *gin.Context) {
+	currentUser := ctx.GetInt64("currentUserID")
+	transactions, err := controller.transactionsService.FindAll()
+	if err != nil {
+		webResponse := response.Response{
+			Code:    http.StatusInternalServerError,
+			Status:  "Internal Server Error",
+			Message: err.Error(),
+		}
+		ctx.JSON(http.StatusInternalServerError, webResponse)
+		return
+	}
+
+	filteredTra := make([]model.Transactions, 0)
+	for _, transaction := range transactions {
+		if transaction.UsersID == currentUser {
+			filteredTra = append(filteredTra, transaction)
+		}
+	}
+
+
+	webResponse := response.Response{
+		Code:    http.StatusOK,
+		Status:  "OK",
+		Message: "Transactions retrieved successfully",
+		Data:    filteredTra,
+	}
 	ctx.JSON(http.StatusOK, webResponse)
 }

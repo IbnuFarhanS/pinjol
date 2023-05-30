@@ -36,7 +36,7 @@ func (r *ProductsRepositoryImpl) FindAll() ([]model.Products, error) {
 // FindById implements ProductsRepository
 func (r *ProductsRepositoryImpl) FindById(id int64) (model.Products, error) {
 	var pro model.Products
-	result := r.Db.Find(&pro, "id = ?", id)
+	result := r.Db.First(&pro, "id = ?", id)
 	if result.Error != nil {
 		return pro, errors.New("products is not found")
 	}

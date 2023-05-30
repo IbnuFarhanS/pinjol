@@ -15,13 +15,11 @@ import (
 
 type AuthServiceImpl struct {
 	UsersRepository reposity.UsersRepository
-	Validate        *validator.Validate
 }
 
 func NewAuthServiceImpl(usersRepository reposity.UsersRepository, validate *validator.Validate) AuthService {
 	return &AuthServiceImpl{
 		UsersRepository: usersRepository,
-		Validate:        validate,
 	}
 }
 
@@ -75,4 +73,8 @@ func (s *AuthServiceImpl) FindAll() ([]model.Users, error) {
 
 func (s *AuthServiceImpl) FindByUsername(username string) (model.Users, error) {
 	return s.UsersRepository.FindByUsername(username)
+}
+
+func (s *AuthServiceImpl) FindByUserID(id int64) (model.Users, error) {
+	return s.UsersRepository.FindById(id)
 }

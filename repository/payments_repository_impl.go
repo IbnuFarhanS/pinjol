@@ -36,7 +36,7 @@ func (r *PaymentsRepositoryImpl) FindAll() ([]model.Payments, error) {
 // FindById implements PaymentsRepository
 func (r *PaymentsRepositoryImpl) FindById(id int64) (model.Payments, error) {
 	var pay model.Payments
-	result := r.Db.Find(&pay, "id = ?", id)
+	result := r.Db.First(&pay, "id = ?", id)
 	if result.Error != nil {
 		return pay, errors.New("payments is not found")
 	}

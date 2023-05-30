@@ -27,9 +27,17 @@ func (r *TransactionsRepositoryImpl) Delete(id int64) (model.Transactions, error
 
 // FindAll implements TransactionsRepository
 func (r *TransactionsRepositoryImpl) FindAll() ([]model.Transactions, error) {
+	// results := r.Db.Find(&tra)
+	// if results.Error != nil {
+	// 	return nil, results.Error
+	// }
+	// return tra, nil
 	var tra []model.Transactions
-	results := r.Db.Find(&tra)
-	helper.ErrorPanic(results.Error)
+
+	result := r.Db.Model(&tra).Select("transactions.id_user, transactions.id_product, transactions.status, transactions.created_at, transactions.due_date, transactions.amount, users.id, products.id").Joins("join products on products.id = transactions.id_product").Joins("join users on users.id = transactions.id_user").Scan(&tra)
+	if result.Error != nil {
+		return nil, result.Error
+	}
 	return tra, nil
 }
 
@@ -50,6 +58,7 @@ func (r *TransactionsRepositoryImpl) Save(newTransactions model.Transactions) (m
 	result := r.Db.Create(&newTransactions)
 	helper.ErrorPanic(result.Error)
 	return newTransactions, nil
+
 }
 
 // Update implements TransactionsRepository
@@ -57,4 +66,12 @@ func (r *TransactionsRepositoryImpl) Update(updatedTransactions model.Transactio
 	result := r.Db.Model(&model.Transactions{}).Where("id = ?", updatedTransactions.ID).Updates(updatedTransactions)
 	helper.ErrorPanic(result.Error)
 	return updatedTransactions, nil
+}
+
+func (r *TransactionsRepositoryImpl) FindByUserID(userID int64) ([]model.Transactions, error) {
+	var transactions []model.Transactions
+	if err := r.Db.Where("user_id = ?", userID).Find(&transactions).Error; err != nil {
+		return nil, err
+	}
+	return transactions, nil
 }

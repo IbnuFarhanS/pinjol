@@ -10,4 +10,5 @@ type AuthService interface {
 	Register(newUsers request.CreateUsersRequest)
 	FindAll() ([]model.Users, error)
 	FindByUsername(username string) (model.Users, error)
+	FindByUserID(id int64) (model.Users, error)
 }
