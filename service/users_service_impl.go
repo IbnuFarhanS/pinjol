@@ -8,12 +8,10 @@ import (
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
 	"github.com/IbnuFarhanS/pinjol/utils"
-	"github.com/go-playground/validator/v10"
 )
 
 type UsersServiceImpl struct {
 	UsersRepository repository.UsersRepository
-	Validate        *validator.Validate
 }
 
 // Delete implements UsersService
@@ -94,6 +92,43 @@ func (s *UsersServiceImpl) Save(newUsers model.Users) (model.Users, error) {
 
 // Update implements UsersService
 func (s *UsersServiceImpl) Update(updatedUsers model.Users) (model.Users, error) {
+	// Validate username
+	if updatedUsers.Username == "" {
+		return model.Users{}, errors.New("username is required")
+	}
+	// Check if username already exists
+	existingUser, err := s.UsersRepository.FindByUsername(updatedUsers.Username)
+	if err != nil {
+		return model.Users{}, err
+	}
+	if existingUser.ID != 0 {
+		return model.Users{}, errors.New("username is already in use")
+	}
+	// Validate nik
+	if updatedUsers.Nik == "" {
+		return model.Users{}, errors.New("nik is required")
+	}
+	// Validate name
+	if updatedUsers.Name == "" {
+		return model.Users{}, errors.New("name is required")
+	}
+	// Validate alamat
+	if updatedUsers.Alamat == "" {
+		return model.Users{}, errors.New("alamat is required")
+	}
+	// Validate phone_number
+	if updatedUsers.Phone_Number == "" {
+		return model.Users{}, errors.New("phone number is required")
+	}
+	// Validate limit
+	if updatedUsers.Limit == 0 {
+		return model.Users{}, errors.New("limit is required")
+	}
+	// Validate roles
+	if updatedUsers.RolesID == 0 {
+		return model.Users{}, errors.New("roles is required")
+	}
+
 	hashedPassword, err := utils.HashPassword(updatedUsers.Password)
 	helper.ErrorPanic(err)
 
@@ -115,9 +150,8 @@ func (s *UsersServiceImpl) Update(updatedUsers model.Users) (model.Users, error)
 	return s.UsersRepository.Update(newUser)
 }
 
-func NewUsersServiceImpl(UsersRepository repository.UsersRepository, validate *validator.Validate) UsersService {
+func NewUsersServiceImpl(UsersRepository repository.UsersRepository) UsersService {
 	return &UsersServiceImpl{
 		UsersRepository: UsersRepository,
-		Validate:        validate,
 	}
 }

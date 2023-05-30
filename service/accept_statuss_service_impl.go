@@ -5,12 +5,10 @@ import (
 
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
-	"github.com/go-playground/validator/v10"
 )
 
 type AcceptStatusServiceImpl struct {
 	AcceptStatusRepository repository.AcceptStatusRepository
-	Validate               *validator.Validate
 }
 
 // Delete implements AcceptStatus
@@ -64,9 +62,8 @@ func (s *AcceptStatusServiceImpl) Update(updateAcceptStatus model.AcceptStatus) 
 	return s.AcceptStatusRepository.Update(newAs)
 }
 
-func NewAcceptStatusServiceImpl(AcceptStatusRepository repository.AcceptStatusRepository, validate *validator.Validate) AcceptStatusService {
+func NewAcceptStatusServiceImpl(AcceptStatusRepository repository.AcceptStatusRepository) AcceptStatusService {
 	return &AcceptStatusServiceImpl{
 		AcceptStatusRepository: AcceptStatusRepository,
-		Validate:               validate,
 	}
 }

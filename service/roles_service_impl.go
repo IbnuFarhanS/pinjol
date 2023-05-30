@@ -6,12 +6,10 @@ import (
 
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
-	"github.com/go-playground/validator/v10"
 )
 
 type RolesServiceImpl struct {
 	RolesRepository repository.RolesRepository
-	Validate        *validator.Validate
 }
 
 // Delete implements RolesService
@@ -68,9 +66,8 @@ func (s *RolesServiceImpl) Update(updatedRoles model.Roles) (model.Roles, error)
 	return s.RolesRepository.Update(newRol)
 }
 
-func NewRolesServiceImpl(RolesRepository repository.RolesRepository, validate *validator.Validate) RolesService {
+func NewRolesServiceImpl(RolesRepository repository.RolesRepository) RolesService {
 	return &RolesServiceImpl{
 		RolesRepository: RolesRepository,
-		Validate:        validate,
 	}
 }

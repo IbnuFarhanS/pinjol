@@ -44,13 +44,13 @@ func main() {
 	traRepository := repository.NewTransactionsRepositoryImpl(db)
 
 	//Init Service
-	authService := service.NewAuthServiceImpl(userRepository, validate)
-	usersService := service.NewUsersServiceImpl(userRepository, validate)
-	roleService := service.NewRolesServiceImpl(roleRepository, validate)
-	accstatService := service.NewAcceptStatusServiceImpl(accstatRepository, validate)
-	paymetService := service.NewPaymentMethodServiceImpl(paymetRepository, validate)
-	payService := service.NewPaymentsServiceImpl(payRepository, validate)
-	proService := service.NewProductsServiceImpl(proRepository, validate)
+	authService := service.NewAuthServiceImpl(userRepository)
+	usersService := service.NewUsersServiceImpl(userRepository)
+	roleService := service.NewRolesServiceImpl(roleRepository)
+	accstatService := service.NewAcceptStatusServiceImpl(accstatRepository)
+	paymetService := service.NewPaymentMethodServiceImpl(paymetRepository)
+	payService := service.NewPaymentsServiceImpl(payRepository)
+	proService := service.NewProductsServiceImpl(proRepository)
 	traService := service.NewTransactionsServiceImpl(traRepository, validate)
 
 	//Init controller

@@ -5,35 +5,33 @@ import (
 
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
-	"github.com/go-playground/validator/v10"
 )
 
 type PaymentMethodServiceImpl struct {
 	PaymentMethodRepository repository.PaymentMethodRepository
-	Validate                *validator.Validate
 }
 
-// Delete implements BorrowerService
+// Delete implements PaymentMethod Service
 func (s *PaymentMethodServiceImpl) Delete(id int64) (model.PaymentMethod, error) {
 	return s.PaymentMethodRepository.Delete(id)
 }
 
-// FindAll implements BorrowerService
+// FindAll implements PaymentMethod Service
 func (s *PaymentMethodServiceImpl) FindAll() ([]model.PaymentMethod, error) {
 	return s.PaymentMethodRepository.FindAll()
 }
 
-// FindById implements BorrowerService
+// FindById implements PaymentMethod Service
 func (s *PaymentMethodServiceImpl) FindById(id int64) (model.PaymentMethod, error) {
 	return s.PaymentMethodRepository.FindById(id)
 }
 
-// FindByUsername implements BorrowerService
+// FindByUsername implements PaymentMethod Service
 func (s *PaymentMethodServiceImpl) FindByName(name string) (model.PaymentMethod, error) {
 	return s.PaymentMethodRepository.FindByName(name)
 }
 
-// Save implements BorrowerService
+// Save implements PaymentMethod Service
 func (s *PaymentMethodServiceImpl) Save(newPaymentMethod model.PaymentMethod) (model.PaymentMethod, error) {
 	// Validate name
 	if newPaymentMethod.Name == "" {
@@ -48,7 +46,7 @@ func (s *PaymentMethodServiceImpl) Save(newPaymentMethod model.PaymentMethod) (m
 
 }
 
-// Update implements BorrowerService
+// Update implements PaymentMethod Service
 func (s *PaymentMethodServiceImpl) Update(updatePaymentMethod model.PaymentMethod) (model.PaymentMethod, error) {
 	// Validate name
 	if updatePaymentMethod.Name == "" {
@@ -67,9 +65,8 @@ func (s *PaymentMethodServiceImpl) Update(updatePaymentMethod model.PaymentMetho
 	return s.PaymentMethodRepository.Update(newPm)
 }
 
-func NewPaymentMethodServiceImpl(PaymentMethodRepository repository.PaymentMethodRepository, validate *validator.Validate) PaymentMethodService {
+func NewPaymentMethodServiceImpl(PaymentMethodRepository repository.PaymentMethodRepository) PaymentMethodService {
 	return &PaymentMethodServiceImpl{
 		PaymentMethodRepository: PaymentMethodRepository,
-		Validate:                validate,
 	}
 }

@@ -5,12 +5,10 @@ import (
 
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
-	"github.com/go-playground/validator/v10"
 )
 
 type PaymentsServiceImpl struct {
 	PaymentsRepository repository.PaymentsRepository
-	Validate           *validator.Validate
 }
 
 // Delete implements BorrowerService
@@ -82,9 +80,8 @@ func (s *PaymentsServiceImpl) Update(updatePayments model.Payments) (model.Payme
 	return s.PaymentsRepository.Update(newPay)
 }
 
-func NewPaymentsServiceImpl(PaymentsRepository repository.PaymentsRepository, validate *validator.Validate) PaymentsService {
+func NewPaymentsServiceImpl(PaymentsRepository repository.PaymentsRepository) PaymentsService {
 	return &PaymentsServiceImpl{
 		PaymentsRepository: PaymentsRepository,
-		Validate:           validate,
 	}
 }

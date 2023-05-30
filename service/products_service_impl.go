@@ -5,12 +5,10 @@ import (
 
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
-	"github.com/go-playground/validator/v10"
 )
 
 type ProductsServiceImpl struct {
 	ProductsRepository repository.ProductsRepository
-	Validate           *validator.Validate
 }
 
 // Delete implements BorrowerService
@@ -89,9 +87,8 @@ func (s *ProductsServiceImpl) Update(updateProducts model.Products) (model.Produ
 	return s.ProductsRepository.Update(newPro)
 }
 
-func NewProductsServiceImpl(ProductsRepository repository.ProductsRepository, validate *validator.Validate) ProductsService {
+func NewProductsServiceImpl(ProductsRepository repository.ProductsRepository) ProductsService {
 	return &ProductsServiceImpl{
 		ProductsRepository: ProductsRepository,
-		Validate:           validate,
 	}
 }

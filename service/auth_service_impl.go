@@ -10,18 +10,15 @@ import (
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
 	"github.com/IbnuFarhanS/pinjol/utils"
-	"github.com/go-playground/validator/v10"
 )
 
 type AuthServiceImpl struct {
 	UsersRepository repository.UsersRepository
-	Validate        *validator.Validate
 }
 
-func NewAuthServiceImpl(usersRepository repository.UsersRepository, validate *validator.Validate) AuthService {
+func NewAuthServiceImpl(usersRepository repository.UsersRepository) AuthService {
 	return &AuthServiceImpl{
 		UsersRepository: usersRepository,
-		Validate:        validate,
 	}
 }
 
