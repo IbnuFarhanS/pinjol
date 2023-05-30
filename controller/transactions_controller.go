@@ -171,7 +171,6 @@ func (controller *TransactionsController) FindAllTransactions(ctx *gin.Context) 
 		}
 	}
 
-
 	webResponse := response.Response{
 		Code:    http.StatusOK,
 		Status:  "OK",

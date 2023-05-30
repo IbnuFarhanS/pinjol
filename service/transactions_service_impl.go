@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/IbnuFarhanS/pinjol/model"
@@ -14,6 +13,7 @@ type TransactionsServiceImpl struct {
 	TransactionsRepository repository.TransactionsRepository
 	UsersRepository        repository.UsersRepository
 	ProductsRepository     repository.ProductsRepository
+	ProductsService        ProductsService
 }
 
 // Delete implements BorrowerService
@@ -29,17 +29,22 @@ func (s *TransactionsServiceImpl) FindAll() ([]model.Transactions, error) {
 	}
 
 	for i := range transactions {
-		product, err := s.ProductsRepository.FindById(transactions[i].ProductsID)
-		if err != nil {
-			// Handle error
-			fmt.Println("Error:", err)
-			continue
-		}
-		// fmt.Println("iniadalahidproduct", transactions[i].ProductsID)
-		transactions[i].Products = product
 		transactions[i].TotalTax = (transactions[i].Amount * transactions[i].Products.Bunga) / 100
 		transactions[i].Total = transactions[i].TotalTax + transactions[i].Amount
 	}
+
+	// for i := range transactions {
+	// 	product, err := s.ProductsService.FindById(transactions[i].ProductsID)
+	// 	if err != nil {
+	// 		// Handle error
+	// 		fmt.Println("Error:", err)
+	// 		continue
+	// 	}
+	// 	// fmt.Println("iniadalahidproduct", transactions[i].ProductsID)
+	// 	transactions[i].Products = product
+	// 	transactions[i].TotalTax = (transactions[i].Amount * transactions[i].Products.Bunga) / 100
+	// 	transactions[i].Total = transactions[i].TotalTax + transactions[i].Amount
+	// }
 
 	return transactions, nil
 }

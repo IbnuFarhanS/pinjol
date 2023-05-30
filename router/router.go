@@ -68,10 +68,10 @@ func NewRouter(userRepository repository.UsersRepository, authController *contro
 	// paymetRouter.DELETE("/:id", paymetController.Delete)
 	// paymetRouter.POST("/", paymetController.Insert)
 
-	// proRouter := router.Group("/products")
+	proRouter := router.Group("/products")
 	// proRouter.POST("/", middleware.DeserializeUser(userRepository), proController.Insert)
 	// proRouter.GET("/", proController.FindAll)
-	// proRouter.GET("/:id", proController.FindByID)
+	proRouter.GET("/:id", proController.FindByID)
 	// proRouter.GET("/name/:name", proController.FindByName)
 	// proRouter.PUT("/:id", proController.Update)
 	// proRouter.DELETE("/:id", proController.Delete)

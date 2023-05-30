@@ -27,11 +27,6 @@ func (r *TransactionsRepositoryImpl) Delete(id int64) (model.Transactions, error
 
 // FindAll implements TransactionsRepository
 func (r *TransactionsRepositoryImpl) FindAll() ([]model.Transactions, error) {
-	// results := r.Db.Find(&tra)
-	// if results.Error != nil {
-	// 	return nil, results.Error
-	// }
-	// return tra, nil
 	var tra []model.Transactions
 
 	result := r.Db.Model(&tra).Select("transactions.id_user, transactions.id_product, transactions.status, transactions.created_at, transactions.due_date, transactions.amount, users.id, products.id").Joins("join products on products.id = transactions.id_product").Joins("join users on users.id = transactions.id_user").Scan(&tra)
@@ -44,7 +39,7 @@ func (r *TransactionsRepositoryImpl) FindAll() ([]model.Transactions, error) {
 // FindById implements TransactionsRepository
 func (r *TransactionsRepositoryImpl) FindById(id int64) (model.Transactions, error) {
 	var tra model.Transactions
-	result := r.Db.Find(&tra, "id = ?", id)
+	result := r.Db.First(&tra, "id = ?", id)
 	if result.Error != nil {
 		return tra, errors.New("transactions is not found")
 	}

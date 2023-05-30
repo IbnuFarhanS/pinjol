@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
 	"github.com/go-playground/validator/v10"
@@ -22,6 +24,7 @@ func (s *ProductsServiceImpl) FindAll() ([]model.Products, error) {
 
 // FindById implements BorrowerService
 func (s *ProductsServiceImpl) FindById(id int64) (model.Products, error) {
+	fmt.Println("WADAWWWWWWWWWWWWWWWWWWWWWWWWWW")
 	return s.ProductsRepository.FindById(id)
 }
 
