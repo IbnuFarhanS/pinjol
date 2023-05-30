@@ -86,11 +86,7 @@ func (controller *AuthController) FindAll(ctx *gin.Context) {
 		return
 	}
 
-<<<<<<< HEAD
-	filteredUsers := make([]model.Users, 0)
-=======
 	filteredUsers := make([]model.User, 0)
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 	for _, user := range users {
 		if user.Username == currentUser {
 			filteredUsers = append(filteredUsers, user)

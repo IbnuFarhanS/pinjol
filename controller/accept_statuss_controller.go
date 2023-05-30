@@ -26,15 +26,9 @@ func (c *AcceptStatusController) Insert(ctx *gin.Context) {
 		return
 	}
 
-<<<<<<< HEAD
-	result, err := c.acceptStatusService.Save(createLen)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-=======
 	acceptStatus, err := c.acceptStatusService.Save(createLen)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 		return
 	}
 
@@ -42,11 +36,7 @@ func (c *AcceptStatusController) Insert(ctx *gin.Context) {
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully created AcceptStatus!",
-<<<<<<< HEAD
-		Data:    result,
-=======
 		Data:    acceptStatus,
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
@@ -60,11 +50,7 @@ func (c *AcceptStatusController) Update(ctx *gin.Context) {
 		return
 	}
 
-<<<<<<< HEAD
-	updateacc := model.AcceptStatus{ID: id}
-=======
 	updateacc := model.AcceptStatus{ID: uint(id)}
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 	err = ctx.ShouldBindJSON(&updateacc)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -94,11 +80,7 @@ func (c *AcceptStatusController) Delete(ctx *gin.Context) {
 		return
 	}
 
-<<<<<<< HEAD
-	result, err := c.acceptStatusService.Delete(id)
-=======
 	result, err := c.acceptStatusService.Delete(uint(id))
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -139,11 +121,7 @@ func (c *AcceptStatusController) FindByID(ctx *gin.Context) {
 		return
 	}
 
-<<<<<<< HEAD
-	acc, err := c.acceptStatusService.FindById(id)
-=======
 	acc, err := c.acceptStatusService.FindById(uint(id))
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -5,10 +5,6 @@ import (
 	"strconv"
 
 	"github.com/IbnuFarhanS/pinjol/data/response"
-<<<<<<< HEAD
-	"github.com/IbnuFarhanS/pinjol/helper"
-=======
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/service"
 	"github.com/gin-gonic/gin"
@@ -23,31 +19,19 @@ func NewPaymentMethodsController(service service.PaymentMethodService) *PaymentM
 }
 
 func (c *PaymentMethodsController) Insert(ctx *gin.Context) {
-<<<<<<< HEAD
-	var paymeth model.PaymentMethod
-	if err := ctx.ShouldBindJSON(&paymeth); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	}
-
-	result, err := c.paymentMethodsService.Save(paymeth)
-=======
 	createpm := model.PaymentMethod{}
 	err := ctx.ShouldBindJSON(&createpm)
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-<<<<<<< HEAD
-=======
 	result, err := c.paymentMethodsService.Save(createpm)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
@@ -61,16 +45,6 @@ func (c *PaymentMethodsController) Insert(ctx *gin.Context) {
 func (c *PaymentMethodsController) Update(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
-<<<<<<< HEAD
-	helper.ErrorPanic(err)
-
-	updateRol := model.PaymentMethod{ID: id}
-	err = ctx.ShouldBindJSON(&updateRol)
-	helper.ErrorPanic(err)
-
-	updatedPaymentMethods, err := c.paymentMethodsService.Update(updateRol)
-	helper.ErrorPanic(err)
-=======
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -88,7 +62,6 @@ func (c *PaymentMethodsController) Update(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 
 	webResponse := response.Response{
 		Code:    200,
@@ -102,12 +75,6 @@ func (c *PaymentMethodsController) Update(ctx *gin.Context) {
 func (c *PaymentMethodsController) Delete(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
-<<<<<<< HEAD
-	helper.ErrorPanic(err)
-
-	c.paymentMethodsService.Delete(id)
-	helper.ErrorPanic(err)
-=======
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -118,7 +85,6 @@ func (c *PaymentMethodsController) Delete(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 
 	webResponse := response.Response{
 		Code:    200,
@@ -132,14 +98,10 @@ func (c *PaymentMethodsController) Delete(ctx *gin.Context) {
 
 func (c *PaymentMethodsController) FindAll(ctx *gin.Context) {
 	pm, err := c.paymentMethodsService.FindAll()
-<<<<<<< HEAD
-	helper.ErrorPanic(err)
-=======
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
@@ -153,12 +115,6 @@ func (c *PaymentMethodsController) FindAll(ctx *gin.Context) {
 func (c *PaymentMethodsController) FindByID(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
-<<<<<<< HEAD
-	helper.ErrorPanic(err)
-
-	pm, err := c.paymentMethodsService.FindById(id)
-	helper.ErrorPanic(err)
-=======
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -169,7 +125,6 @@ func (c *PaymentMethodsController) FindByID(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 
 	webResponse := response.Response{
 		Code:    200,
@@ -182,12 +137,6 @@ func (c *PaymentMethodsController) FindByID(ctx *gin.Context) {
 }
 
 func (c *PaymentMethodsController) FindByName(ctx *gin.Context) {
-<<<<<<< HEAD
-	userParam := ctx.Param("name")
-
-	pm, err := c.paymentMethodsService.FindByName(userParam)
-	helper.ErrorPanic(err)
-=======
 	paymetParam := ctx.Param("name")
 
 	pm, err := c.paymentMethodsService.FindByName(paymetParam)
@@ -195,7 +144,6 @@ func (c *PaymentMethodsController) FindByName(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 
 	webResponse := response.Response{
 		Code:    200,

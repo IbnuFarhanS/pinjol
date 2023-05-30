@@ -35,10 +35,10 @@ func TestSaveRoles(t *testing.T) {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewRolesRepositoryImpl(gormDB)
+	repo := NewRoleRepositoryImpl(gormDB)
 
 	// Menyiapkan data roles baru
-	newRoles := model.Roles{
+	newRoles := model.Role{
 		Name: "Roles 1",
 	}
 	// Menyiapkan query dan hasil yang diharapkan
@@ -46,7 +46,7 @@ func TestSaveRoles(t *testing.T) {
 	mock.ExpectExec(`INSERT INTO "roles" (.+) VALUES (.+)`).
 		WithArgs(
 			newRoles.Name,
-			newRoles.Created_at,
+			newRoles.CreatedAt,
 			newRoles.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
@@ -70,13 +70,13 @@ func TestUpdateRoles(t *testing.T) {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewRolesRepositoryImpl(gormDB)
+	repo := NewRoleRepositoryImpl(gormDB)
 
 	// Menyiapkan data roles yang akan diupdate
-	updateRoles := model.Roles{
-		ID:         1,
-		Name:       "Ibnu",
-		Created_at: time.Now(), // Atur waktu yang sesuai
+	updateRoles := model.Role{
+		ID:        1,
+		Name:      "Ibnu",
+		CreatedAt: time.Now(), // Atur waktu yang sesuai
 	}
 
 	// Menyiapkan query dan hasil yang diharapkan
@@ -84,7 +84,7 @@ func TestUpdateRoles(t *testing.T) {
 	mock.ExpectExec(`UPDATE "roles" SET (.+) WHERE "roles"."id" = (.+)`).
 		WithArgs(
 			updateRoles.Name,
-			updateRoles.Created_at.UTC(),
+			updateRoles.CreatedAt.UTC(),
 			updateRoles.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
@@ -111,7 +111,7 @@ func TestDeleteRoles(t *testing.T) {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewRolesRepositoryImpl(gormDB)
+	repo := NewRoleRepositoryImpl(gormDB)
 
 	// ID roles yang akan dihapus
 	roleID := int64(1)
@@ -124,30 +124,30 @@ func TestDeleteRoles(t *testing.T) {
 	mock.ExpectCommit()
 
 	// Memanggil fungsi Delete
-	result, err := repo.Delete(roleID)
+	result, err := repo.Delete(uint(roleID))
 
 	// Memastikan tidak ada error yang terjadi
 	assert.NoError(t, err)
 
 	// Memastikan roles yang dihapus sesuai dengan yang diharapkan
-	expectedUser := model.Roles{} // Atur sesuai dengan nilai yang diharapkan
+	expectedUser := model.Role{} // Atur sesuai dengan nilai yang diharapkan
 	assert.Equal(t, expectedUser, result)
 }
 
 // ================== FIND BY ID =========================
 func TestFindByIdRoles(t *testing.T) {
 	db := setupTestDB_Roles(t)
-	repo := NewRolesRepositoryImpl(db)
+	repo := NewRoleRepositoryImpl(db)
 
 	// Test FindById for ID 1
 	foundRoles, err := repo.FindById(1)
 	require.NotNil(t, err)
 
 	// Expected Roles with ID 1
-	expectedRoles := model.Roles{
-		ID:         1,
-		Name:       "users",
-		Created_at: time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+	expectedRoles := model.Role{
+		ID:        1,
+		Name:      "users",
+		CreatedAt: time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
 	}
 
 	require.Equal(t, expectedRoles, foundRoles)
@@ -156,17 +156,17 @@ func TestFindByIdRoles(t *testing.T) {
 // ================== FIND BY NAME =========================
 func TestFindByNameRoles(t *testing.T) {
 	db := setupTestDB_Roles(t)
-	repo := NewRolesRepositoryImpl(db)
+	repo := NewRoleRepositoryImpl(db)
 
 	// Test FindByName for Name
 	foundRoles, err := repo.FindByName("users")
 	require.NoError(t, err)
 
 	// Expected Roles with Name
-	expectedRoles := model.Roles{
-		ID:         1,
-		Name:       "users",
-		Created_at: time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+	expectedRoles := model.Role{
+		ID:        1,
+		Name:      "users",
+		CreatedAt: time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
 	}
 
 	require.Equal(t, expectedRoles, foundRoles)
@@ -179,19 +179,19 @@ func TestFindByNameRoles(t *testing.T) {
 // ================== FIND ALL =========================
 func TestFindAllRoles(t *testing.T) {
 	db := setupTestDB_Roles(t)
-	repo := NewRolesRepositoryImpl(db)
+	repo := NewRoleRepositoryImpl(db)
 
 	// Create multiple roles in the database
-	dummyRoles := []model.Roles{
+	dummyRoles := []model.Role{
 		{
-			ID:         1,
-			Name:       "ibnu",
-			Created_at: time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+			ID:        1,
+			Name:      "ibnu",
+			CreatedAt: time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
 		},
 		{
-			ID:         2,
-			Name:       "admin",
-			Created_at: time.Date(2023, 5, 27, 17, 15, 20, 540820000, time.FixedZone("WIB", 7*60*60)),
+			ID:        2,
+			Name:      "admin",
+			CreatedAt: time.Date(2023, 5, 27, 17, 15, 20, 540820000, time.FixedZone("WIB", 7*60*60)),
 		},
 		// Add more roles if needed
 	}

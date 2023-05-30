@@ -36,18 +36,18 @@ func TestSaveUsers(t *testing.T) {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewUsersRepositoryImpl(gormDB)
+	repo := NewUserRepositoryImpl(gormDB)
 
 	// Menyiapkan data user baru
-	newUsers := model.Users{
-		Username:     "User",
-		Password:     "User123",
-		Nik:          "1234",
-		Name:         "Ibnu",
-		Alamat:       "Bandung",
-		Phone_Number: "084578458",
-		Limit:        2000000,
-		RolesID:      1,
+	newUsers := model.User{
+		Username:    "User",
+		Password:    "User123",
+		NIK:         "1234",
+		Name:        "Ibnu",
+		Address:     "Bandung",
+		PhoneNumber: "084578458",
+		Limit:       2000000,
+		RoleID:      1,
 	}
 
 	// Menyiapkan query dan hasil yang diharapkan
@@ -57,11 +57,11 @@ func TestSaveUsers(t *testing.T) {
 			newUsers.Username,
 			newUsers.Password,
 			newUsers.Name,
-			newUsers.Alamat,
-			newUsers.Phone_Number,
+			newUsers.Address,
+			newUsers.PhoneNumber,
 			newUsers.Limit,
-			newUsers.RolesID,
-			newUsers.Created_At,
+			newUsers.RoleID,
+			newUsers.CreatedAt,
 			newUsers.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
@@ -85,20 +85,20 @@ func TestUpdateUsers(t *testing.T) {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewUsersRepositoryImpl(gormDB)
+	repo := NewUserRepositoryImpl(gormDB)
 
 	// Menyiapkan data user yang akan diupdate
-	updateUser := model.Users{
-		ID:           1,
-		Username:     "User",
-		Password:     "User123",
-		Nik:          "1234",
-		Name:         "Ibnu",
-		Alamat:       "Bandung",
-		Phone_Number: "084578458",
-		Limit:        2000000,
-		RolesID:      0,
-		Created_At:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
+	updateUser := model.User{
+		ID:          1,
+		Username:    "User",
+		Password:    "User123",
+		NIK:         "1234",
+		Name:        "Ibnu",
+		Address:     "Bandung",
+		PhoneNumber: "084578458",
+		Limit:       2000000,
+		RoleID:      0,
+		CreatedAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 	}
 
 	// Menyiapkan query dan hasil yang diharapkan
@@ -107,12 +107,13 @@ func TestUpdateUsers(t *testing.T) {
 		WithArgs(
 			updateUser.Username,
 			updateUser.Password,
+			updateUser.NIK,
 			updateUser.Name,
-			updateUser.Alamat,
-			updateUser.Phone_Number,
+			updateUser.Address,
+			updateUser.PhoneNumber,
 			updateUser.Limit,
-			updateUser.RolesID,
-			updateUser.Created_At,
+			updateUser.RoleID,
+			updateUser.CreatedAt,
 			updateUser.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
@@ -139,7 +140,7 @@ func TestDeleteUsers(t *testing.T) {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewUsersRepositoryImpl(gormDB)
+	repo := NewUserRepositoryImpl(gormDB)
 
 	// ID user yang akan dihapus
 	userID := int64(1)
@@ -152,13 +153,13 @@ func TestDeleteUsers(t *testing.T) {
 	mock.ExpectCommit()
 
 	// Memanggil fungsi Delete
-	result, err := repo.Delete(userID)
+	result, err := repo.Delete(uint(userID))
 
 	// Memastikan tidak ada error yang terjadi
 	assert.NoError(t, err)
 
 	// Memastikan user yang dihapus sesuai dengan yang diharapkan
-	expectedUser := model.Users{} // Atur sesuai dengan nilai yang diharapkan
+	expectedUser := model.User{} // Atur sesuai dengan nilai yang diharapkan
 	assert.Equal(t, expectedUser, result)
 }
 
@@ -178,28 +179,28 @@ func (suite *TestUsers) TestFindByIdUsers() {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewUsersRepositoryImpl(gormDB)
+	repo := NewUserRepositoryImpl(gormDB)
 
 	// Setup dummy data
-	createDummyUser := []model.Users{
+	createDummyUser := []model.User{
 		{
-			ID:           1,
-			Username:     "User",
-			Password:     "User123",
-			Nik:          "1234",
-			Name:         "Ibnu",
-			Alamat:       "Bandung",
-			Phone_Number: "084578458",
-			Limit:        2000000,
-			RolesID:      1,
-			Created_At:   time.Now(),
+			ID:          1,
+			Username:    "User",
+			Password:    "User123",
+			NIK:         "1234",
+			Name:        "Ibnu",
+			Address:     "Bandung",
+			PhoneNumber: "084578458",
+			Limit:       2000000,
+			RoleID:      1,
+			CreatedAt:   time.Now(),
 		},
 	}
 
 	// Expect query
 	rows := sqlmock.NewRows([]string{"id", "username", "password", "nik", "name", "alamat", "phone_number", "limit", "id_role", "created_at"})
 	for _, d := range createDummyUser {
-		rows.AddRow(d.ID, d.Username, d.Password, d.Nik, d.Name, d.Alamat, d.Phone_Number, d.Limit, d.RolesID, d.Created_At)
+		rows.AddRow(d.ID, d.Username, d.Password, d.NIK, d.Name, d.Address, d.PhoneNumber, d.Limit, d.RoleID, d.CreatedAt)
 	}
 	mock.ExpectQuery("SELECT id, username, password, nik, name, alamat, phone_number, limit, id_role, created_at FROM users").WillReturnRows(rows)
 
@@ -220,24 +221,24 @@ func TestUserRepositorySuite(t *testing.T) {
 // ================== FIND BY USERNAME =========================
 func TestFindByUsernameUsers(t *testing.T) {
 	db := setupTestDB_Users(t)
-	repo := NewUsersRepositoryImpl(db)
+	repo := NewUserRepositoryImpl(db)
 
 	// Test FindByUsername for Name
 	foundUsers, err := repo.FindByUsername("ibnu")
 	require.NoError(t, err)
 
 	// Expected Users with Name
-	expectedUsers := model.Users{
-		ID:           1,
-		Username:     "ibnu",
-		Password:     "ibnu",
-		Nik:          "1234",
-		Name:         "ibnu",
-		Alamat:       "bandung",
-		Phone_Number: "084579856598",
-		Limit:        2000000,
-		RolesID:      1,
-		Created_At:   time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+	expectedUsers := model.User{
+		ID:          1,
+		Username:    "ibnu",
+		Password:    "ibnu",
+		NIK:         "1234",
+		Name:        "ibnu",
+		Address:     "bandung",
+		PhoneNumber: "084579856598",
+		Limit:       2000000,
+		RoleID:      1,
+		CreatedAt:   time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
 	}
 
 	require.Equal(t, expectedUsers, foundUsers)
@@ -250,33 +251,33 @@ func TestFindByUsernameUsers(t *testing.T) {
 // ================== FIND ALL =========================
 func TestFindAllUsers(t *testing.T) {
 	db := setupTestDB_Users(t)
-	repo := NewUsersRepositoryImpl(db)
+	repo := NewUserRepositoryImpl(db)
 
 	// Create multiple Users in the database
-	dummyUser := []model.Users{
+	dummyUser := []model.User{
 		{
-			ID:           1,
-			Username:     "ibnu",
-			Password:     "ibnu",
-			Nik:          "1234",
-			Name:         "ibnu",
-			Alamat:       "bandung",
-			Phone_Number: "084579856598",
-			Limit:        2000000,
-			RolesID:      1,
-			Created_At:   time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+			ID:          1,
+			Username:    "ibnu",
+			Password:    "ibnu",
+			NIK:         "1234",
+			Name:        "ibnu",
+			Address:     "bandung",
+			PhoneNumber: "084579856598",
+			Limit:       2000000,
+			RoleID:      1,
+			CreatedAt:   time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
 		},
 		{
-			ID:           2,
-			Username:     "ab",
-			Password:     "$2a$10$/GrmpqvDB/exiMDZQ1KtTuOAFeWbK/vZXyCCKcHqZE5o2Ild8fPUm",
-			Nik:          "ab",
-			Name:         "ab",
-			Alamat:       "ab",
-			Phone_Number: "ab",
-			Limit:        2000000,
-			RolesID:      1,
-			Created_At:   time.Date(2023, 5, 27, 17, 15, 20, 540820000, time.FixedZone("WIB", 7*60*60)),
+			ID:          2,
+			Username:    "ab",
+			Password:    "$2a$10$/GrmpqvDB/exiMDZQ1KtTuOAFeWbK/vZXyCCKcHqZE5o2Ild8fPUm",
+			NIK:         "ab",
+			Name:        "ab",
+			Address:     "ab",
+			PhoneNumber: "ab",
+			Limit:       2000000,
+			RoleID:      1,
+			CreatedAt:   time.Date(2023, 5, 27, 17, 15, 20, 540820000, time.FixedZone("WIB", 7*60*60)),
 		},
 		// Add more Users if needed
 	}

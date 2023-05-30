@@ -12,98 +12,98 @@ import (
 
 type mockProductsRepository struct{}
 
-func (m *mockProductsRepository) Delete(id int64) (model.Products, error) {
+func (m *mockProductsRepository) Delete(id uint) (model.Product, error) {
 	// Simulate deleting a product by ID
 	if id == 1 {
-		product := model.Products{
+		product := model.Product{
 			ID:          1,
 			Name:        "Product 1",
 			Installment: 12,
-			Bunga:       5,
-			Created_At:  time.Now(),
+			Interest:    5,
+			CreatedAt:   time.Now(),
 		}
 		return product, nil
 	}
-	return model.Products{}, nil
+	return model.Product{}, nil
 }
 
-func (m *mockProductsRepository) FindAll() ([]model.Products, error) {
+func (m *mockProductsRepository) FindAll() ([]model.Product, error) {
 	// Simulate finding all products
-	products := []model.Products{
+	products := []model.Product{
 		{
 			ID:          1,
 			Name:        "Product 1",
 			Installment: 12,
-			Bunga:       5,
-			Created_At:  time.Now(),
+			Interest:    5,
+			CreatedAt:   time.Now(),
 		},
 		{
 			ID:          2,
 			Name:        "Product 2",
 			Installment: 24,
-			Bunga:       8,
-			Created_At:  time.Now(),
+			Interest:    8,
+			CreatedAt:   time.Now(),
 		},
 	}
 	return products, nil
 }
 
-func (m *mockProductsRepository) FindById(id int64) (model.Products, error) {
+func (m *mockProductsRepository) FindById(id uint) (model.Product, error) {
 	// Simulate finding a product by ID
 	if id == 1 {
-		product := model.Products{
+		product := model.Product{
 			ID:          1,
 			Name:        "Product 1",
 			Installment: 12,
-			Bunga:       5,
-			Created_At:  time.Now(),
+			Interest:    5,
+			CreatedAt:   time.Now(),
 		}
 		return product, nil
 	}
-	return model.Products{}, nil
+	return model.Product{}, nil
 }
 
-func (m *mockProductsRepository) FindByName(name string) (model.Products, error) {
+func (m *mockProductsRepository) FindByName(name string) (model.Product, error) {
 	// Simulate finding a product by name
 	if name == "Product 1" {
-		product := model.Products{
+		product := model.Product{
 			ID:          1,
 			Name:        "Product 1",
 			Installment: 12,
-			Bunga:       5,
-			Created_At:  time.Now(),
+			Interest:    5,
+			CreatedAt:   time.Now(),
 		}
 		return product, nil
 	}
-	return model.Products{}, nil
+	return model.Product{}, nil
 }
 
-func (m *mockProductsRepository) Save(newProducts model.Products) (model.Products, error) {
+func (m *mockProductsRepository) Save(newProducts model.Product) (model.Product, error) {
 	// Simulate validation errors
 	if newProducts.Name == "" {
-		return model.Products{}, errors.New("name tidak boleh kosong")
+		return model.Product{}, errors.New("name tidak boleh kosong")
 	}
 	if newProducts.Installment == 0 {
-		return model.Products{}, errors.New("installment tidak boleh kosong")
+		return model.Product{}, errors.New("installment tidak boleh kosong")
 	}
-	if newProducts.Bunga == 0 {
-		return model.Products{}, errors.New("bunga tidak boleh kosong")
+	if newProducts.Interest == 0 {
+		return model.Product{}, errors.New("Interest tidak boleh kosong")
 	}
 
 	// Simulate successful save
 	return newProducts, nil
 }
 
-func (m *mockProductsRepository) Update(updateProducts model.Products) (model.Products, error) {
+func (m *mockProductsRepository) Update(updateProducts model.Product) (model.Product, error) {
 	// Simulate validation errors
 	if updateProducts.Name == "" {
-		return model.Products{}, errors.New("name tidak boleh kosong")
+		return model.Product{}, errors.New("name tidak boleh kosong")
 	}
 	if updateProducts.Installment == 0 {
-		return model.Products{}, errors.New("installment tidak boleh kosong")
+		return model.Product{}, errors.New("installment tidak boleh kosong")
 	}
-	if updateProducts.Bunga == 0 {
-		return model.Products{}, errors.New("bunga tidak boleh kosong")
+	if updateProducts.Interest == 0 {
+		return model.Product{}, errors.New("Interest tidak boleh kosong")
 	}
 
 	// Simulate successful update
@@ -112,11 +112,11 @@ func (m *mockProductsRepository) Update(updateProducts model.Products) (model.Pr
 
 func TestProductsService(t *testing.T) {
 	repo := &mockProductsRepository{}
-	productService := service.NewProductsServiceImpl(repo)
+	productService := service.NewProductServiceImpl(repo)
 
 	t.Run("Delete", func(t *testing.T) {
 		productID := int64(1)
-		product, err := productService.Delete(productID)
+		product, err := productService.Delete(uint(productID))
 		assert.NoError(t, err)
 		assert.Equal(t, productID, product.ID)
 	})
@@ -129,7 +129,7 @@ func TestProductsService(t *testing.T) {
 
 	t.Run("FindById", func(t *testing.T) {
 		productID := int64(1)
-		product, err := productService.FindById(productID)
+		product, err := productService.FindById(uint(productID))
 		assert.NoError(t, err)
 		assert.Equal(t, productID, product.ID)
 	})
@@ -142,11 +142,11 @@ func TestProductsService(t *testing.T) {
 	})
 
 	t.Run("Save", func(t *testing.T) {
-		newProduct := model.Products{
+		newProduct := model.Product{
 			Name:        "New Product",
 			Installment: 12,
-			Bunga:       5,
-			Created_At:  time.Now(),
+			Interest:    5,
+			CreatedAt:   time.Now(),
 		}
 
 		savedProduct, err := productService.Save(newProduct)
@@ -155,11 +155,11 @@ func TestProductsService(t *testing.T) {
 	})
 
 	t.Run("Save_ValidationError", func(t *testing.T) {
-		invalidProduct := model.Products{
+		invalidProduct := model.Product{
 			Name:        "", // Invalid name
 			Installment: 12,
-			Bunga:       5,
-			Created_At:  time.Now(),
+			Interest:    5,
+			CreatedAt:   time.Now(),
 		}
 
 		_, err := productService.Save(invalidProduct)
@@ -168,12 +168,12 @@ func TestProductsService(t *testing.T) {
 	})
 
 	t.Run("Update", func(t *testing.T) {
-		updatedProduct := model.Products{
+		updatedProduct := model.Product{
 			ID:          1,
 			Name:        "Updated Product",
 			Installment: 24,
-			Bunga:       8,
-			Created_At:  time.Now(),
+			Interest:    8,
+			CreatedAt:   time.Now(),
 		}
 
 		updated, err := productService.Update(updatedProduct)
@@ -182,12 +182,12 @@ func TestProductsService(t *testing.T) {
 	})
 
 	t.Run("Update_ValidationError", func(t *testing.T) {
-		invalidProduct := model.Products{
+		invalidProduct := model.Product{
 			ID:          1,
 			Name:        "", // Invalid name
 			Installment: 24,
-			Bunga:       8,
-			Created_At:  time.Now(),
+			Interest:    8,
+			CreatedAt:   time.Now(),
 		}
 
 		_, err := productService.Update(invalidProduct)

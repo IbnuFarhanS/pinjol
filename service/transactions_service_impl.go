@@ -6,84 +6,6 @@ import (
 
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
-<<<<<<< HEAD
-	"github.com/go-playground/validator/v10"
-)
-
-type TransactionsServiceImpl struct {
-	TransactionsRepository repository.TransactionsRepository
-	Validate               *validator.Validate
-}
-
-// Delete implements BorrowerService
-func (s *TransactionsServiceImpl) Delete(id int64) (model.Transactions, error) {
-	return s.TransactionsRepository.Delete(id)
-}
-
-// FindAll implements BorrowerService
-func (s *TransactionsServiceImpl) FindAll() ([]model.Transactions, error) {
-	return s.TransactionsRepository.FindAll()
-}
-
-// FindById implements BorrowerService
-func (s *TransactionsServiceImpl) FindById(id int64) (model.Transactions, error) {
-	return s.TransactionsRepository.FindById(id)
-}
-
-// Save implements BorrowerService
-func (s *TransactionsServiceImpl) Save(newTransactions model.Transactions, userid int64) (model.Transactions, error) {
-	// Validate id_product
-	if newTransactions.ProductsID == 0 {
-		return model.Transactions{}, errors.New("id product is required")
-	}
-	// Validate id_user
-	if newTransactions.UsersID == 0 {
-		return model.Transactions{}, errors.New("id user is required")
-	}
-
-	created_at := time.Now()
-	newTra := model.Transactions{
-		ProductsID: newTransactions.ProductsID,
-		UsersID:    userid,
-		Status:     false,
-		Created_At: created_at,
-		Due_Date:   created_at,
-	}
-	return s.TransactionsRepository.Save(newTra)
-
-}
-
-// Update implements BorrowerService
-func (s *TransactionsServiceImpl) Update(updateTransactions model.Transactions) (model.Transactions, error) {
-	// Validate id_product
-	if updateTransactions.ProductsID == 0 {
-		return model.Transactions{}, errors.New("id product is required")
-	}
-	// Validate id_user
-	if updateTransactions.UsersID == 0 {
-		return model.Transactions{}, errors.New("id user is required")
-	}
-
-	var tra model.Transactions
-	create_at := tra.Created_At
-
-	newTra := model.Transactions{
-		ID:         updateTransactions.ID,
-		ProductsID: updateTransactions.ProductsID,
-		UsersID:    updateTransactions.UsersID,
-		Status:     updateTransactions.Status,
-		Due_Date:   updateTransactions.Due_Date,
-		Created_At: create_at,
-	}
-
-	return s.TransactionsRepository.Update(newTra)
-}
-
-func NewTransactionsServiceImpl(TransactionsRepository repository.TransactionsRepository, validate *validator.Validate) TransactionsService {
-	return &TransactionsServiceImpl{
-		TransactionsRepository: TransactionsRepository,
-		Validate:               validate,
-=======
 )
 
 type TransactionServiceImpl struct {
@@ -122,7 +44,7 @@ func (s *TransactionServiceImpl) Save(newTransaction model.Transaction, userid u
 	}
 
 	if newTransaction.Amount > user.Limit {
-		return model.Transaction{}, errors.New("Amount exceeds user's limit")
+		return model.Transaction{}, errors.New("amount exceeds user's limit")
 	}
 
 	user.Limit -= newTransaction.Amount
@@ -175,6 +97,5 @@ func NewTransactionServiceImpl(TransactionRepository repository.TransactionRepos
 	return &TransactionServiceImpl{
 		TransactionRepository: TransactionRepository,
 		UserRepository:        UserRepo,
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 	}
 }

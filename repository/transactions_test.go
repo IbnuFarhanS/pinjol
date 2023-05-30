@@ -14,7 +14,7 @@ import (
 )
 
 func setupTestDB_Transactions(t *testing.T) *gorm.DB {
-	dsn := "host=localhost user=postgres password=sql1234 dbname=pinjol port=5432 sslmode=disable"
+	dsn := "host=localhost user=postgres password=sql1234 dbname=pinjol_test port=5432 sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	require.NoError(t, err)
 
@@ -35,22 +35,22 @@ func TestSaveTransactions(t *testing.T) {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewTransactionsRepositoryImpl(gormDB)
+	repo := NewTransactionRepositoryImpl(gormDB)
 
 	// Menyiapkan transactions status baru
-	newTra := model.Transactions{
-		ProductsID: 1,
-		UsersID:    1,
-		Status:     false,
+	newTra := model.Transaction{
+		ProductID: 1,
+		UserID:    1,
+		Status:    false,
 	}
 	// Menyiapkan query dan hasil yang diharapkan
 	mock.ExpectBegin()
 	mock.ExpectExec(`INSERT INTO "transactions" (.+) VALUES (.+)`).
 		WithArgs(
-			newTra.ProductsID,
-			newTra.UsersID,
+			newTra.ProductID,
+			newTra.UserID,
 			newTra.Status,
-			newTra.Created_At,
+			newTra.CreatedAt,
 			newTra.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
@@ -74,25 +74,25 @@ func TestUpdateTransactions(t *testing.T) {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewTransactionsRepositoryImpl(gormDB)
+	repo := NewTransactionRepositoryImpl(gormDB)
 
 	// Menyiapkan data transactions yang akan diupdate
-	updateTra := model.Transactions{
-		ID:         1,
-		ProductsID: 1,
-		UsersID:    1,
-		Status:     false,
-		Created_At: time.Now(), // Atur waktu yang sesuai
+	updateTra := model.Transaction{
+		ID:        1,
+		ProductID: 1,
+		UserID:    1,
+		Status:    false,
+		CreatedAt: time.Now(), // Atur waktu yang sesuai
 	}
 
 	// Menyiapkan query dan hasil yang diharapkan
 	mock.ExpectBegin()
 	mock.ExpectExec(`UPDATE "transactions" SET (.+) WHERE "transactions"."id" = (.+)`).
 		WithArgs(
-			updateTra.ProductsID,
-			updateTra.UsersID,
+			updateTra.ProductID,
+			updateTra.UserID,
 			updateTra.Status,
-			updateTra.Created_At.UTC(),
+			updateTra.CreatedAt.UTC(),
 			updateTra.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
@@ -119,7 +119,7 @@ func TestDeleteTransactions(t *testing.T) {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewTransactionsRepositoryImpl(gormDB)
+	repo := NewTransactionRepositoryImpl(gormDB)
 
 	// ID transactions yang akan dihapus
 	traID := int64(1)
@@ -132,33 +132,33 @@ func TestDeleteTransactions(t *testing.T) {
 	mock.ExpectCommit()
 
 	// Memanggil fungsi Delete
-	result, err := repo.Delete(traID)
+	result, err := repo.Delete(uint(traID))
 
 	// Memastikan tidak ada error yang terjadi
 	assert.NoError(t, err)
 
 	// Memastikan transactions yang dihapus sesuai dengan yang diharapkan
-	expectedTra := model.Transactions{} // Atur sesuai dengan nilai yang diharapkan
+	expectedTra := model.Transaction{} // Atur sesuai dengan nilai yang diharapkan
 	assert.Equal(t, expectedTra, result)
 }
 
 // ================== FIND BY ID =========================
 func TestFindByIdTransactions(t *testing.T) {
 	db := setupTestDB_Transactions(t)
-	repo := NewTransactionsRepositoryImpl(db)
+	repo := NewTransactionRepositoryImpl(db)
 
 	// Test FindById for ID 1
 	foundTransactions, err := repo.FindById(1)
 	require.Nil(t, err)
 
 	// Expected Transactions with ID 1
-	expectedTransactions := model.Transactions{
-		ID:         1,
-		UsersID:    1,
-		ProductsID: 1,
-		Status:     false,
-		Created_At: time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
-		Due_Date:   time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+	expectedTransactions := model.Transaction{
+		ID:        1,
+		UserID:    1,
+		ProductID: 1,
+		Status:    false,
+		CreatedAt: time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+		DueDate:   time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
 	}
 
 	require.Equal(t, expectedTransactions, foundTransactions)
@@ -167,25 +167,25 @@ func TestFindByIdTransactions(t *testing.T) {
 // ================== FIND ALL =========================
 func TestFindAllTransactions(t *testing.T) {
 	db := setupTestDB_Transactions(t)
-	repo := NewTransactionsRepositoryImpl(db)
+	repo := NewTransactionRepositoryImpl(db)
 
 	// Create multiple Transactions in the database
-	dummyTransactions := []model.Transactions{
+	dummyTransactions := []model.Transaction{
 		{
-			ID:         1,
-			UsersID:    1,
-			ProductsID: 1,
-			Status:     false,
-			Created_At: time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
-			Due_Date:   time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+			ID:        1,
+			UserID:    1,
+			ProductID: 1,
+			Status:    false,
+			CreatedAt: time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+			DueDate:   time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
 		},
 		{
-			ID:         2,
-			UsersID:    1,
-			ProductsID: 1,
-			Status:     false,
-			Created_At: time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
-			Due_Date:   time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+			ID:        2,
+			UserID:    1,
+			ProductID: 1,
+			Status:    false,
+			CreatedAt: time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+			DueDate:   time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
 		},
 		// Add more Transactions if needed
 	}

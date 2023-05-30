@@ -13,7 +13,7 @@ func (m *mockPaymentMethodRepository) Save(paymentMethod model.PaymentMethod) (m
 	return paymentMethod, nil
 }
 
-func (m *mockPaymentMethodRepository) Delete(id int64) (model.PaymentMethod, error) {
+func (m *mockPaymentMethodRepository) Delete(id uint) (model.PaymentMethod, error) {
 	// Simulate successful delete
 	return model.PaymentMethod{}, nil
 }
@@ -27,10 +27,10 @@ func (m *mockPaymentMethodRepository) FindAll() ([]model.PaymentMethod, error) {
 	return paymentMethods, nil
 }
 
-func (m *mockPaymentMethodRepository) FindById(id int64) (model.PaymentMethod, error) {
+func (m *mockPaymentMethodRepository) FindById(id uint) (model.PaymentMethod, error) {
 	// Simulate finding a payment method by ID
 	paymentMethod := model.PaymentMethod{
-		ID:   id,
+		ID:   uint(id),
 		Name: "Credit Card",
 	}
 	return paymentMethod, nil
@@ -81,7 +81,7 @@ func TestDeletePaymentMethod(t *testing.T) {
 
 	// Test case: Delete a payment method by ID
 	id := int64(1)
-	_, err := service.Delete(id)
+	_, err := service.Delete(uint(id))
 	if err != nil {
 		t.Errorf("Expected no error, but got: %v", err)
 	}
@@ -108,13 +108,13 @@ func TestFindPaymentMethodByID(t *testing.T) {
 
 	// Test case: Find a payment method by ID
 	id := int64(1)
-	paymentMethod, err := service.FindById(id)
+	paymentMethod, err := service.FindById(uint(id))
 	if err != nil {
 		t.Errorf("Expected no error, but got: %v", err)
 	}
 
 	// Check the ID of the returned payment method
-	if paymentMethod.ID != id {
+	if paymentMethod.ID != uint(id) {
 		t.Errorf("Expected payment method with ID %d, but got: %d", id, paymentMethod.ID)
 	}
 }

@@ -35,22 +35,22 @@ func TestSaveAccPayments(t *testing.T) {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewPaymentsRepositoryImpl(gormDB)
+	repo := NewPaymentRepositoryImpl(gormDB)
 
 	// Menyiapkan data payments baru
-	newPayment := model.Payments{
-		TransactionsID:  1,
+	newPayment := model.Payment{
+		TransactionID:   1,
 		PaymentMethodID: 1,
-		Payment_Amount:  1000000,
+		PaymentAmount:   1000000,
 	}
 	// Menyiapkan query dan hasil yang diharapkan
 	mock.ExpectBegin()
 	mock.ExpectExec(`INSERT INTO "payments" (.+) VALUES (.+)`).
 		WithArgs(
-			newPayment.TransactionsID,
+			newPayment.TransactionID,
 			newPayment.PaymentMethodID,
-			newPayment.Payment_Amount,
-			newPayment.Payment_Date,
+			newPayment.PaymentAmount,
+			newPayment.PaymentDate,
 			newPayment.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
@@ -74,25 +74,25 @@ func TestUpdatePayments(t *testing.T) {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewPaymentsRepositoryImpl(gormDB)
+	repo := NewPaymentRepositoryImpl(gormDB)
 
 	// Menyiapkan data payments yang akan diupdate
-	updatePayment := model.Payments{
+	updatePayment := model.Payment{
 		ID:              1,
-		TransactionsID:  1,
+		TransactionID:   1,
 		PaymentMethodID: 1,
-		Payment_Amount:  1000000,
-		Payment_Date:    time.Now(), // Atur waktu yang sesuai
+		PaymentAmount:   1000000,
+		PaymentDate:     time.Now(), // Atur waktu yang sesuai
 	}
 
 	// Menyiapkan query dan hasil yang diharapkan
 	mock.ExpectBegin()
 	mock.ExpectExec(`UPDATE "payments" SET (.+) WHERE "payments"."id" = (.+)`).
 		WithArgs(
-			updatePayment.TransactionsID,
+			updatePayment.TransactionID,
 			updatePayment.PaymentMethodID,
-			updatePayment.Payment_Amount,
-			updatePayment.Payment_Date.UTC(),
+			updatePayment.PaymentAmount,
+			updatePayment.PaymentDate.UTC(),
 			updatePayment.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
@@ -119,7 +119,7 @@ func TestDeletePayments(t *testing.T) {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewPaymentsRepositoryImpl(gormDB)
+	repo := NewPaymentRepositoryImpl(gormDB)
 
 	// ID payments yang akan dihapus
 	paymentID := int64(1)
@@ -132,32 +132,32 @@ func TestDeletePayments(t *testing.T) {
 	mock.ExpectCommit()
 
 	// Memanggil fungsi Delete
-	result, err := repo.Delete(paymentID)
+	result, err := repo.Delete(uint(paymentID))
 
 	// Memastikan tidak ada error yang terjadi
 	assert.NoError(t, err)
 
 	// Memastikan payments yang dihapus sesuai dengan yang diharapkan
-	expectedPayment := model.Payments{} // Atur sesuai dengan nilai yang diharapkan
+	expectedPayment := model.Payment{} // Atur sesuai dengan nilai yang diharapkan
 	assert.Equal(t, expectedPayment, result)
 }
 
 // ================== FIND BY ID =========================
 func TestFindByIdPayments(t *testing.T) {
 	db := setupTestDB_Payments(t)
-	repo := NewPaymentsRepositoryImpl(db)
+	repo := NewPaymentRepositoryImpl(db)
 
 	// Test FindById for ID 1
 	foundPayments, err := repo.FindById(1)
 	require.Nil(t, err)
 
 	// Expected Payments with ID 1
-	expectedPayments := model.Payments{
+	expectedPayments := model.Payment{
 		ID:              1,
-		TransactionsID:  1,
+		TransactionID:   1,
 		PaymentMethodID: 1,
-		Payment_Amount:  1000000,
-		Payment_Date:    time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+		PaymentAmount:   1000000,
+		PaymentDate:     time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
 	}
 
 	require.Equal(t, expectedPayments, foundPayments)
@@ -166,23 +166,23 @@ func TestFindByIdPayments(t *testing.T) {
 // ================== FIND ALL =========================
 func TestFindAllPayments(t *testing.T) {
 	db := setupTestDB_Payments(t)
-	repo := NewPaymentsRepositoryImpl(db)
+	repo := NewPaymentRepositoryImpl(db)
 
 	// Create multiple Payments in the database
-	dummyPayment := []model.Payments{
+	dummyPayment := []model.Payment{
 		{
 			ID:              1,
-			TransactionsID:  1,
+			TransactionID:   1,
 			PaymentMethodID: 1,
-			Payment_Amount:  1000000,
-			Payment_Date:    time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+			PaymentAmount:   1000000,
+			PaymentDate:     time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
 		},
 		{
 			ID:              2,
-			TransactionsID:  1,
+			TransactionID:   1,
 			PaymentMethodID: 1,
-			Payment_Amount:  1000000,
-			Payment_Date:    time.Date(2023, 5, 27, 0, 0, 0, 0, time.Local),
+			PaymentAmount:   1000000,
+			PaymentDate:     time.Date(2023, 5, 27, 0, 0, 0, 0, time.Local),
 		},
 		// Add more Payments if needed
 	}

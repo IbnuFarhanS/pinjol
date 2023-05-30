@@ -35,20 +35,20 @@ func TestSaveProducts(t *testing.T) {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewProductsRepositoryImpl(gormDB)
+	repo := NewProductRepositoryImpl(gormDB)
 
 	// Menyiapkan data produk baru
-	newProduct := model.Products{
+	newProduct := model.Product{
 		Name:        "Product",
 		Installment: 6,
-		Bunga:       0.2,
+		Interest:    0.2,
 		// Amount:      1000000,
 	}
 
 	// Menyiapkan query dan hasil yang diharapkan
 	mock.ExpectBegin()
 	mock.ExpectExec(`INSERT INTO "products" (.+) VALUES (.+)`).
-		WithArgs(newProduct.Name, newProduct.Installment, newProduct.Bunga, newProduct.Created_At, newProduct.ID).
+		WithArgs(newProduct.Name, newProduct.Installment, newProduct.Interest, newProduct.CreatedAt, newProduct.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
@@ -62,19 +62,19 @@ func TestSaveProducts(t *testing.T) {
 // ================== FIND BY ID =========================
 func TestFindByIdProducts(t *testing.T) {
 	db := setupTestDB_Products(t)
-	repo := NewProductsRepositoryImpl(db)
+	repo := NewProductRepositoryImpl(db)
 
 	// Test FindById for ID 1
 	foundProducts, err := repo.FindById(1)
 	require.NoError(t, err)
 
 	// Expected Products with ID 1
-	expectedProducts := model.Products{
+	expectedProducts := model.Product{
 		ID:          1,
 		Name:        "cicilan 6 bulan",
 		Installment: 6,
-		Bunga:       30,
-		Created_At:  time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+		Interest:    30,
+		CreatedAt:   time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
 		// Amount:      1000000,
 	}
 
@@ -84,19 +84,19 @@ func TestFindByIdProducts(t *testing.T) {
 // ================== FIND BY NAME =========================
 func TestFindByNameProducts(t *testing.T) {
 	db := setupTestDB_Products(t)
-	repo := NewProductsRepositoryImpl(db)
+	repo := NewProductRepositoryImpl(db)
 
 	// Test FindByName for Name
 	foundProducts, err := repo.FindByName("cicilan 6 bulan")
 	require.NoError(t, err)
 
 	// Expected Products with Name
-	expectedProducts := model.Products{
+	expectedProducts := model.Product{
 		ID:          1,
 		Name:        "cicilan 6 bulan",
 		Installment: 6,
-		Bunga:       30,
-		Created_At:  time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+		Interest:    30,
+		CreatedAt:   time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
 		// Amount:      1000000,
 	}
 
@@ -111,32 +111,32 @@ func TestFindByNameProducts(t *testing.T) {
 // ================== FIND ALL =========================
 func TestFindAllProducts(t *testing.T) {
 	db := setupTestDB_Products(t)
-	repo := NewProductsRepositoryImpl(db)
+	repo := NewProductRepositoryImpl(db)
 
 	// Create multiple Productss in the database
-	Productss := []model.Products{
+	Productss := []model.Product{
 		{
 			ID:          1,
 			Name:        "cicilan 6 bulan",
 			Installment: 6,
-			Bunga:       30,
-			Created_At:  time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+			Interest:    30,
+			CreatedAt:   time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
 			// Amount:      1000000,
 		},
 		{
 			ID:          2,
 			Name:        "cicilan 4 bulan",
 			Installment: 4,
-			Bunga:       20,
-			Created_At:  time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
+			Interest:    20,
+			CreatedAt:   time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
 			// Amount:      2000000,
 		},
 		{
 			ID:          3,
 			Name:        "cicilan 2 bulan",
 			Installment: 2,
-			Bunga:       10,
-			Created_At:  time.Date(2023, 5, 29, 0, 20, 31, 122408000, time.Local),
+			Interest:    10,
+			CreatedAt:   time.Date(2023, 5, 29, 0, 20, 31, 122408000, time.Local),
 			// Amount:      2000000,
 		},
 		// Add more Productss if needed
@@ -173,22 +173,22 @@ func TestUpdateProducts(t *testing.T) {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewProductsRepositoryImpl(gormDB)
+	repo := NewProductRepositoryImpl(gormDB)
 
 	// Menyiapkan data produk yang akan diupdate
-	updatedProduct := model.Products{
+	updatedProduct := model.Product{
 		ID:          1,
 		Name:        "Updated Product",
 		Installment: 12,
-		Bunga:       0.3,
-		Created_At:  time.Now(), // Atur waktu yang sesuai
+		Interest:    0.3,
+		CreatedAt:   time.Now(), // Atur waktu yang sesuai
 		// Amount:      2000000,
 	}
 
 	// Menyiapkan query dan hasil yang diharapkan
 	mock.ExpectBegin()
 	mock.ExpectExec(`UPDATE "products" SET (.+) WHERE "products"."id" = (.+)`).
-		WithArgs(updatedProduct.Name, updatedProduct.Installment, updatedProduct.Bunga, updatedProduct.Created_At.UTC(), updatedProduct.ID).
+		WithArgs(updatedProduct.Name, updatedProduct.Installment, updatedProduct.Interest, updatedProduct.CreatedAt.UTC(), updatedProduct.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
@@ -214,7 +214,7 @@ func TestDeleteProducts(t *testing.T) {
 	})
 
 	// Inisialisasi repository dengan GORM DB
-	repo := NewProductsRepositoryImpl(gormDB)
+	repo := NewProductRepositoryImpl(gormDB)
 
 	// ID produk yang akan dihapus
 	productID := int64(1)
@@ -227,12 +227,12 @@ func TestDeleteProducts(t *testing.T) {
 	mock.ExpectCommit()
 
 	// Memanggil fungsi Delete
-	result, err := repo.Delete(productID)
+	result, err := repo.Delete(uint(productID))
 
 	// Memastikan tidak ada error yang terjadi
 	assert.NoError(t, err)
 
 	// Memastikan produk yang dihapus sesuai dengan yang diharapkan
-	expectedProduct := model.Products{} // Atur sesuai dengan nilai yang diharapkan
+	expectedProduct := model.Product{} // Atur sesuai dengan nilai yang diharapkan
 	assert.Equal(t, expectedProduct, result)
 }

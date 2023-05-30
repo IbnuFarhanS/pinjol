@@ -13,7 +13,7 @@ func (m *mockAcceptStatusRepository) Save(acceptStatus model.AcceptStatus) (mode
 	return acceptStatus, nil
 }
 
-func (m *mockAcceptStatusRepository) Delete(id int64) (model.AcceptStatus, error) {
+func (m *mockAcceptStatusRepository) Delete(id uint) (model.AcceptStatus, error) {
 	// Simulate successful delete
 	return model.AcceptStatus{}, nil
 }
@@ -21,18 +21,18 @@ func (m *mockAcceptStatusRepository) Delete(id int64) (model.AcceptStatus, error
 func (m *mockAcceptStatusRepository) FindAll() ([]model.AcceptStatus, error) {
 	// Simulate finding all accept statuses
 	acceptStatuses := []model.AcceptStatus{
-		{ID: 1, TransactionsID: 1, Status: true},
-		{ID: 2, TransactionsID: 2, Status: false},
+		{ID: 1, TransactionID: 1, Status: true},
+		{ID: 2, TransactionID: 2, Status: false},
 	}
 	return acceptStatuses, nil
 }
 
-func (m *mockAcceptStatusRepository) FindById(id int64) (model.AcceptStatus, error) {
+func (m *mockAcceptStatusRepository) FindById(id uint) (model.AcceptStatus, error) {
 	// Simulate finding an accept status by ID
 	acceptStatus := model.AcceptStatus{
-		ID:             id,
-		TransactionsID: 1,
-		Status:         true,
+		ID:            uint(id),
+		TransactionID: 1,
+		Status:        true,
 	}
 	return acceptStatus, nil
 }
@@ -47,8 +47,8 @@ func TestSaveAcceptStatus(t *testing.T) {
 
 	// Test case 1: Valid accept status
 	acceptStatus := model.AcceptStatus{
-		TransactionsID: 1,
-		Status:         true,
+		TransactionID: 1,
+		Status:        true,
 	}
 	_, err := service.Save(acceptStatus)
 	if err != nil {
@@ -73,7 +73,7 @@ func TestDeleteAcceptStatus(t *testing.T) {
 
 	// Test case: Delete an accept status by ID
 	id := int64(1)
-	_, err := service.Delete(id)
+	_, err := service.Delete(uint(id))
 	if err != nil {
 		t.Errorf("Expected no error, but got: %v", err)
 	}
@@ -100,13 +100,13 @@ func TestFindAcceptStatusByID(t *testing.T) {
 
 	// Test case: Find an accept status by ID
 	id := int64(1)
-	acceptStatus, err := service.FindById(id)
+	acceptStatus, err := service.FindById(uint(id))
 	if err != nil {
 		t.Errorf("Expected no error, but got: %v", err)
 	}
 
 	// Check the ID of the returned accept status
-	if acceptStatus.ID != id {
+	if acceptStatus.ID != uint(id) {
 		t.Errorf("Expected accept status with ID %d, but got: %d", id, acceptStatus.ID)
 	}
 }
@@ -116,9 +116,9 @@ func TestUpdateAcceptStatus(t *testing.T) {
 
 	// Test case 1: Valid accept status
 	acceptStatus := model.AcceptStatus{
-		ID:             1,
-		TransactionsID: 1,
-		Status:         true,
+		ID:            1,
+		TransactionID: 1,
+		Status:        true,
 	}
 	_, err := service.Update(acceptStatus)
 	if err != nil {
@@ -127,9 +127,9 @@ func TestUpdateAcceptStatus(t *testing.T) {
 
 	// Test case 2: Invalid accept status (transactionsID is 0)
 	invalidAcceptStatus := model.AcceptStatus{
-		ID:             1,
-		TransactionsID: 0,
-		Status:         false,
+		ID:            1,
+		TransactionID: 0,
+		Status:        false,
 	}
 	_, err = service.Update(invalidAcceptStatus)
 	if err == nil {

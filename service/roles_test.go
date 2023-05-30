@@ -8,54 +8,54 @@ import (
 
 type mockRolesRepository struct{}
 
-func (m *mockRolesRepository) Save(roles model.Roles) (model.Roles, error) {
+func (m *mockRolesRepository) Save(roles model.Role) (model.Role, error) {
 	// Simulate successful save
 	return roles, nil
 }
 
-func (m *mockRolesRepository) Delete(id int64) (model.Roles, error) {
+func (m *mockRolesRepository) Delete(id uint) (model.Role, error) {
 	// Simulate successful delete
-	return model.Roles{}, nil
+	return model.Role{}, nil
 }
 
-func (m *mockRolesRepository) FindAll() ([]model.Roles, error) {
+func (m *mockRolesRepository) FindAll() ([]model.Role, error) {
 	// Simulate finding all roles
-	roles := []model.Roles{
+	roles := []model.Role{
 		{ID: 1, Name: "User"},
 		{ID: 2, Name: "Admin"},
 	}
 	return roles, nil
 }
 
-func (m *mockRolesRepository) FindById(id int64) (model.Roles, error) {
+func (m *mockRolesRepository) FindById(id uint) (model.Role, error) {
 	// Simulate finding a roles by ID
-	roles := model.Roles{
+	roles := model.Role{
 		ID:   id,
 		Name: "User",
 	}
 	return roles, nil
 }
 
-func (m *mockRolesRepository) FindByName(name string) (model.Roles, error) {
+func (m *mockRolesRepository) FindByName(name string) (model.Role, error) {
 	// Simulate finding a roles by name
-	roles := model.Roles{
+	roles := model.Role{
 		ID:   1,
 		Name: name,
 	}
 	return roles, nil
 }
 
-func (m *mockRolesRepository) Update(roles model.Roles) (model.Roles, error) {
+func (m *mockRolesRepository) Update(roles model.Role) (model.Role, error) {
 	// Simulate successful update
 	return roles, nil
 }
 
 func TestSaveRoles(t *testing.T) {
 
-	service := NewRolesServiceImpl(&mockRolesRepository{})
+	service := NewRoleServiceImpl(&mockRolesRepository{})
 
 	// Test case 1: Valid roles
-	roles := model.Roles{
+	roles := model.Role{
 		Name: "User",
 	}
 	_, err := service.Save(roles)
@@ -64,7 +64,7 @@ func TestSaveRoles(t *testing.T) {
 	}
 
 	// Test case 2: Invalid roles (name is empty)
-	invalidRoles := model.Roles{}
+	invalidRoles := model.Role{}
 	_, err = service.Save(invalidRoles)
 	if err == nil {
 		t.Error("Expected an error, but got none")
@@ -77,18 +77,18 @@ func TestSaveRoles(t *testing.T) {
 }
 
 func TestDeleteRoles(t *testing.T) {
-	service := NewRolesServiceImpl(&mockRolesRepository{})
+	service := NewRoleServiceImpl(&mockRolesRepository{})
 
 	// Test case: Delete a roles by ID
 	id := int64(1)
-	_, err := service.Delete(id)
+	_, err := service.Delete(uint(id))
 	if err != nil {
 		t.Errorf("Expected no error, but got: %v", err)
 	}
 }
 
 func TestFindAllRoles(t *testing.T) {
-	service := NewRolesServiceImpl(&mockRolesRepository{})
+	service := NewRoleServiceImpl(&mockRolesRepository{})
 
 	// Test case: Find all roles
 	roles, err := service.FindAll()
@@ -104,23 +104,23 @@ func TestFindAllRoles(t *testing.T) {
 }
 
 func TestFindRolesByID(t *testing.T) {
-	service := NewRolesServiceImpl(&mockRolesRepository{})
+	service := NewRoleServiceImpl(&mockRolesRepository{})
 
 	// Test case: Find a roles by ID
 	id := int64(1)
-	roles, err := service.FindById(id)
+	roles, err := service.FindById(uint(id))
 	if err != nil {
 		t.Errorf("Expected no error, but got: %v", err)
 	}
 
 	// Check the ID of the returned roles
-	if roles.ID != id {
+	if roles.ID != uint(id) {
 		t.Errorf("Expected roles with ID %d, but got: %d", id, roles.ID)
 	}
 }
 
 func TestFindRolesByName(t *testing.T) {
-	service := NewRolesServiceImpl(&mockRolesRepository{})
+	service := NewRoleServiceImpl(&mockRolesRepository{})
 
 	// Test case: Find a roles by name
 	name := "User"
@@ -137,10 +137,10 @@ func TestFindRolesByName(t *testing.T) {
 
 func TestUpdateRoles(t *testing.T) {
 
-	service := NewRolesServiceImpl(&mockRolesRepository{})
+	service := NewRoleServiceImpl(&mockRolesRepository{})
 
 	// Test case 1: Valid roles
-	roles := model.Roles{
+	roles := model.Role{
 		ID:   1,
 		Name: "New User",
 	}
@@ -150,7 +150,7 @@ func TestUpdateRoles(t *testing.T) {
 	}
 
 	// Test case 2: Invalid roles (name is empty)
-	invalidRoles := model.Roles{
+	invalidRoles := model.Role{
 		ID:   1,
 		Name: "",
 	}
