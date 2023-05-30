@@ -29,7 +29,10 @@ func (s *AcceptStatusServiceImpl) FindById(id uint) (model.AcceptStatus, error) 
 
 // Save implements BorrowerService
 func (s *AcceptStatusServiceImpl) Save(newAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
-	transaction := newAcceptStatus.Transaction
+	transaction, err := s.TransactionRepository.FindById(newAcceptStatus.TransactionID)
+	if err != nil {
+		return model.AcceptStatus{}, err
+	}
 
 	if newAcceptStatus.Status {
 		transaction.Status = true
@@ -42,7 +45,7 @@ func (s *AcceptStatusServiceImpl) Save(newAcceptStatus model.AcceptStatus) (mode
 	newAcceptStatus.Transaction = transaction
 
 	// Update status Transaction berdasarkan ID transaksi
-	err := s.TransactionRepository.UpdateStatus(transaction.ID, transaction.Status)
+	err = s.TransactionRepository.UpdateStatus(transaction.ID, transaction.Status)
 	if err != nil {
 		return model.AcceptStatus{}, err
 	}
@@ -50,21 +53,28 @@ func (s *AcceptStatusServiceImpl) Save(newAcceptStatus model.AcceptStatus) (mode
 	return s.AcceptStatusRepository.Save(newAcceptStatus)
 }
 
-// Update implements BorrowerService
+// Update implements AcceptStatusService
 func (s *AcceptStatusServiceImpl) Update(updateAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
-
-	var ast model.AcceptStatus
-	create_at := ast.CreatedAt
-
-	newAs := model.AcceptStatus{
-		ID:            updateAcceptStatus.ID,
-		TransactionID: 0,
-		Transaction:   model.Transaction{},
-		Status:        updateAcceptStatus.Status,
-		CreatedAt:     create_at,
+	transaction, err := s.TransactionRepository.FindById(updateAcceptStatus.TransactionID)
+	if err != nil {
+		return model.AcceptStatus{}, err
 	}
 
-	return s.AcceptStatusRepository.Update(newAs)
+	if updateAcceptStatus.Status {
+		transaction.Status = true
+	} else {
+		transaction.Status = false
+	}
+
+	updateAcceptStatus.Transaction = transaction
+
+	// Update status Transaction berdasarkan ID transaksi
+	err = s.TransactionRepository.UpdateStatus(transaction.ID, transaction.Status)
+	if err != nil {
+		return model.AcceptStatus{}, err
+	}
+
+	return s.AcceptStatusRepository.Update(updateAcceptStatus)
 }
 
 func NewAcceptStatusServiceImpl(acceptStatusRepository repository.AcceptStatusRepository, TransactionRepository repository.TransactionRepository) AcceptStatusService {
