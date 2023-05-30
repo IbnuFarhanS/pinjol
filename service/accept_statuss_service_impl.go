@@ -9,6 +9,7 @@ import (
 
 type AcceptStatusServiceImpl struct {
 	AcceptStatusRepository repository.AcceptStatusRepository
+	TransactionRepository  repository.TransactionRepository
 }
 
 // Delete implements BorrowerService
@@ -28,14 +29,25 @@ func (s *AcceptStatusServiceImpl) FindById(id uint) (model.AcceptStatus, error) 
 
 // Save implements BorrowerService
 func (s *AcceptStatusServiceImpl) Save(newAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
+	transaction := newAcceptStatus.Transaction
 
-	newAs := model.AcceptStatus{
-		Transaction: model.Transaction{},
-		Status:      newAcceptStatus.Status,
-		CreatedAt:   time.Time{},
+	if newAcceptStatus.Status {
+		transaction.Status = true
+	} else {
+		transaction.Status = false
 	}
-	return s.AcceptStatusRepository.Save(newAs)
 
+	currentTime := time.Now()
+	newAcceptStatus.CreatedAt = currentTime
+	newAcceptStatus.Transaction = transaction
+
+	// Update status Transaction berdasarkan ID transaksi
+	err := s.TransactionRepository.UpdateStatus(transaction.ID, transaction.Status)
+	if err != nil {
+		return model.AcceptStatus{}, err
+	}
+
+	return s.AcceptStatusRepository.Save(newAcceptStatus)
 }
 
 // Update implements BorrowerService
@@ -55,8 +67,9 @@ func (s *AcceptStatusServiceImpl) Update(updateAcceptStatus model.AcceptStatus) 
 	return s.AcceptStatusRepository.Update(newAs)
 }
 
-func NewAcceptStatusServiceImpl(acceptStatusRepository repository.AcceptStatusRepository) AcceptStatusService {
+func NewAcceptStatusServiceImpl(acceptStatusRepository repository.AcceptStatusRepository, TransactionRepository repository.TransactionRepository) AcceptStatusService {
 	return &AcceptStatusServiceImpl{
 		AcceptStatusRepository: acceptStatusRepository,
+		TransactionRepository:  TransactionRepository,
 	}
 }

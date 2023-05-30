@@ -48,7 +48,9 @@ func (r *AcceptStatusRepositoryImpl) Save(newAcceptStatus model.AcceptStatus) (m
 	currentTime := time.Now()
 	newAcceptStatus.CreatedAt = currentTime
 	result := r.Db.Create(&newAcceptStatus)
-	helper.ErrorPanic(result.Error)
+	if result.Error != nil {
+		return model.AcceptStatus{}, result.Error
+	}
 	return newAcceptStatus, nil
 }
 

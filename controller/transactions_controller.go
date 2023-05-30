@@ -12,11 +12,11 @@ import (
 )
 
 type TransactionController struct {
-	TransactionService service.TransactionService
+	transactionService service.TransactionService
 }
 
 func NewTransactionController(service service.TransactionService) *TransactionController {
-	return &TransactionController{TransactionService: service}
+	return &TransactionController{transactionService: service}
 }
 
 func (c *TransactionController) Insert(ctx *gin.Context) {
@@ -28,14 +28,14 @@ func (c *TransactionController) Insert(ctx *gin.Context) {
 	currentUserID, _ := ctx.Get("currentUserID")
 	userID, _ := currentUserID.(int64)
 
-	result, err := c.TransactionService.Save(createtra, uint(userID))
+	result, err := c.transactionService.Save(createtra, uint(userID))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully created Transaction!",
+		Message: "Successfully created Transactions!",
 		Data:    result,
 	}
 
@@ -55,7 +55,7 @@ func (c *TransactionController) Update(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	updatedTransaction, err := c.TransactionService.Update(updatetra)
+	updatedTransactions, err := c.transactionService.Update(updatetra)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -64,8 +64,8 @@ func (c *TransactionController) Update(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully updated Transaction!",
-		Data:    updatedTransaction,
+		Message: "Successfully updated Transactions!",
+		Data:    updatedTransactions,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
@@ -77,7 +77,7 @@ func (c *TransactionController) Delete(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	c.TransactionService.Delete(uint(id))
+	c.transactionService.Delete(uint(id))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -86,7 +86,7 @@ func (c *TransactionController) Delete(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully deleted Transaction!",
+		Message: "Successfully deleted Transactions!",
 		Data:    nil,
 	}
 
@@ -94,7 +94,7 @@ func (c *TransactionController) Delete(ctx *gin.Context) {
 }
 
 func (c *TransactionController) FindAll(ctx *gin.Context) {
-	len, err := c.TransactionService.FindAll()
+	len, err := c.transactionService.FindAll()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -103,7 +103,7 @@ func (c *TransactionController) FindAll(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetch all Transaction data!",
+		Message: "Successfully fetch all Transactions data!",
 		Data:    len,
 	}
 
@@ -117,7 +117,7 @@ func (c *TransactionController) FindByID(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	tra, err := c.TransactionService.FindById(uint(id))
+	tra, err := c.transactionService.FindById(uint(id))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -126,7 +126,7 @@ func (c *TransactionController) FindByID(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetched Transaction!",
+		Message: "Successfully fetched Transactions!",
 		Data:    tra,
 	}
 
@@ -134,26 +134,26 @@ func (c *TransactionController) FindByID(ctx *gin.Context) {
 }
 
 func (c *TransactionController) ExportToCSV(ctx *gin.Context) {
-	Transaction, err := c.TransactionService.FindAll()
+	transactions, err := c.transactionService.FindAll()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	filePath := "export/Transaction.csv" // Ganti dengan jalur file CSV yang diinginkan
+	filePath := "export/transactions.csv" // Ganti dengan jalur file CSV yang diinginkan
 
-	err = utils.ExportTransactionsToCSV(Transaction, filePath)
+	err = utils.ExportTransactionsToCSV(transactions, filePath)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "Transaction exported to CSV successfully"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "Transactions exported to CSV successfully"})
 }
 
-func (controller *TransactionController) FindAllTransaction(ctx *gin.Context) {
-	currentUser := ctx.GetUint("currentUserID")
-	Transaction, err := controller.TransactionService.FindAll()
+func (controller *TransactionController) FindAllTransactions(ctx *gin.Context) {
+	currentUser := ctx.GetInt64("currentUserID")
+	transactions, err := controller.transactionService.FindAll()
 	if err != nil {
 		webResponse := response.Response{
 			Code:    http.StatusInternalServerError,
@@ -165,19 +165,16 @@ func (controller *TransactionController) FindAllTransaction(ctx *gin.Context) {
 	}
 
 	filteredTra := make([]model.Transaction, 0)
-	for i := range Transaction {
-		if Transaction[i].UserID == currentUser {
-			// fmt.Println("WADADWADWADAWD", Transaction[i].Product.Interest)
-			Transaction[i].TotalTax = (Transaction[i].Amount * Transaction[i].Product.Interest) / 100
-			Transaction[i].Total = Transaction[i].TotalTax + Transaction[i].Amount
-			filteredTra = append(filteredTra, Transaction[i])
+	for _, transaction := range transactions {
+		if int64(transaction.UserID) == currentUser {
+			filteredTra = append(filteredTra, transaction)
 		}
 	}
 
 	webResponse := response.Response{
 		Code:    http.StatusOK,
 		Status:  "OK",
-		Message: "Transaction retrieved successfully",
+		Message: "Transactions retrieved successfully",
 		Data:    filteredTra,
 	}
 	ctx.JSON(http.StatusOK, webResponse)

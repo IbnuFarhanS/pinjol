@@ -13,7 +13,7 @@ type User struct {
 	Limit       float64   `gorm:"not null" json:"limit"`
 	RoleID      uint      `gorm:"column:id_role" json:"id_role"`
 	CreatedAt   time.Time `gorm:"not null;default:now()" json:"created_at"`
-	Role        Role      `gorm:"foreignKey:RoleID" json:"role"`
+	Role        Role      `gorm:"foreignKey:RoleID" json:"-"`
 }
 
 type FileKTP struct {

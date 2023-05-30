@@ -22,7 +22,18 @@ func (c *PaymentController) Insert(ctx *gin.Context) {
 	createp := model.Payment{}
 	err := ctx.ShouldBindJSON(&createp)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON: " + err.Error()})
+		return
+	}
+
+	if createp.NextInstallment == 0 {
+		webResponse := response.Response{
+			Code:    http.StatusOK,
+			Status:  "Ok",
+			Message: "LUNAS",
+			Data:    nil,
+		}
+		ctx.JSON(http.StatusOK, webResponse)
 		return
 	}
 
@@ -35,7 +46,7 @@ func (c *PaymentController) Insert(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully created PaymentMethods!",
+		Message: "Successfully created Payment!",
 		Data:    result,
 	}
 

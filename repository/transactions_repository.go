@@ -9,4 +9,5 @@ type TransactionRepository interface {
 	FindById(id uint) (model.Transaction, error)
 	FindAll() ([]model.Transaction, error)
 	FindByUserID(userID uint) ([]model.Transaction, error)
+	UpdateStatus(transactionID uint, status bool) error
 }

@@ -3,15 +3,18 @@ package service
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
 )
 
 type PaymentServiceImpl struct {
-	PaymentRepository     repository.PaymentRepository
-	UserRepository        repository.UserRepository
-	TransactionRepository repository.TransactionRepository
+	PaymentRepository       repository.PaymentRepository
+	UserRepository          repository.UserRepository
+	TransactionRepository   repository.TransactionRepository
+	PaymentMethodRepository repository.PaymentMethodRepository
+	ProductRepository       repository.ProductRepository
 }
 
 // Delete implements BorrowerService
@@ -49,32 +52,47 @@ func (s *PaymentServiceImpl) FindById(id uint) (model.Payment, error) {
 
 // Save implements BorrowerService
 func (s *PaymentServiceImpl) Save(newPayment model.Payment) (model.Payment, error) {
-	transaction, err := s.TransactionRepository.FindById(newPayment.Transaction.ID)
+	tra, err := s.TransactionRepository.FindById(newPayment.TransactionID)
 	if err != nil {
 		return model.Payment{}, err
 	}
 
-	// Periksa apakah pembayaran sudah melebihi jumlah yang harus dibayarkan pada transaksi
-	if newPayment.PaymentAmount > transaction.Amount {
-		return model.Payment{}, errors.New("payment amount exceeds transaction amount")
-	}
-
-	// Perbarui limit pada pengguna terkait
-	user, err := s.UserRepository.FindById(transaction.UserID)
+	pro, err := s.ProductRepository.FindById(uint(tra.ProductID))
 	if err != nil {
 		return model.Payment{}, err
 	}
 
-	user.Limit += newPayment.PaymentAmount
+	TotalTax := (pro.Interest * tra.Amount) / 100
+	Total := tra.Amount + TotalTax
+	TotalMonth := Total / float64(pro.Installment)
+
+	if newPayment.PaymentAmount > TotalMonth {
+		return model.Payment{}, errors.New("payment amount exceeds transaction total")
+	}
+
+	// Update the limit of the related user
+	user, err := s.UserRepository.FindById(tra.UserID)
+	if err != nil {
+		return model.Payment{}, err
+	}
+
+	// Save the payment
+	newPayment.PaymentDate = time.Now()
+	newPayment.NextInstallment = Total - newPayment.PaymentAmount
+
+	payment, err := s.PaymentRepository.Save(newPayment)
+	if err != nil {
+		return model.Payment{}, err
+	}
+
+	user.Limit += (newPayment.PaymentAmount - TotalTax)
 
 	_, err = s.UserRepository.Update(user)
 	if err != nil {
 		return model.Payment{}, err
 	}
 
-	// Simpan pembayaran
-	return s.PaymentRepository.Save(newPayment)
-
+	return payment, nil
 }
 
 // Update implements BorrowerService
@@ -96,8 +114,16 @@ func (s *PaymentServiceImpl) Update(updatePayment model.Payment) (model.Payment,
 	return s.PaymentRepository.Update(newPay)
 }
 
-func NewPaymentServiceImpl(PaymentRepository repository.PaymentRepository) PaymentService {
+func NewPaymentServiceImpl(
+	PaymentRepository repository.PaymentRepository,
+	TransactionRepository repository.TransactionRepository,
+	UserRepository repository.UserRepository,
+	ProductRepository repository.ProductRepository,
+) PaymentService {
 	return &PaymentServiceImpl{
-		PaymentRepository: PaymentRepository,
+		PaymentRepository:     PaymentRepository,
+		TransactionRepository: TransactionRepository,
+		UserRepository:        UserRepository,
+		ProductRepository:     ProductRepository,
 	}
 }

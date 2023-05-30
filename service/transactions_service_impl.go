@@ -43,15 +43,12 @@ func (s *TransactionServiceImpl) Save(newTransaction model.Transaction, userid u
 		return model.Transaction{}, err
 	}
 
-	// Periksa batas pengguna
 	if newTransaction.Amount > user.Limit {
 		return model.Transaction{}, errors.New("Amount exceeds user's limit")
 	}
 
-	// Kurangi batas pengguna dengan jumlah pinjaman
 	user.Limit -= newTransaction.Amount
 
-	// Simpan perubahan ke basis data
 	_, err = s.UserRepository.Update(user)
 	if err != nil {
 		return model.Transaction{}, err
@@ -60,9 +57,9 @@ func (s *TransactionServiceImpl) Save(newTransaction model.Transaction, userid u
 	created_at := time.Now()
 	due_date := created_at.AddDate(0, 1, 0)
 	newTra := model.Transaction{
-		// Product:   newTransaction.Product,
 		ProductID: newTransaction.ProductID,
 		UserID:    userid,
+		User:      user,
 		Status:    false,
 		Amount:    newTransaction.Amount,
 		CreatedAt: created_at,

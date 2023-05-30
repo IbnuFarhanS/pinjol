@@ -45,12 +45,12 @@ func NewRouter(userRepository repository.UserRepository, authController *control
 	// rolesRouter.DELETE("/:id", rolesController.Delete)
 	rolesRouter.POST("/", rolesController.Insert)
 
-	// accstatRouter := router.Group("/acceptstatus")
-	// accstatRouter.GET("/", accstatController.FindAll)
+	accstatRouter := router.Group("/acceptstatus")
+	accstatRouter.GET("/", middleware.DeserializeUser(userRepository), accstatController.FindAll)
 	// accstatRouter.GET("/:id", accstatController.FindByID)
 	// accstatRouter.PUT("/:id", accstatController.Update)
 	// accstatRouter.DELETE("/:id", accstatController.Delete)
-	// accstatRouter.POST("/", accstatController.Insert)
+	accstatRouter.POST("/", middleware.DeserializeUser(userRepository), accstatController.Insert)
 
 	payRouter := router.Group("/payments")
 	payRouter.POST("/", middleware.DeserializeUser(userRepository), payController.Insert)
@@ -79,7 +79,7 @@ func NewRouter(userRepository repository.UserRepository, authController *control
 
 	traRouter := router.Group("/transactions")
 	traRouter.POST("/", middleware.DeserializeUser(userRepository), traController.Insert)
-	traRouter.GET("/", middleware.DeserializeUser(userRepository), traController.FindAllTransaction)
+	traRouter.GET("/", middleware.DeserializeUser(userRepository), traController.FindAllTransactions)
 	traRouter.POST("/export", middleware.DeserializeUser(userRepository), traController.ExportToCSV)
 	// traRouter.GET("/", traController.FindAll)
 	// traRouter.GET("/:id", traController.FindByID)

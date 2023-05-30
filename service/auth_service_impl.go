@@ -53,10 +53,7 @@ func (a *AuthServiceImpl) Register(newUser request.CreateUsersRequest) {
 
 	created_at := time.Now()
 
-	role, err := a.RoleRepository.FindById(newUser.RoleID)
-	if err != nil {
-		return
-	}
+	id := model.Role{ID: 1}
 
 	newUsers := model.User{
 		Username:    newUser.Username,
@@ -66,8 +63,7 @@ func (a *AuthServiceImpl) Register(newUser request.CreateUsersRequest) {
 		Address:     newUser.Address,
 		PhoneNumber: newUser.PhoneNumber,
 		Limit:       2000000,
-		Role:        model.Role{ID: 1},
-		RoleID:      role.ID,
+		Role:        id,
 		CreatedAt:   created_at,
 	}
 	a.UserRepository.Save(newUsers)

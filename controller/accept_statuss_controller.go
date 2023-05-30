@@ -26,7 +26,7 @@ func (c *AcceptStatusController) Insert(ctx *gin.Context) {
 		return
 	}
 
-	c.acceptStatusService.Save(createLen)
+	acceptStatus, err := c.acceptStatusService.Save(createLen)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -36,7 +36,7 @@ func (c *AcceptStatusController) Insert(ctx *gin.Context) {
 		Code:    200,
 		Status:  "Ok",
 		Message: "Successfully created AcceptStatus!",
-		Data:    nil,
+		Data:    acceptStatus,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
