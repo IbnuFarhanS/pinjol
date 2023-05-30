@@ -38,7 +38,7 @@ func (r *ProductRepositoryImpl) FindById(id uint) (model.Product, error) {
 	var pro model.Product
 	result := r.Db.First(&pro, "id = ?", id)
 	if result.Error != nil {
-		return pro, errors.New("Product is not found")
+		return pro, errors.New("product is not found")
 	}
 	return pro, nil
 }

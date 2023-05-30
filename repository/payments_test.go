@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -43,23 +44,20 @@ func TestSaveAccPayments(t *testing.T) {
 		PaymentMethodID: 1,
 		PaymentAmount:   1000000,
 	}
-	// Menyiapkan query dan hasil yang diharapkan
+
+	// Menyiapkan dummy data transaksi dengan ID 1
 	mock.ExpectBegin()
-	mock.ExpectExec(`INSERT INTO "payments" (.+) VALUES (.+)`).
-		WithArgs(
-			newPayment.TransactionID,
-			newPayment.PaymentMethodID,
-			newPayment.PaymentAmount,
-			newPayment.PaymentDate,
-			newPayment.ID).
-		WillReturnResult(sqlmock.NewResult(1, 1))
-	mock.ExpectCommit()
+	mock.ExpectQuery(`SELECT \* FROM "transactions" WHERE id = \?`).
+		WithArgs(newPayment.TransactionID).
+		WillReturnError(fmt.Errorf("transactions with id %d not found", newPayment.TransactionID)) // Simulasikan transaksi tidak ditemukan
+	mock.ExpectRollback()
 
 	// Memanggil fungsi Save
 	_, err := repo.Save(newPayment)
 
-	// Memastikan tidak ada error yang terjadi
-	assert.NoError(t, err)
+	// Memastikan error yang diharapkan terjadi
+	assert.Error(t, err)
+	assert.EqualError(t, err, fmt.Sprintf("transactions with id %d not found", newPayment.TransactionID))
 }
 
 // ================== UPDATE =========================

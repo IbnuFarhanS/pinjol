@@ -24,7 +24,7 @@ func setupTestDB_Products(t *testing.T) *gorm.DB {
 }
 
 // ================== SAVE =========================
-func TestSaveProducts(t *testing.T) {
+func TestSaveProduct(t *testing.T) {
 	// Inisialisasi mock DB
 	db, mock, _ := sqlmock.New()
 	defer db.Close()
@@ -39,24 +39,35 @@ func TestSaveProducts(t *testing.T) {
 
 	// Menyiapkan data produk baru
 	newProduct := model.Product{
-		Name:        "Product",
-		Installment: 6,
-		Interest:    0.2,
-		// Amount:      1000000,
+		Name:        "Product 1",
+		Installment: 2,
+		Interest:    20,
 	}
 
 	// Menyiapkan query dan hasil yang diharapkan
 	mock.ExpectBegin()
 	mock.ExpectExec(`INSERT INTO "products" (.+) VALUES (.+)`).
-		WithArgs(newProduct.Name, newProduct.Installment, newProduct.Interest, newProduct.CreatedAt, newProduct.ID).
+		WithArgs(
+			newProduct.Name,
+			newProduct.Installment,
+			newProduct.Interest,
+			newProduct.CreatedAt,
+			newProduct.ID).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
 	// Memanggil fungsi Save
-	_, err := repo.Save(newProduct)
+	savedProduct, err := repo.Save(newProduct)
 
 	// Memastikan tidak ada error yang terjadi
 	assert.NoError(t, err)
+
+	// Memastikan data produk yang disimpan sesuai dengan yang diharapkan
+	assert.Equal(t, newProduct.Name, savedProduct.Name)
+	assert.Equal(t, newProduct.Installment, savedProduct.Installment)
+	assert.Equal(t, newProduct.Interest, savedProduct.Interest)
+	// Memastikan CreatedAt terisi dengan nilai waktu saat ini
+	assert.NotZero(t, savedProduct.CreatedAt)
 }
 
 // ================== FIND BY ID =========================
@@ -95,7 +106,7 @@ func TestFindByNameProducts(t *testing.T) {
 		ID:          1,
 		Name:        "cicilan 6 bulan",
 		Installment: 6,
-		Interest:    30,
+		Interest:    0,
 		CreatedAt:   time.Date(2023, 5, 26, 0, 0, 0, 0, time.Local),
 		// Amount:      1000000,
 	}

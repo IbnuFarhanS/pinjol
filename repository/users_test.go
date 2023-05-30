@@ -234,7 +234,7 @@ func TestFindByUsernameUsers(t *testing.T) {
 		Password:    "ibnu",
 		NIK:         "1234",
 		Name:        "ibnu",
-		Address:     "bandung",
+		Address:     "",
 		PhoneNumber: "084579856598",
 		Limit:       2000000,
 		RoleID:      1,

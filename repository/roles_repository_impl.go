@@ -37,7 +37,7 @@ func (r *RoleRepositoryImpl) FindById(id uint) (model.Role, error) {
 	var rol model.Role
 	result := r.Db.Find(&rol, id)
 	if result != nil {
-		return rol, errors.New("Role is not found")
+		return rol, errors.New("role is not found")
 
 	}
 	return rol, nil
