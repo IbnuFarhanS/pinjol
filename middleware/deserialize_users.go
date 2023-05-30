@@ -13,7 +13,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+<<<<<<< HEAD
 func DeserializeUser(userRepository repository.UsersRepository) gin.HandlerFunc {
+=======
+func DeserializeUser(userRepository repository.UserRepository) gin.HandlerFunc {
+>>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 	return func(ctx *gin.Context) {
 		var token string
 		authorizationHeader := ctx.Request.Header.Get("Authorization")
@@ -36,7 +40,11 @@ func DeserializeUser(userRepository repository.UsersRepository) gin.HandlerFunc 
 
 		id, err_id := strconv.ParseInt(fmt.Sprint(sub), 10, 64)
 		helper.ErrorPanic(err_id)
+<<<<<<< HEAD
 		result, err := userRepository.FindById(id)
+=======
+		result, err := userRepository.FindById(uint(id))
+>>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail", "message": "the user belonging to this token no logger exists"})
 			return

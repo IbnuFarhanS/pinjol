@@ -10,68 +10,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AcceptStatusController struct {
-	acceptStatusService service.AcceptStatusService
+type ProductController struct {
+	ProductService service.ProductService
 }
 
-func NewAcceptStatusController(service service.AcceptStatusService) *AcceptStatusController {
-	return &AcceptStatusController{acceptStatusService: service}
+func NewProductController(service service.ProductService) *ProductController {
+	return &ProductController{ProductService: service}
 }
 
-func (c *AcceptStatusController) Insert(ctx *gin.Context) {
-	createLen := model.AcceptStatus{}
-	err := ctx.ShouldBindJSON(&createLen)
+func (c *ProductController) Insert(ctx *gin.Context) {
+	createpro := model.Product{}
+	err := ctx.ShouldBindJSON(&createpro)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-<<<<<<< HEAD
-	result, err := c.acceptStatusService.Save(createLen)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-=======
-	acceptStatus, err := c.acceptStatusService.Save(createLen)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
-		return
-	}
+	result, err := c.ProductService.Save(createpro)
 
-	webResponse := response.Response{
-		Code:    200,
-		Status:  "Ok",
-		Message: "Successfully created AcceptStatus!",
-<<<<<<< HEAD
-		Data:    result,
-=======
-		Data:    acceptStatus,
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
-	}
-
-	ctx.JSON(http.StatusOK, webResponse)
-}
-
-func (c *AcceptStatusController) Update(ctx *gin.Context) {
-	idParam := ctx.Param("id")
-	id, err := strconv.ParseInt(idParam, 10, 64)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-<<<<<<< HEAD
-	updateacc := model.AcceptStatus{ID: id}
-=======
-	updateacc := model.AcceptStatus{ID: uint(id)}
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
-	err = ctx.ShouldBindJSON(&updateacc)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	updatedAcceptStatus, err := c.acceptStatusService.Update(updateacc)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -80,58 +36,14 @@ func (c *AcceptStatusController) Update(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully updated AcceptStatus!",
-		Data:    updatedAcceptStatus,
-	}
-
-	ctx.JSON(http.StatusOK, webResponse)
-}
-func (c *AcceptStatusController) Delete(ctx *gin.Context) {
-	idParam := ctx.Param("id")
-	id, err := strconv.ParseInt(idParam, 10, 64)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-<<<<<<< HEAD
-	result, err := c.acceptStatusService.Delete(id)
-=======
-	result, err := c.acceptStatusService.Delete(uint(id))
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	webResponse := response.Response{
-		Code:    200,
-		Status:  "Ok",
-		Message: "Successfully deleted AcceptStatus!",
+		Message: "Successfully created PaymentMethods!",
 		Data:    result,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)
 }
 
-func (c *AcceptStatusController) FindAll(ctx *gin.Context) {
-	acc, err := c.acceptStatusService.FindAll()
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	webResponse := response.Response{
-		Code:    200,
-		Status:  "Ok",
-		Message: "Successfully fetch all AcceptStatus data!",
-		Data:    acc,
-	}
-
-	ctx.JSON(http.StatusOK, webResponse)
-}
-
-func (c *AcceptStatusController) FindByID(ctx *gin.Context) {
+func (c *ProductController) Update(ctx *gin.Context) {
 	idParam := ctx.Param("id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
@@ -139,11 +51,14 @@ func (c *AcceptStatusController) FindByID(ctx *gin.Context) {
 		return
 	}
 
-<<<<<<< HEAD
-	acc, err := c.acceptStatusService.FindById(id)
-=======
-	acc, err := c.acceptStatusService.FindById(uint(id))
->>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
+	updatepro := model.Product{ID: uint(id)}
+	err = ctx.ShouldBindJSON(&updatepro)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	updatedProduct, err := c.ProductService.Update(updatepro)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -152,8 +67,91 @@ func (c *AcceptStatusController) FindByID(ctx *gin.Context) {
 	webResponse := response.Response{
 		Code:    200,
 		Status:  "Ok",
-		Message: "Successfully fetched AcceptStatus!",
-		Data:    acc,
+		Message: "Successfully updated PaymentMethods!",
+		Data:    updatedProduct,
+	}
+
+	ctx.JSON(http.StatusOK, webResponse)
+}
+func (c *ProductController) Delete(ctx *gin.Context) {
+	idParam := ctx.Param("id")
+	id, err := strconv.ParseInt(idParam, 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	result, err := c.ProductService.Delete(uint(id))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	webResponse := response.Response{
+		Code:    200,
+		Status:  "Ok",
+		Message: "Successfully deleted PaymentMethods!",
+		Data:    result,
+	}
+
+	ctx.JSON(http.StatusOK, webResponse)
+}
+
+func (c *ProductController) FindAll(ctx *gin.Context) {
+	pro, err := c.ProductService.FindAll()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	webResponse := response.Response{
+		Code:    200,
+		Status:  "Ok",
+		Message: "Successfully fetch all PaymentMethods data!",
+		Data:    pro,
+	}
+
+	ctx.JSON(http.StatusOK, webResponse)
+}
+
+func (c *ProductController) FindByID(ctx *gin.Context) {
+	idParam := ctx.Param("id")
+	id, err := strconv.ParseInt(idParam, 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	pro, err := c.ProductService.FindById(uint(id))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	webResponse := response.Response{
+		Code:    200,
+		Status:  "Ok",
+		Message: "Successfully fetched PaymentMethods!",
+		Data:    pro,
+	}
+
+	ctx.JSON(http.StatusOK, webResponse)
+}
+
+func (c *ProductController) FindByName(ctx *gin.Context) {
+	proParam := ctx.Param("name")
+
+	pro, err := c.ProductService.FindByName(proParam)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	webResponse := response.Response{
+		Code:    200,
+		Status:  "Ok",
+		Message: "Successfully fetched PaymentMethods!",
+		Data:    pro,
 	}
 
 	ctx.JSON(http.StatusOK, webResponse)

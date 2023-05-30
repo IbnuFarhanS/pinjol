@@ -18,7 +18,11 @@ func NewAcceptStatusRepositoryImpl(Db *gorm.DB) AcceptStatusRepository {
 }
 
 // Delete implements AcceptStatusRepository
+<<<<<<< HEAD
 func (r *AcceptStatusRepositoryImpl) Delete(id int64) (model.AcceptStatus, error) {
+=======
+func (r *AcceptStatusRepositoryImpl) Delete(id uint) (model.AcceptStatus, error) {
+>>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 	var acc model.AcceptStatus
 	result := r.Db.Where("id = ?", id).Delete(&acc)
 	helper.ErrorPanic(result.Error)
@@ -27,6 +31,7 @@ func (r *AcceptStatusRepositoryImpl) Delete(id int64) (model.AcceptStatus, error
 
 // FindAll implements AcceptStatusRepository
 func (r *AcceptStatusRepositoryImpl) FindAll() ([]model.AcceptStatus, error) {
+<<<<<<< HEAD
 	var acc []model.AcceptStatus
 	results := r.Db.Find(&acc)
 	helper.ErrorPanic(results.Error)
@@ -35,6 +40,16 @@ func (r *AcceptStatusRepositoryImpl) FindAll() ([]model.AcceptStatus, error) {
 
 // FindById implements AcceptStatusRepository
 func (r *AcceptStatusRepositoryImpl) FindById(id int64) (model.AcceptStatus, error) {
+=======
+	var bor []model.AcceptStatus
+	results := r.Db.Find(&bor)
+	helper.ErrorPanic(results.Error)
+	return bor, nil
+}
+
+// FindById implements AcceptStatusRepository
+func (r *AcceptStatusRepositoryImpl) FindById(id uint) (model.AcceptStatus, error) {
+>>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 	var acc model.AcceptStatus
 	result := r.Db.Find(&acc, "id = ?", id)
 	if result.Error != nil {
@@ -46,14 +61,23 @@ func (r *AcceptStatusRepositoryImpl) FindById(id int64) (model.AcceptStatus, err
 // Save implements AcceptStatusRepository
 func (r *AcceptStatusRepositoryImpl) Save(newAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
 	currentTime := time.Now()
+<<<<<<< HEAD
 	newAcceptStatus.Created_At = currentTime
 	result := r.Db.Create(&newAcceptStatus)
 	helper.ErrorPanic(result.Error)
+=======
+	newAcceptStatus.CreatedAt = currentTime
+	result := r.Db.Create(&newAcceptStatus)
+	if result.Error != nil {
+		return model.AcceptStatus{}, result.Error
+	}
+>>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 	return newAcceptStatus, nil
 }
 
 // Update implements AcceptStatusRepository
 func (r *AcceptStatusRepositoryImpl) Update(updatedAcceptStatus model.AcceptStatus) (model.AcceptStatus, error) {
+<<<<<<< HEAD
 	var rol model.AcceptStatus
 	created_at := rol.Created_At
 
@@ -64,6 +88,9 @@ func (r *AcceptStatusRepositoryImpl) Update(updatedAcceptStatus model.AcceptStat
 		Created_At:     created_at,
 	}
 	result := r.Db.Model(&updatedAcceptStatus).Updates(updateAccStat)
+=======
+	result := r.Db.Model(&model.AcceptStatus{}).Where("id = ?", updatedAcceptStatus.ID).Updates(updatedAcceptStatus)
+>>>>>>> 79e83b473a1c0aca2de729b88ccc29fed5de00a9
 	helper.ErrorPanic(result.Error)
 	return updatedAcceptStatus, nil
 }
