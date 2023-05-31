@@ -25,6 +25,16 @@ func (c *UserController) Insert(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
+	existingUser, err := c.UserService.FindByUsername(createuser.Username)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if existingUser.ID != 0 {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Username Is Already Exists"})
+		return
+	}
+
 	result, err := c.UserService.Save(createuser)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

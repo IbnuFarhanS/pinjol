@@ -40,13 +40,6 @@ func (s *UserServiceImpl) Save(newUser model.User) (model.User, error) {
 		return model.User{}, errors.New("username is required")
 	}
 	// Check if username already exists
-	existingUser, err := s.UserRepository.FindByUsername(newUser.Username)
-	if err != nil {
-		return model.User{}, err
-	}
-	if existingUser.ID != 0 {
-		return model.User{}, errors.New("username is already in use")
-	}
 
 	hashedPassword, err := utils.HashPassword(newUser.Password)
 	helper.ErrorPanic(err)
