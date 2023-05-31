@@ -37,7 +37,9 @@ func (s *TransactionServiceImpl) FindById(id uint) (model.Transaction, error) {
 
 // Save implements BorrowerService
 func (s *TransactionServiceImpl) Save(newTransaction model.Transaction, userid uint) (model.Transaction, error) {
-
+	if newTransaction.Amount == 0 {
+		return model.Transaction{}, errors.New("amoun is required")
+	}
 	user, err := s.UserRepository.FindById(userid)
 	if err != nil {
 		return model.Transaction{}, err

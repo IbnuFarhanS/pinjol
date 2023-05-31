@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/IbnuFarhanS/pinjol/model"
 	"github.com/IbnuFarhanS/pinjol/repository"
 )
@@ -31,7 +33,9 @@ func (s *ProductServiceImpl) FindByName(name string) (model.Product, error) {
 
 // Save implements BorrowerService
 func (s *ProductServiceImpl) Save(newProduct model.Product) (model.Product, error) {
-
+	if newProduct.Name == "" {
+		return model.Product{}, errors.New("name is required")
+	}
 	newPro := model.Product{
 		Name:        newProduct.Name,
 		Installment: newProduct.Installment,
@@ -52,8 +56,8 @@ func (s *ProductServiceImpl) Update(updateProduct model.Product) (model.Product,
 		ID:          updateProduct.ID,
 		Name:        updateProduct.Name,
 		Installment: updateProduct.Installment,
-		Interest:       updateProduct.Interest,
-		CreatedAt:  create_at,
+		Interest:    updateProduct.Interest,
+		CreatedAt:   create_at,
 	}
 
 	return s.ProductRepository.Update(newPro)

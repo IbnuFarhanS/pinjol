@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"time"
 
 	"github.com/IbnuFarhanS/pinjol/helper"
@@ -35,6 +36,18 @@ func (s *UserServiceImpl) FindByUsername(username string) (model.User, error) {
 
 // Save implements UserService
 func (s *UserServiceImpl) Save(newUser model.User) (model.User, error) {
+	if newUser.Username == "" {
+		return model.User{}, errors.New("username is required")
+	}
+	// Check if username already exists
+	existingUser, err := s.UserRepository.FindByUsername(newUser.Username)
+	if err != nil {
+		return model.User{}, err
+	}
+	if existingUser.ID != 0 {
+		return model.User{}, errors.New("username is already in use")
+	}
+
 	hashedPassword, err := utils.HashPassword(newUser.Password)
 	helper.ErrorPanic(err)
 
