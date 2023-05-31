@@ -39,7 +39,7 @@ func (r *PaymentRepositoryImpl) FindById(id uint) (model.Payment, error) {
 	var pay model.Payment
 	result := r.Db.First(&pay, "id = ?", id)
 	if result.Error != nil {
-		return pay, errors.New("Payment is not found")
+		return pay, errors.New("payment is not found")
 	}
 	return pay, nil
 }
@@ -57,7 +57,6 @@ func (r *PaymentRepositoryImpl) Save(newPayment model.Payment) (model.Payment, e
 	}
 
 	newPayment.PaymentDate = time.Now()
-	newPayment.NextInstallment = tra.Total - newPayment.PaymentAmount
 
 	if err := tx.Table("payments").Create(&newPayment).Error; err != nil {
 		tx.Rollback()

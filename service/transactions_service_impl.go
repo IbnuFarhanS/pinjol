@@ -44,7 +44,7 @@ func (s *TransactionServiceImpl) Save(newTransaction model.Transaction, userid u
 	}
 
 	if newTransaction.Amount > user.Limit {
-		return model.Transaction{}, errors.New("Amount exceeds user's limit")
+		return model.Transaction{}, errors.New("amount exceeds user's limit")
 	}
 
 	user.Limit -= newTransaction.Amount

@@ -26,16 +26,17 @@ func (c *PaymentController) Insert(ctx *gin.Context) {
 		return
 	}
 
-	if createp.NextInstallment == 0 {
-		webResponse := response.Response{
-			Code:    http.StatusOK,
-			Status:  "Ok",
-			Message: "LUNAS",
-			Data:    nil,
-		}
-		ctx.JSON(http.StatusOK, webResponse)
-		return
-	}
+	// fmt.Println("AAAAAAAAAAAAAAAAAAAAAAA", createp.NextInstallment)
+	// if createp.NextInstallment == 0 {
+	// 	webResponse := response.Response{
+	// 		Code:    http.StatusOK,
+	// 		Status:  "Ok",
+	// 		Message: "LUNAS",
+	// 		Data:    nil,
+	// 	}
+	// 	ctx.JSON(http.StatusOK, webResponse)
+	// 	return
+	// }
 
 	result, err := c.PaymentService.Save(createp)
 	if err != nil {

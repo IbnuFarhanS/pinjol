@@ -37,9 +37,17 @@ func (s *PaymentServiceImpl) FindAll() ([]model.Payment, error) {
 			continue
 		}
 
-		Payment[i].Transaction = transaction
+		pro, err := s.ProductRepository.FindById(transaction.ProductID)
+		if err != nil {
+			// Tangani kesalahan
+			fmt.Println("Error:", err)
+			continue
+		}
 
-		Payment[i].NextInstallment = transaction.Total - Payment[i].PaymentAmount
+		totaltax := (transaction.Amount * pro.Interest) / 100
+		total := totaltax + transaction.Amount
+		totalmonth := total / float64(pro.Installment)
+		Payment[i].NextInstallment = total - totalmonth
 	}
 
 	return Payment, nil
@@ -85,7 +93,7 @@ func (s *PaymentServiceImpl) Save(newPayment model.Payment) (model.Payment, erro
 		return model.Payment{}, err
 	}
 
-	user.Limit += (newPayment.PaymentAmount - TotalTax)
+	user.Limit += (newPayment.PaymentAmount - (TotalTax / float64(pro.Installment)))
 
 	_, err = s.UserRepository.Update(user)
 	if err != nil {

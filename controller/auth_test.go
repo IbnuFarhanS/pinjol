@@ -121,14 +121,11 @@ func TestAuthController_FindAll(t *testing.T) {
 	ctx := req.Context()
 	ctx = context.WithValue(ctx, "currentUser", "testuser")
 
-	// Assign the modified context back to the request
-	req = req.WithContext(ctx)
-
 	// Create a test response recorder
 	res := httptest.NewRecorder()
 
 	// Perform the request
-	router.ServeHTTP(res, req)
+	router.ServeHTTP(res, req.WithContext(ctx))
 
 	// Check the response status code
 	assert.Equal(t, http.StatusOK, res.Code)

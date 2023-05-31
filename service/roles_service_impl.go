@@ -43,7 +43,16 @@ func (s *RoleServiceImpl) Save(newRole model.Role) (model.Role, error) {
 
 // Update implements RoleService
 func (s *RoleServiceImpl) Update(updatedRole model.Role) (model.Role, error) {
-	panic("unimplemented")
+	var rol model.Role
+	create_at := rol.CreatedAt
+
+	newRol := model.Role{
+		ID:        updatedRole.ID,
+		Name:      updatedRole.Name,
+		CreatedAt: create_at,
+	}
+
+	return s.RoleRepository.Update(newRol)
 }
 
 func NewRoleServiceImpl(RoleRepository repository.RoleRepository) RoleService {

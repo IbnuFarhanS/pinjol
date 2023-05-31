@@ -1,7 +1,5 @@
 package repository
 
-
-
 import "github.com/IbnuFarhanS/pinjol/model"
 
 type RoleRepository interface {

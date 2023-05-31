@@ -31,7 +31,7 @@ func (r *TransactionRepositoryImpl) Delete(id uint) (model.Transaction, error) {
 	var tra model.Transaction
 	result := r.Db.Where("id = ?", id).Delete(&tra)
 	if result.Error != nil {
-		return tra, errors.New("Transaction is not found")
+		return tra, errors.New("transaction is not found")
 	}
 	return tra, nil
 }
@@ -62,7 +62,7 @@ func (r *TransactionRepositoryImpl) FindById(id uint) (model.Transaction, error)
 	var tra model.Transaction
 	result := r.Db.First(&tra, "id = ?", id)
 	if result.Error != nil {
-		return tra, errors.New("Transaction is not found")
+		return tra, errors.New("transaction is not found")
 	}
 	return tra, nil
 }
@@ -96,7 +96,7 @@ func (r *TransactionRepositoryImpl) Save(newTransaction model.Transaction) (mode
 func (r *TransactionRepositoryImpl) Update(updatedTransaction model.Transaction) (model.Transaction, error) {
 	result := r.Db.Model(&model.Transaction{}).Where("id = ?", updatedTransaction.ID).Updates(updatedTransaction)
 	if result.Error != nil {
-		return updatedTransaction, errors.New("Transaction is not found")
+		return updatedTransaction, errors.New("transaction is not found")
 	}
 	return updatedTransaction, nil
 }

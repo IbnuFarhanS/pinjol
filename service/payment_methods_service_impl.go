@@ -33,7 +33,7 @@ func (s *PaymentMethodServiceImpl) FindByName(name string) (model.PaymentMethod,
 func (s *PaymentMethodServiceImpl) Save(newPaymentMethod model.PaymentMethod) (model.PaymentMethod, error) {
 
 	newPm := model.PaymentMethod{
-		Name:       newPaymentMethod.Name,
+		Name:      newPaymentMethod.Name,
 		CreatedAt: newPaymentMethod.CreatedAt,
 	}
 	return s.PaymentMethodRepository.Save(newPm)
@@ -47,8 +47,8 @@ func (s *PaymentMethodServiceImpl) Update(updatePaymentMethod model.PaymentMetho
 	create_at := pm.CreatedAt
 
 	newPm := model.PaymentMethod{
-		ID:         updatePaymentMethod.ID,
-		Name:       updatePaymentMethod.Name,
+		ID:        updatePaymentMethod.ID,
+		Name:      updatePaymentMethod.Name,
 		CreatedAt: create_at,
 	}
 

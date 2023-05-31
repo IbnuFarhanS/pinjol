@@ -47,7 +47,7 @@ func (u *UserRepositoryImpl) FindById(id uint) (model.User, error) {
 func (u *UserRepositoryImpl) Save(newUser model.User) (model.User, error) {
 	result := u.Db.Create(&newUser)
 	if result.Error != nil {
-		return newUser, errors.New("user not found")
+		return newUser, errors.New("failed to save user")
 	}
 	return newUser, nil
 }
